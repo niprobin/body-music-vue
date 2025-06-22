@@ -63,6 +63,16 @@ function initHowler() {
     onplay: () => {
       isPlaying.value = true
       isLoading.value = false
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.metadata = new window.MediaMetadata({
+          title: 'Body Music Radio',
+          artist: 'Live',
+          album: 'Body Music',
+          artwork: [
+            { src: '/browser_icon', sizes: '512x512', type: 'image/png' }
+          ]
+        });
+      }
     },
     onend: () => {
       isPlaying.value = false

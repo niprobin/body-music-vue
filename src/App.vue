@@ -2,9 +2,11 @@
   <div id="app">
     <Header />
     <main class="main-content">
-    <transition name="fade" mode="out-in">
-      <router-view />
-    </transition>
+      <router-view v-slot="{ Component }">
+        <transition name="fade">
+          <component :is="Component" />
+        </transition>
+      </router-view>
     </main>
     <RadioPlayer />
   </div>
@@ -23,21 +25,26 @@ import RadioPlayer from './components/RadioPlayer.vue'
   margin: 0 auto;
   text-align: left;
   box-sizing: border-box;
-} 
+}
 
 .main-content {
   flex: 1 0 auto;
-  padding-bottom: 70px; /* Add bottom padding to prevent content from being hidden behind the player */
+  padding-bottom: 70px;
+  /* Add bottom padding to prevent content from being hidden behind the player */
 }
 
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.fade-enter-from, .fade-leave-to {
+
+.fade-enter-from,
+.fade-leave-to {
   opacity: 0;
 }
-.fade-enter-to, .fade-leave-from {
+
+.fade-enter-to,
+.fade-leave-from {
   opacity: 1;
 }
-
 </style>
