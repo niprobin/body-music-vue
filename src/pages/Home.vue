@@ -3,10 +3,12 @@
     <div class="home-content">
       <img src="/body_music_duck_logo.png" alt="Body Music Radio Logo" class="home-logo" />
       <section>
-      <h1>Bienvenue sur Body Music Radio</h1>
-      <p>
-        Selecta réalisée par nos soins pour te faire danser &amp; chiller toute la journée&nbsp;! Tu aimes une track&nbsp;? Tu peux directement checker ce qui est entrain de jouer. Tu peux également regarder notre planning pour savoir à quoi t'attendre sur la radio.
-      </p>
+        <h1>Bienvenue sur Body Music Radio</h1>
+        <p>
+          Selecta réalisée par nos soins pour te faire danser &amp; chiller toute la journée&nbsp;! Tu aimes une
+          track&nbsp;? Tu peux directement checker ce qui est entrain de jouer. Tu peux également regarder notre
+          planning pour savoir à quoi t'attendre sur la radio.
+        </p>
       </section>
     </div>
   </section>
@@ -30,11 +32,11 @@
   width: 70vw;
   max-width: 1200px;
   min-width: 240px;
-  font-weight:300;
-  display:flex;
+  font-weight: 300;
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap:10%;
+  gap: 10%;
 }
 
 p {
@@ -50,15 +52,17 @@ p {
   .home-content {
     flex-direction: column;
     gap: 2rem;
-    width:100%;
+    width: 100%;
     align-items: center;
     justify-content: flex-start;
-    text-align:center;
+    text-align: center;
   }
+
   .home-logo {
     width: 250px;
     margin: 1rem;
   }
+
   .home {
     min-height: 40vh;
   }

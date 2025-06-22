@@ -2,18 +2,11 @@
   <section class="schedule">
     <h1>La programmation</h1>
     <div ref="scheduleList" class="schedule-list">
-      <div
-        v-for="(shows, day) in schedule"
-        :key="day"
-        :class="['schedule-day', { 'current-day': day === currentDay }]"
-        :id="day === currentDay ? 'current-day' : null"
-      >
+      <div v-for="(shows, day) in schedule" :key="day" :class="['schedule-day', { 'current-day': day === currentDay }]"
+        :id="day === currentDay ? 'current-day' : null">
         <h3>{{ day }}</h3>
-        <div
-          v-for="show in shows"
-          :key="show.start + show.show"
-          :class="['schedule-item', { 'current-show': isCurrentShow(day, show) }]"
-        >
+        <div v-for="show in shows" :key="show.start + show.show"
+          :class="['schedule-item', { 'current-show': isCurrentShow(day, show) }]">
           {{ show.start }} — {{ show.end }} | {{ show.show }}
         </div>
       </div>
@@ -74,7 +67,7 @@ onMounted(() => {
   max-width: 1200px;
   min-width: 240px;
   margin: 0 auto;
-  padding-bottom:100px;
+  padding-bottom: 100px;
 }
 
 .schedule-list {
@@ -84,7 +77,8 @@ onMounted(() => {
   font-size: 12px;
   text-transform: uppercase;
   padding: 5px;
-  justify-items: center; /* Center grid items horizontally */
+  justify-items: center;
+  /* Center grid items horizontally */
 }
 
 .schedule-day {
@@ -95,9 +89,10 @@ onMounted(() => {
   flex-direction: column;
   background-color: rgba(255, 255, 255, 0.15);
   border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   gap: 5px;
-  width: 100%; /* Make it fill the grid cell */
+  width: 100%;
+  /* Make it fill the grid cell */
   box-sizing: border-box;
 }
 
@@ -118,7 +113,7 @@ onMounted(() => {
 }
 
 @media (max-width: 600px) {
-  
+
   .schedule {
     width: 95%;
     padding: 0px 0px 86px 0px;
@@ -136,9 +131,8 @@ onMounted(() => {
   }
 
   h1 {
-    width:100%;
+    width: 100%;
     text-align: center;
   }
 }
-
 </style>

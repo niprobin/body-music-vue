@@ -11,11 +11,7 @@
             <p class="song-played-at">En ce moment</p>
           </div>
         </div>
-        <div
-          v-for="entry in filteredHistory"
-          :key="entry.played_at"
-          class="song-card"
-        >
+        <div v-for="entry in filteredHistory" :key="entry.played_at" class="song-card">
           <img class="song-artwork" :src="entry.song.art || fallbackArt" alt="Album cover" />
           <div class="song-info">
             <p class="song-title">{{ entry.song.title || "Unknown Title" }}</p>
@@ -83,7 +79,7 @@ onMounted(() => {
   max-width: 1200px;
   min-width: 240px;
   margin: 0 auto;
-  padding-bottom:100px;
+  padding-bottom: 100px;
 }
 
 .history-container {
@@ -102,19 +98,19 @@ onMounted(() => {
   align-items: center;
   gap: 10px;
   padding: 15px;
-  background-color:rgba(255, 255, 255, 0.15);
+  background-color: rgba(255, 255, 255, 0.15);
   color: #fff;
   text-align: left;
   border-radius: 0.75rem;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 img.song-artwork {
   width: 100px;
   height: 100px;
   border-radius: 0.5rem;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.16);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.16);
   background: #444;
   object-fit: cover;
 }
@@ -142,7 +138,7 @@ img.song-artwork {
 /* Responsive Design */
 @media (max-width: 600px) {
   h1 {
-    width:100%;
+    width: 100%;
     text-align: center;
   }
 
@@ -151,16 +147,18 @@ img.song-artwork {
     padding: 0px 0px 92px 0px;
     margin: 0 auto;
   }
+
   .history-container {
     width: 100%;
     gap: 10px;
   }
+
   .song-card {
     flex-direction: row;
     align-items: flex-start;
     gap: 8px;
     padding: 10px;
   }
-  
+
 }
 </style>

@@ -24,12 +24,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding:2%;
+  padding: 2%;
   color: #fff;
 }
 
 .logo img {
-  width:150px;
+  width: 150px;
 }
 
 .nav {
@@ -51,15 +51,14 @@
   .header {
     flex-direction: column;
     align-items: center;
-    justify-content:center;
+    justify-content: center;
     padding: 4vw 2vw;
     gap: 1rem;
   }
-  
+
   .nav {
     gap: 1rem;
     flex-wrap: wrap;
   }
 }
-
 </style>

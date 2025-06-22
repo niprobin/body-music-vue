@@ -7,27 +7,14 @@
       <span class="player-status">
         {{ statusText }}
       </span>
-      <div
-        class="volume-bar-container"
-        @mousedown="startDrag"
-        @touchstart.prevent="startDrag"
-        @click="setVolume($event)"
-        ref="volumeBar"
-      >
+      <div class="volume-bar-container" @mousedown="startDrag" @touchstart.prevent="startDrag"
+        @click="setVolume($event)" ref="volumeBar">
         <div class="volume-bar-bg">
           <div class="volume-bar-fill" :style="{ width: (volume * 100) + '%' }"></div>
         </div>
         <!-- Hidden native range for accessibility only -->
-        <input
-          type="range"
-          min="0"
-          max="1"
-          step="0.01"
-          v-model="volume"
-          @input="onVolumeInput"
-          class="visually-hidden"
-          aria-label="Volume"
-        />
+        <input type="range" min="0" max="1" step="0.01" v-model="volume" @input="onVolumeInput" class="visually-hidden"
+          aria-label="Volume" />
       </div>
     </div>
   </div>
@@ -71,6 +58,26 @@ function initHowler() {
           artwork: [
             { src: '/browser_icon', sizes: '512x512', type: 'image/png' }
           ]
+        });
+
+        navigator.mediaSession.setActionHandler('play', () => {
+          if (!isPlaying.value) {
+            if (howl) {
+              howl.unload();
+              howl = null;
+            }
+            initHowler();
+            howl.play();
+          }
+        });
+
+        navigator.mediaSession.setActionHandler('pause', () => {
+          if (isPlaying.value && howl) {
+            howl.unload();
+            howl = null;
+            isPlaying.value = false;
+            isLoading.value = false;
+          }
         });
       }
     },
@@ -172,7 +179,7 @@ onUnmounted(() => {
   border-top-right-radius: 4px;
   color: #fff;
   position: fixed;
-  left:0;
+  left: 0;
   bottom: 0;
   z-index: 1000;
   display: flex;
@@ -196,7 +203,7 @@ onUnmounted(() => {
 .player-btn {
   border-radius: 50%;
   color: #fff;
-  background:transparent;
+  background: transparent;
   border: none;
   font-size: 2rem;
   display: flex;
@@ -223,6 +230,7 @@ onUnmounted(() => {
   margin-left: auto;
   position: relative;
 }
+
 .volume-bar-bg {
   width: 100%;
   height: 8px;
@@ -231,11 +239,13 @@ onUnmounted(() => {
   overflow: hidden;
   position: relative;
 }
+
 .volume-bar-fill {
   height: 100%;
   background: #fff;
   border-radius: 4px 0 0 4px;
 }
+
 .visually-hidden {
   position: absolute;
   left: -9999px;
@@ -249,7 +259,7 @@ onUnmounted(() => {
 @media (max-width: 900px) {
   .radio-player-controls {
     width: 100%;
-    padding:5%;
+    padding: 5%;
     gap: 1rem;
   }
 
@@ -257,6 +267,7 @@ onUnmounted(() => {
     font-size: 1rem;
     margin-left: 0.5rem;
   }
+
   .volume-bar-container {
     width: 140px;
     height: 14px;
