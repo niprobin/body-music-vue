@@ -1,7 +1,7 @@
 <template>
   <section class="home">
     <div class="home-content">
-      <img src="../assets\body_music_duck_logo.png" alt="Body Music Radio Logo" class="home-logo" />
+      <img src="/body_music_duck_logo.png" alt="Body Music Radio Logo" class="home-logo" />
       <section>
       <h1>Bienvenue sur Body Music Radio</h1>
       <p>
@@ -30,6 +30,8 @@
   max-width: 80%;
   font-weight:300;
   display:flex;
+  align-items: center;
+  justify-content: center;
   gap:5%;
 }
 

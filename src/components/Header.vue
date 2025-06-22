@@ -3,7 +3,9 @@
   <header class="header">
     <div class="logo">
       <!-- Replace with your logo image or SVG -->
-      <img src="../assets/body_music_letters_logo.png" alt="Logo" width="220" />
+      <router-link to="/">
+        <img src="/body_music_letters_logo.png" alt="Logo" width="220" />
+      </router-link>
     </div>
     <nav class="nav">
       <router-link to="/">Accueil</router-link>
