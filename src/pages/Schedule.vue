@@ -49,7 +49,7 @@ function isCurrentShow(day, show) {
 
 async function loadSchedule() {
   try {
-    const response = await fetch('/src/data/schedule.json')
+    const response = await fetch('/schedule.json')
     schedule.value = await response.json()
     currentDay.value = getCurrentDay()
     currentTime.value = getCurrentTime()
