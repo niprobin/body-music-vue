@@ -17,10 +17,13 @@ import RadioPlayer from './components/RadioPlayer.vue'
 
 <style>
 #app {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  text-align: left;
+  box-sizing: border-box;
+} 
 
 .main-content {
   flex: 1 0 auto;

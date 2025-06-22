@@ -22,21 +22,45 @@
   justify-content: center;
   align-items: center;
   min-height: 60vh;
-  padding: 2rem;
+  padding: 1rem;
 }
 
 .home-content {
   text-align: left;
-  max-width: 80%;
+  width: 70vw;
+  max-width: 1200px;
+  min-width: 240px;
   font-weight:300;
   display:flex;
   align-items: center;
   justify-content: center;
-  gap:5%;
+  gap:10%;
+}
+
+p {
+  font-size: 1.1em;
 }
 
 .home-logo {
-  width: 40vh;
+  width: 300px;
   margin-bottom: 1rem;
+}
+
+@media (max-width: 800px) {
+  .home-content {
+    flex-direction: column;
+    gap: 2rem;
+    width:100%;
+    align-items: center;
+    justify-content: flex-start;
+    text-align:center;
+  }
+  .home-logo {
+    width: 250px;
+    margin: 1rem;
+  }
+  .home {
+    min-height: 40vh;
+  }
 }
 </style>

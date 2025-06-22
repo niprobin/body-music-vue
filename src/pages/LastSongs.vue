@@ -79,9 +79,11 @@ onMounted(() => {
 
 <style scoped>
 .last-songs {
-  padding: 2rem 1rem 4rem 1rem;
-  max-width: 1100px;
+  width: 70vw;
+  max-width: 1200px;
+  min-width: 240px;
   margin: 0 auto;
+  padding-bottom:100px;
 }
 
 .history-container {
@@ -89,7 +91,7 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 20px;
+  gap: 10px;
   width: 100%;
 }
 
@@ -138,26 +140,27 @@ img.song-artwork {
 }
 
 /* Responsive Design */
-@media screen and (max-width: 768px) {
+@media (max-width: 600px) {
+  h1 {
+    width:100%;
+    text-align: center;
+  }
+
   .last-songs {
     width: 95%;
-    padding: 10px 0;
+    padding: 0px 0px 92px 0px;
     margin: 0 auto;
   }
-
   .history-container {
     width: 100%;
-  }
-
-  .song-card {
-    flex-direction: column;
-    align-items: flex-start;
     gap: 10px;
   }
-
-  img.song-artwork {
-    width: 80px;
-    height: 80px;
+  .song-card {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px;
   }
+  
 }
 </style>

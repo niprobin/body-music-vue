@@ -70,30 +70,35 @@ onMounted(() => {
 
 <style scoped>
 .schedule {
-  padding: 2rem 1rem 4rem 1rem;
-  max-width: 1100px;
+  width: 70vw;
+  max-width: 1200px;
+  min-width: 240px;
   margin: 0 auto;
+  padding-bottom:100px;
 }
 
 .schedule-list {
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 15px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   font-size: 12px;
   text-transform: uppercase;
+  padding: 5px;
+  justify-items: center; /* Center grid items horizontally */
 }
 
 .schedule-day {
-  width: 100%;
+  /* Remove width: 95%; */
   color: #fff;
-  border-radius: 4px;
   padding: 10px;
-  background-color: #262424;
-  box-shadow: rgba(90, 88, 88, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
   display: flex;
   flex-direction: column;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   gap: 5px;
+  width: 100%; /* Make it fill the grid cell */
+  box-sizing: border-box;
 }
 
 .schedule-item {
@@ -111,4 +116,29 @@ onMounted(() => {
   font-weight: bold;
   color: #333;
 }
+
+@media (max-width: 600px) {
+  
+  .schedule {
+    width: 95%;
+    padding: 0px 0px 86px 0px;
+    margin: 0 auto;
+  }
+
+  .schedule-list {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    font-size: 11px;
+  }
+
+  .schedule-day {
+    padding: 8px;
+  }
+
+  h1 {
+    width:100%;
+    text-align: center;
+  }
+}
+
 </style>

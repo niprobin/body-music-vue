@@ -46,4 +46,20 @@
 .nav a.router-link-exact-active {
   border-bottom: 2px solid #fff;
 }
+
+@media (max-width: 600px) {
+  .header {
+    flex-direction: column;
+    align-items: center;
+    justify-content:center;
+    padding: 4vw 2vw;
+    gap: 1rem;
+  }
+  
+  .nav {
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+}
+
 </style>
