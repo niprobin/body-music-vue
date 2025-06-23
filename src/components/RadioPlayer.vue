@@ -173,7 +173,7 @@ onUnmounted(() => {
 <style scoped>
 .radio-player-bar {
   width: 100%;
-  background: rgba(72, 27, 42, 0.9);
+  background: rgba(14, 13, 13, 0.9);
   backdrop-filter: blur(2px);
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;

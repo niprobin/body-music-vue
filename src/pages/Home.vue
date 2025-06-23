@@ -114,7 +114,7 @@ p {
   min-width: 240px;
   font-weight: 300;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 10%;
 }
@@ -156,7 +156,7 @@ p {
   }
 
   .album-artwork img {
-    max-width: 100%;
+    max-width: 60%;
   }
 }
 </style>
