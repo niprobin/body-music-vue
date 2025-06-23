@@ -22,8 +22,8 @@
           <p><strong>Artiste:</strong> {{ albumOfTheMoment.artist }}</p>
           <p><strong>Genre:</strong> {{ albumOfTheMoment.genre }}</p>
           <div class="album-links">
-            <a :href="albumOfTheMoment.spotify_url" target="_blank">Écouter sur Spotify</a>
-            <a :href="albumOfTheMoment.buy_album" target="_blank">Acheter l'album</a>
+            <a :href="albumOfTheMoment.spotify_url" target="_blank">Spotify</a>
+            <a :href="albumOfTheMoment.buy_album" target="_blank">Bandcamp</a>
           </div>
         </div>
         <div class="album-artwork">
