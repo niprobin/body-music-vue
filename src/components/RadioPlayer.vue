@@ -18,9 +18,9 @@
       </div>
     </div>
     <div class="action-menu">
-      <router-link to="/"><font-awesome-icon :icon="['fas', 'house']" /></router-link>
-      <router-link to="/schedule"><font-awesome-icon :icon="['fas', 'calendar']" /></router-link>
-      <router-link to="/last-songs"><font-awesome-icon :icon="['fas', 'music']" /></router-link>
+      <router-link to="/"><font-awesome-icon :icon="['fas', 'house']" /><br><span class="label">Accueil</span></router-link>
+      <router-link to="/schedule"><font-awesome-icon :icon="['fas', 'calendar']" /><br><span class="label">Programme</span></router-link>
+      <router-link to="/last-songs"><font-awesome-icon :icon="['fas', 'music']" /><br><span class="label">Historique</span></router-link>
     </div>
   </div>
 </template>
@@ -207,10 +207,11 @@ onUnmounted(() => {
 
 .player-btn {
   border-radius: 50%;
-  color: #fff;
-  background: transparent;
-  border: none;
-  font-size: 2rem;
+  border: 1px solid #fff;
+  color: #0c0c0c;
+  background: #fff;
+  width: 50px;
+  height:50px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -219,7 +220,7 @@ onUnmounted(() => {
 }
 
 .player-status {
-  font-size: 1.25rem;
+  font-size: 1rem;
   font-weight: 600;
   letter-spacing: 0.02em;
   flex: 1 1 auto;
@@ -266,15 +267,22 @@ onUnmounted(() => {
 
 
 @media (max-width: 800px) {
+
+  .radio-player-bar{
+    padding:0% 2%;
+    justify-content: space-between;
+  }
+
   .radio-player-controls {
-    width: 60%;
-    padding: 5%;
-    gap: 1rem;
+    width: 25%;
+    min-width:25%;
+    max-width:25%;
+    justify-content: center;
   }
 
   .player-status {
-    font-size: 1rem;
     margin-left: 0.5rem;
+    display:none;
   }
 
   .volume-bar-container {
@@ -283,16 +291,21 @@ onUnmounted(() => {
 
   .action-menu {
   display:flex;
-  width:40%;
+  width:75%;
   justify-content: space-evenly;
   align-items: center;
-  font-size: 1.8rem;
   color:#fff;
 }
 
 .action-menu a {
   color: #fff;
   text-decoration: none;
+  text-align:center;
+}
+
+.action-menu .label {
+  font-size: clamp(0.7rem, 2vw, 1rem);
+  text-transform: uppercase;
 }
 
 }
