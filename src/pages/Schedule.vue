@@ -74,7 +74,6 @@ onMounted(() => {
   width: 100%;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  font-size: 12px;
   text-transform: uppercase;
   padding: 5px;
   justify-items: center;
