@@ -1,9 +1,13 @@
 <template>
   <div class="radio-player-bar">
     <div class="radio-player-controls">
-      <button class="player-btn" @click="togglePlay" :disabled="isLoading">
-        <font-awesome-icon :icon="isPlaying ? 'pause' : 'play'" />
-      </button>
+      <div :class="['player-btn-wrapper', { 'breathe-animate': isPlaying }]">
+        <button class="player-btn" @click="togglePlay" :disabled="isLoading">
+          <span class="icon-wrapper">
+            <font-awesome-icon :icon="isPlaying ? 'pause' : 'play'" />
+          </span>
+        </button>
+      </div>
       <span class="player-status">
         {{ statusText }}
       </span>
@@ -18,9 +22,12 @@
       </div>
     </div>
     <div class="action-menu">
-      <router-link to="/"><font-awesome-icon :icon="['fas', 'house']" /><br><span class="label">Accueil</span></router-link>
-      <router-link to="/schedule"><font-awesome-icon :icon="['fas', 'calendar']" /><br><span class="label">Programme</span></router-link>
-      <router-link to="/last-songs"><font-awesome-icon :icon="['fas', 'music']" /><br><span class="label">Historique</span></router-link>
+      <router-link to="/"><font-awesome-icon :icon="['fas', 'house']" /><br><span
+          class="label">Accueil</span></router-link>
+      <router-link to="/schedule"><font-awesome-icon :icon="['fas', 'calendar']" /><br><span
+          class="label">Programme</span></router-link>
+      <router-link to="/last-songs"><font-awesome-icon :icon="['fas', 'music']" /><br><span
+          class="label">Historique</span></router-link>
     </div>
   </div>
 </template>
@@ -181,8 +188,8 @@ onUnmounted(() => {
   background: rgba(14, 13, 13, 0.98);
   box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px, rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px, rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;
   backdrop-filter: blur(2px);
-  border-radius:50px;
-  border:1px solid #46464642;
+  border-radius: 50px;
+  border: 1px solid #46464642;
   color: #fff;
   position: fixed;
   left: 5%;
@@ -204,25 +211,84 @@ onUnmounted(() => {
   gap: 1.2rem;
 }
 
-.player-btn {
-  color: #0c0c0c;
-  background:#fff;
-  border:1px solid #fff;
-  border-radius:50px;
-  width: 50px;
-  height:50px;
-  font-size:1rem;
+.player-btn-wrapper {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.1s ease-in;
-  cursor: pointer;
 }
 
-.player-btn:active {
-  transform:scale(0.95);
-  box-shadow: inset 6px 6px 29px 3px rgba(0,0,0,0.1);
+.player-btn {
+  position: relative;
+  color: #0c0c0c;
+  background: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.player-btn .icon-wrapper {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
   
+}
+
+/* The wave effect */
+.player-btn::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: url('/wavey-play-bg.svg') repeat-x;
+  background-size: 160px 100%;
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: 1;
+  display:none;
+}
+
+.breathe-animate .player-btn::before {
+  display:block;
+  animation: wave-move-btn 4s linear infinite;
+}
+
+@keyframes wave-move-btn {
+  0% { background-position-x: 0; }
+  100% { background-position-x: -160px; }
+}
+
+@keyframes wave-move-btn-reverse {
+  0% { background-position-x: -160px; }
+  100% { background-position-x: 0; }
+}
+
+@keyframes wave-swell-btn {
+  0%, 100% { background-position-y: 0; }
+  50% { background-position-y: 10px; }
+}
+
+
+/* --------- End Sound wave effect ----*/
+
+.player-btn:active {
+  transform: scale(0.95);
+  box-shadow: inset 6px 6px 29px 3px rgba(0, 0, 0, 0.1);
+
 }
 
 .player-status {
@@ -268,16 +334,16 @@ onUnmounted(() => {
 }
 
 .action-menu {
-  display:none;
+  display: none;
 }
 
 @media (min-width: 801px) {
 
   .radio-player-bar {
-    width:50%;
-    max-width:50%;
-    min-width:50%;
-    left:25%;
+    width: 50%;
+    max-width: 50%;
+    min-width: 50%;
+    left: 25%;
   }
 
 }
@@ -285,49 +351,51 @@ onUnmounted(() => {
 
 @media (max-width: 800px) {
 
-  .radio-player-bar{
+  .radio-player-bar {
     padding: 1.5rem;
     justify-content: space-between;
   }
 
   .radio-player-controls {
-    width:20%;
-    min-width:20%;
-    max-width:20%;
+    width: 20%;
+    min-width: 20%;
+    max-width: 20%;
   }
 
   .player-status {
     margin-left: 0.5rem;
-    display:none;
+    display: none;
   }
 
   .volume-bar-container {
-    display:none;
+    display: none;
   }
 
   .action-menu {
-  display:flex;
-  width:80%;
-  justify-content: flex-end;
-  align-items: center;
-  color:#fff;
-}
+    display: flex;
+    width: 80%;
+    justify-content: flex-end;
+    align-items: center;
+    color: #fff;
+  }
 
-.action-menu a {
-  min-width:33%;
-  width:33%;
-  max-width:33%;
-  color: #fff;
-  text-decoration: none;
-  text-align:center;
-  -webkit-tap-highlight-color: transparent; /* Removes blue highlight on iOS/Android */
-  outline: none; /* Removes focus outline */
-}
+  .action-menu a {
+    min-width: 33%;
+    width: 33%;
+    max-width: 33%;
+    color: #fff;
+    text-decoration: none;
+    text-align: center;
+    -webkit-tap-highlight-color: transparent;
+    /* Removes blue highlight on iOS/Android */
+    outline: none;
+    /* Removes focus outline */
+  }
 
-.action-menu .label {
-  font-size: 0.7rem;
-  text-transform: uppercase;
-}
+  .action-menu .label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+  }
 
 }
 </style>
