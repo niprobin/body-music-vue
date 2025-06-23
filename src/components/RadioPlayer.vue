@@ -177,15 +177,16 @@ onUnmounted(() => {
 
 <style scoped>
 .radio-player-bar {
-  width: 100%;
-  background: rgba(14, 13, 13, 0.9);
+  width: 90%;
+  background: rgba(14, 13, 13, 0.98);
+  box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px, rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px, rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;
   backdrop-filter: blur(2px);
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
+  border-radius:50px;
+  border:1px solid #46464642;
   color: #fff;
   position: fixed;
-  left: 0;
-  bottom: 0;
+  left: 5%;
+  bottom: 2.5%;
   z-index: 1000;
   display: flex;
   justify-content: center;
@@ -193,30 +194,35 @@ onUnmounted(() => {
   height: 86px;
   max-height: 86px;
   min-height: 86px;
+  padding: 1.5rem;
 }
 
 .radio-player-controls {
-  width: 70vw;
-  max-width: 1200px;
-  min-width: 240px;
+  width: 100%;
   display: flex;
   align-items: center;
-  gap: 1.5rem;
-  padding: 1rem 0;
+  gap: 1.2rem;
 }
 
 .player-btn {
-  border-radius: 50%;
-  border: 1px solid #fff;
   color: #0c0c0c;
-  background: #fff;
+  background:#fff;
+  border:1px solid #fff;
+  border-radius:50px;
   width: 50px;
   height:50px;
+  font-size:1rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s, transform 0.2s;
+  transition: all 0.1s ease-in;
   cursor: pointer;
+}
+
+.player-btn:active {
+  transform:scale(0.95);
+  box-shadow: inset 6px 6px 29px 3px rgba(0,0,0,0.1);
+  
 }
 
 .player-status {
@@ -265,19 +271,29 @@ onUnmounted(() => {
   display:none;
 }
 
+@media (min-width: 801px) {
+
+  .radio-player-bar {
+    width:50%;
+    max-width:50%;
+    min-width:50%;
+    left:25%;
+  }
+
+}
+
 
 @media (max-width: 800px) {
 
   .radio-player-bar{
-    padding:0% 2%;
+    padding: 1.5rem;
     justify-content: space-between;
   }
 
   .radio-player-controls {
-    width: 25%;
-    min-width:25%;
-    max-width:25%;
-    justify-content: center;
+    width:20%;
+    min-width:20%;
+    max-width:20%;
   }
 
   .player-status {
@@ -291,20 +307,23 @@ onUnmounted(() => {
 
   .action-menu {
   display:flex;
-  width:75%;
-  justify-content: space-evenly;
+  width:80%;
+  justify-content: flex-end;
   align-items: center;
   color:#fff;
 }
 
 .action-menu a {
+  min-width:33%;
+  width:33%;
+  max-width:33%;
   color: #fff;
   text-decoration: none;
   text-align:center;
 }
 
 .action-menu .label {
-  font-size: clamp(0.7rem, 2vw, 1rem);
+  font-size: 0.7rem;
   text-transform: uppercase;
 }
 
