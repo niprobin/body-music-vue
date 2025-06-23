@@ -1,6 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Fustat:wght@200..800&family=Matangi:wght@300..900&display=swap');
 
 :root {
+  --header-height: 86px;
+  --player-height: 86px;
+
   font-family: 'Fustat', Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 300;
@@ -15,23 +18,21 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 body,
 html,
 #app {
   font-family: 'Fustat', Helvetica, Arial, sans-serif !important;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-
-a:hover {
-  color: #535bf2;
-}
-
-p {
+p, h3 {
   margin: 0;
   padding: 0;
 }
@@ -65,7 +66,7 @@ h1, h2 {
   text-align: left;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 800px) {
   h1, h2 {
     font-size: 1.3em;
     padding-bottom: 12px;

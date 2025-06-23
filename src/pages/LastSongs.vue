@@ -79,7 +79,7 @@ onMounted(() => {
   max-width: 1200px;
   min-width: 240px;
   margin: 0 auto;
-  padding-bottom: 100px;
+   padding: 100px 0px;
 }
 
 .history-container {

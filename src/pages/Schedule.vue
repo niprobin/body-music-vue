@@ -23,7 +23,7 @@ const currentTime = ref(0)
 const scheduleList = ref(null)
 
 function getCurrentDay() {
-  return new Date().toLocaleString('en-US', { weekday: 'long' })
+  return new Date().toLocaleString('fr-FR', { weekday: 'long' })
 }
 
 function getCurrentTime() {
@@ -67,54 +67,54 @@ onMounted(() => {
   max-width: 1200px;
   min-width: 240px;
   margin: 0 auto;
-  padding-bottom: 100px;
+  padding: 100px 0px;
 }
 
 .schedule-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   width: 100%;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  text-transform: uppercase;
-  padding: 5px;
-  justify-items: center;
-  /* Center grid items horizontally */
 }
 
 .schedule-day {
-  /* Remove width: 95%; */
-  color: #fff;
-  padding: 10px;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  background-color: rgba(255, 255, 255, 0.15);
-  border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  align-items: center;
+  justify-content: center;
   gap: 5px;
-  width: 100%;
-  /* Make it fill the grid cell */
-  box-sizing: border-box;
+  padding: 15px;
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  text-align: left;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.schedule-day h3 {
+  width:100%;
 }
 
 .schedule-item {
   color: #fff;
-  padding: 5px;
+  padding: 10px;
   background: #cccccc97;
-  border-left: 5px solid #ccc;
-  border-radius: 4px;
-  margin: 5px 0;
+  border-radius: 0.5rem;
+  width:100%;
 }
 
 .current-show {
-  border-left: 5px solid #f16896;
   background: #ffedf3;
   font-weight: bold;
   color: #333;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 800px) {
 
   .schedule {
-    width: 95%;
     padding: 0px 0px 86px 0px;
     margin: 0 auto;
   }
@@ -125,7 +125,7 @@ onMounted(() => {
   }
 
   .schedule-day {
-    padding: 8px;
+    padding: 15px;
   }
 
   h1 {

@@ -17,6 +17,11 @@
           aria-label="Volume" />
       </div>
     </div>
+    <div class="action-menu">
+      <router-link to="/"><font-awesome-icon :icon="['fas', 'house']" /></router-link>
+      <router-link to="/schedule"><font-awesome-icon :icon="['fas', 'calendar']" /></router-link>
+      <router-link to="/last-songs"><font-awesome-icon :icon="['fas', 'music']" /></router-link>
+    </div>
   </div>
 </template>
 
@@ -255,10 +260,14 @@ onUnmounted(() => {
   pointer-events: none;
 }
 
+.action-menu {
+  display:none;
+}
 
-@media (max-width: 900px) {
+
+@media (max-width: 800px) {
   .radio-player-controls {
-    width: 100%;
+    width: 60%;
     padding: 5%;
     gap: 1rem;
   }
@@ -269,8 +278,22 @@ onUnmounted(() => {
   }
 
   .volume-bar-container {
-    width: 140px;
-    height: 14px;
+    display:none;
   }
+
+  .action-menu {
+  display:flex;
+  width:40%;
+  justify-content: space-evenly;
+  align-items: center;
+  font-size: 1.8rem;
+  color:#fff;
+}
+
+.action-menu a {
+  color: #fff;
+  text-decoration: none;
+}
+
 }
 </style>

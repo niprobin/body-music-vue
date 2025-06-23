@@ -1,6 +1,6 @@
 <!-- filepath: src/components/Header.vue -->
 <template>
-  <header class="header">
+  <header class="header" :class="{ scrolled }">
     <div class="logo">
       <!-- Replace with your logo image or SVG -->
       <router-link to="/">
@@ -16,7 +16,21 @@
 </template>
 
 <script setup>
-// No script logic needed for now
+  import { ref, onMounted, onUnmounted } from 'vue'
+
+  const scrolled = ref(false)
+
+  function onScroll() {
+    scrolled.value = window.scrollY > window.innerHeight * 0.25
+  }
+
+  onMounted(() => {
+    window.addEventListener('scroll', onScroll)
+  })
+
+  onUnmounted(() => {
+    window.removeEventListener('scroll', onScroll)
+})
 </script>
 
 <style scoped>
@@ -24,8 +38,16 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 2%;
+  height: var(--header-height);
+  padding:0 25px;
   color: #fff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 2000;
+  transition: border-bottom 0.2s;
+  /* border-bottom: 1px solid rgba(33, 54, 57, 0.756); */
 }
 
 .logo img {
@@ -33,6 +55,7 @@
 }
 
 .nav {
+  max-width:100%;
   display: flex;
   gap: 1.5rem;
 }
@@ -47,18 +70,17 @@
   border-bottom: 2px solid #fff;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 800px) {
   .header {
+    position:relative;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 4vw 2vw;
     gap: 1rem;
   }
 
   .nav {
-    gap: 1rem;
-    flex-wrap: wrap;
+    display:none;
   }
 }
 </style>
