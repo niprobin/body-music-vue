@@ -166,6 +166,7 @@ h3 {
   padding:15px 0px;
   box-shadow: 0 4px 24px rgba(0,0,0,0.15);
   border-radius:0.25rem;
+  text-align:center;
 }
 
 @media (max-width: 800px) {
