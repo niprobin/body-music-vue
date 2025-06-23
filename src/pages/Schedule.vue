@@ -115,11 +115,13 @@ onMounted(() => {
 @media (max-width: 800px) {
 
   .schedule {
+    width:100%;
     padding: 0px 0px 86px 0px;
     margin: 0 auto;
   }
 
   .schedule-list {
+    width: 100%;
     grid-template-columns: 1fr;
     gap: 10px;
   }

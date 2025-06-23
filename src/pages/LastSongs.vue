@@ -136,14 +136,14 @@ img.song-artwork {
 }
 
 /* Responsive Design */
-@media (max-width: 600px) {
+@media (max-width: 800px) {
   h1 {
     width: 100%;
     text-align: center;
   }
 
   .last-songs {
-    width: 95%;
+    width: 100%;
     padding: 0px 0px 92px 0px;
     margin: 0 auto;
   }
