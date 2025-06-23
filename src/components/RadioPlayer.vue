@@ -320,6 +320,8 @@ onUnmounted(() => {
   color: #fff;
   text-decoration: none;
   text-align:center;
+  -webkit-tap-highlight-color: transparent; /* Removes blue highlight on iOS/Android */
+  outline: none; /* Removes focus outline */
 }
 
 .action-menu .label {
