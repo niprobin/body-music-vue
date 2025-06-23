@@ -4,6 +4,7 @@
   font-family: 'Fustat', Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 300;
+  font-size: 1.1em;
 
   color-scheme: light dark;
   color: #fff;
@@ -51,10 +52,6 @@ h1, h2 {
   letter-spacing: 1px;
   font-family: 'Matangi', Arial, sans-serif;
   line-height: 1.1;
-}
-
-p {
-  font-size: 1.1em;
 }
 
 .card {
