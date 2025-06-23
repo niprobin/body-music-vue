@@ -123,7 +123,6 @@ onMounted(() => {
   .schedule-list {
     grid-template-columns: 1fr;
     gap: 10px;
-    font-size: 11px;
   }
 
   .schedule-day {

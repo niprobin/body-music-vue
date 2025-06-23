@@ -15,7 +15,7 @@
   <section v-if="albumOfTheMoment" class="album-moment">
     <div class="album-moment-content">
       <div class="album-info">
-        <h2>L'Album du moment</h2>
+        <h2>L'album du moment</h2>
         <h3>{{ albumOfTheMoment.album }}</h3>
         <p><strong>Artiste:</strong> {{ albumOfTheMoment.artist }}</p>
         <p><strong>Genre:</strong> {{ albumOfTheMoment.genre }}</p>
@@ -31,7 +31,7 @@
   </section>
 </template>
 
-<script setup>
+<script setup> 
 import { ref, onMounted } from 'vue'
 
 const albumOfTheMoment = ref(null)
@@ -88,10 +88,6 @@ onMounted(async () => {
   height:100%;
   padding-bottom:100px;
   border-bottom:1px solid #fff;
-}
-
-p {
-  font-size: 1.1em;
 }
 
 .home-logo {
