@@ -17,7 +17,7 @@
       <div class="album-moment-content">
         <div class="album-info">
           <h2>L'album du moment</h2>
-          <p>Supporte les artistes que tu aimes en achetant leurs albums et en allant les voir en concert ! Nous n'avons aucune affiliation avec les liens Bandcamp que tu trouveras sur le site. Le plaisir de partager avant tout.</p>
+          <p>Supporte les artistes que tu aimes en achetant leurs albums et en allant les voir en concert ! Nous n'avons aucune affiliation avec les liens Bandcamp que tu trouveras sur le site. Le plaisir de partager avant tout. <a class="ext-link" href="https://body-music.netlify.app/albums">Tous nos albums préférés ici.&nbsp;<font-awesome-icon :icon="['fas', 'link']" /></a></p>
           <h3>{{ albumOfTheMoment.album }}</h3>
           <p><strong>Artiste:</strong> {{ albumOfTheMoment.artist }}</p>
           <p><strong>Genre:</strong> {{ albumOfTheMoment.genre }}</p>
@@ -167,6 +167,12 @@ h3 {
   box-shadow: 0 4px 24px rgba(0,0,0,0.15);
   border-radius:0.25rem;
   text-align:center;
+}
+
+.ext-link {
+  color:#0c0c0c;
+  background-color:#fff;
+  padding:2px 4px;
 }
 
 @media (max-width: 800px) {
