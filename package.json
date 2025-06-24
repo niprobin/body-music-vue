@@ -12,7 +12,10 @@
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/vue-fontawesome": "^3.0.8",
+    "express": "^5.1.0",
     "howler": "^2.2.4",
+    "lowdb": "^7.0.1",
+    "socket.io": "^4.8.1",
     "vue": "^3.5.13",
     "vue-router": "^4.5.1"
   },
