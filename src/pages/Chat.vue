@@ -12,6 +12,10 @@
 
 <style scoped>
 
+h3 {
+  display:none;
+}
+
 .chat-page {
   width: 70vw;
   max-width: 1200px;
