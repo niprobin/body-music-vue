@@ -8,6 +8,8 @@
   "theme_color": "#1C1B22",
   "description": "Body Music Radio - La radio pour tout le monde",
   "orientation": "portrait",
+  "dir": "ltr",
+  "prefer_related_applications": false,
   "launch_handler": {
     "client_mode": "auto"
   },
@@ -37,5 +39,10 @@
       "type": "image/png",
       "label": "Last songs played"
     }
+  ],
+  "categories": [
+    "music",
+    "audio",
+    "entertainment"
   ]
 }
