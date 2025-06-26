@@ -89,6 +89,10 @@ function initHowler() {
             howl = null;
             isPlaying.value = false;
             isLoading.value = false;
+            // Optionally clear Media Session metadata if you want to remove the notification immediately:
+            if ('mediaSession' in navigator) {
+              navigator.mediaSession.metadata = null;
+            }
           }
         });
       }
@@ -243,7 +247,7 @@ onUnmounted(() => {
   justify-content: center;
   width: 100%;
   height: 100%;
-  
+
 }
 
 /* The wave effect */
@@ -259,27 +263,44 @@ onUnmounted(() => {
   opacity: 0.4;
   pointer-events: none;
   z-index: 1;
-  display:none;
+  display: none;
 }
 
 .breathe-animate .player-btn::before {
-  display:block;
+  display: block;
   animation: wave-move-btn 4s linear infinite;
 }
 
 @keyframes wave-move-btn {
-  0% { background-position-x: 0; }
-  100% { background-position-x: -160px; }
+  0% {
+    background-position-x: 0;
+  }
+
+  100% {
+    background-position-x: -160px;
+  }
 }
 
 @keyframes wave-move-btn-reverse {
-  0% { background-position-x: -160px; }
-  100% { background-position-x: 0; }
+  0% {
+    background-position-x: -160px;
+  }
+
+  100% {
+    background-position-x: 0;
+  }
 }
 
 @keyframes wave-swell-btn {
-  0%, 100% { background-position-y: 0; }
-  50% { background-position-y: 10px; }
+
+  0%,
+  100% {
+    background-position-y: 0;
+  }
+
+  50% {
+    background-position-y: 10px;
+  }
 }
 
 

@@ -1,16 +1,41 @@
 {
   "name": "Body Music Radio",
   "short_name": "BodyMusic",
+  "id": "/",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#1C1B22",
   "theme_color": "#1C1B22",
   "description": "Body Music Radio - La radio pour tout le monde",
+  "orientation": "portrait",
+  "launch_handler": {
+    "client_mode": "auto"
+  },
   "icons": [
     {
       "src": "/browser_icon.png",
       "sizes": "512x512",
       "type": "image/png"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot1.png",
+      "sizes": "538x1145",
+      "type": "image/png",
+      "label": "Home screen"
+    },
+    {
+      "src": "/screenshot2.png",
+      "sizes": "538x1145",
+      "type": "image/png",
+      "label": "Schedule"
+    },
+    {
+      "src": "/screenshot3.png",
+      "sizes": "538x1145",
+      "type": "image/png",
+      "label": "Last songs played"
     }
   ]
 }
