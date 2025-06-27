@@ -189,11 +189,10 @@ onUnmounted(() => {
 <style scoped>
 .radio-player-bar {
   width: 90%;
-  background: rgba(14, 13, 13, 0.98);
-  box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px, rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px, rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;
+  background: #0c0c0c;
+  box-shadow: var(--box-shadow);
   backdrop-filter: blur(2px);
   border-radius: 50px;
-  border: 1px solid #46464642;
   color: #fff;
   position: fixed;
   left: 5%;
@@ -226,7 +225,7 @@ onUnmounted(() => {
   position: relative;
   color: #0c0c0c;
   background: #fff;
-  border: none;
+  border:none;
   border-radius: 50%;
   width: 50px;
   height: 50px;
@@ -251,57 +250,7 @@ onUnmounted(() => {
 }
 
 /* The wave effect */
-.player-btn::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background: url('/wavey-play-bg.svg') repeat-x;
-  background-size: 160px 100%;
-  opacity: 0.4;
-  pointer-events: none;
-  z-index: 1;
-  display: none;
-}
 
-.breathe-animate .player-btn::before {
-  display: block;
-  animation: wave-move-btn 4s linear infinite;
-}
-
-@keyframes wave-move-btn {
-  0% {
-    background-position-x: 0;
-  }
-
-  100% {
-    background-position-x: -160px;
-  }
-}
-
-@keyframes wave-move-btn-reverse {
-  0% {
-    background-position-x: -160px;
-  }
-
-  100% {
-    background-position-x: 0;
-  }
-}
-
-@keyframes wave-swell-btn {
-
-  0%,
-  100% {
-    background-position-y: 0;
-  }
-
-  50% {
-    background-position-y: 10px;
-  }
-}
 
 
 /* --------- End Sound wave effect ----*/

@@ -61,13 +61,13 @@
 }
 
 .nav a {
-  color: #fff;
+  color: var(--secondary-color);
   text-decoration: none;
   font-weight: 500;
 }
 
 .nav a.router-link-exact-active {
-  border-bottom: 2px solid #fff;
+  border-bottom: 2px solid var(--secondary-color);
 }
 
 @media (max-width: 800px) {

@@ -13,14 +13,17 @@
         </section>
       </div>
     </section>
+    <div class="svg-wave">
+      <svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"
+        style="display:block; width:100%; height:80px;">
+        <path fill="#d5c4b1"
+          d="M0,192 C120,160 280,200 400,160 C520,120 680,200 800,180 C920,160 1080,120 1200,160 C1320,200 1440,160 1440,160 L1440,320 L0,320 Z" />
+      </svg>
+    </div>
     <section v-if="albumOfTheMoment" class="album-moment">
       <div class="album-moment-content">
         <div class="album-info">
           <h2>L'album du moment</h2>
-          <p>Supporte les artistes que tu aimes en achetant leurs albums et en allant les voir en concert ! Nous n'avons
-            aucune affiliation avec les liens Bandcamp que tu trouveras sur le site. Le plaisir de partager avant tout.
-            <a class="ext-link" target="_blank" href="https://body-music.netlify.app/albums">Tous nos albums préférés
-              ici.&nbsp;<font-awesome-icon :icon="['fas', 'link']" /></a></p>
           <h3>{{ albumOfTheMoment.album }}</h3>
           <p><strong>Artiste:</strong> {{ albumOfTheMoment.artist }}</p>
           <p><strong>Genre:</strong> {{ albumOfTheMoment.genre }}</p>
@@ -28,12 +31,27 @@
             <a :href="albumOfTheMoment.spotify_url" target="_blank">Spotify</a>
             <a :href="albumOfTheMoment.buy_album" target="_blank">Acheter</a>
           </div>
+          <p>Supporte les artistes que tu aimes en achetant leurs albums et en allant les voir en concert ! Nous n'avons
+            aucune affiliation avec les liens Bandcamp que tu trouveras sur le site. Le plaisir de partager avant
+            tout.<br><br>
+            <a class="ext-link" target="_blank" href="https://body-music.netlify.app/albums">Tous nos albums préférés
+              ici.&nbsp;<font-awesome-icon :icon="['fas', 'link']" /></a>
+          </p>
+
         </div>
         <div class="album-artwork">
-          <a :href="albumOfTheMoment.spotify_url" target="_blank"><img :src="albumOfTheMoment.cover_art" :alt="albumOfTheMoment.album" /></a>
+          <a :href="albumOfTheMoment.spotify_url" target="_blank"><img :src="albumOfTheMoment.cover_art"
+              :alt="albumOfTheMoment.album" /></a>
         </div>
       </div>
     </section>
+    <div class="svg-wave reverse">
+      <svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"
+        style="display:block; width:100%; height:80px;">
+        <path fill="#d5c4b1"
+          d="M0,192 C120,160 280,200 400,160 C520,120 680,200 800,180 C920,160 1080,120 1200,160 C1320,200 1440,160 1440,160 L1440,320 L0,320 Z" />
+      </svg>
+    </div>
   </main>
 </template>
 
@@ -79,7 +97,6 @@ main {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  gap: 100px;
 }
 
 .home {
@@ -98,13 +115,11 @@ main {
   align-items: center;
   justify-content: space-between;
   gap: 10%;
-  padding-bottom: 100px;
   padding: 50px;
-  background-color: rgba(255, 255, 255, 0.15);
-  color: #fff;
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
   text-align: left;
   border-radius: 0.75rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .home-logo {
@@ -112,11 +127,29 @@ main {
   margin-bottom: 1rem;
 }
 
+/* SVG Wave */
+
+.svg-wave {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  background: #1a293d;
+  position: relative;
+  left: 0%;
+  right: 50%;
+}
+
+.reverse {
+  transform: scaleY(-1);
+}
+
 /* Album du moment CSS */
 .album-moment {
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  background: var(--secondary-color);
+  padding:2%;
 }
 
 .album-moment-content {
@@ -125,24 +158,19 @@ main {
   max-width: 1200px;
   min-width: 240px;
   padding: 50px;
-  background-color: rgba(255, 255, 255, 0.15);
-  color: #fff;
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
   text-align: left;
   border-radius: 0.75rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   font-weight: 300;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 10%;
 }
 
 .album-info {
   flex: 1;
-}
-
-h3 {
-  margin-top: 30px;
 }
 
 .album-artwork img {
@@ -152,7 +180,7 @@ h3 {
 }
 
 .album-links {
-  margin-top: 30px;
+  margin: 30px auto;
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -161,9 +189,9 @@ h3 {
 }
 
 .album-links a {
-  color: #0c0c0c;
+  color: #fff;
   text-decoration: none;
-  background-color: #fff;
+  background-color: var(--primary-color);
   width: 50%;
   padding: 15px 0px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
@@ -172,8 +200,8 @@ h3 {
 }
 
 .ext-link {
-  color: #0c0c0c;
-  background-color: #fff;
+  color: var(--primary-color);
+  background-color: var(--secondary-color);
   padding: 2px 4px;
 }
 
@@ -203,6 +231,7 @@ h3 {
 
   .album-artwork img {
     max-width: 60%;
+    margin-bottom:30px;
   }
 }
 </style>
