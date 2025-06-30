@@ -47,7 +47,10 @@
   width: 100%;
   z-index: 2000;
   transition: border-bottom 0.2s;
-  /* border-bottom: 1px solid rgba(33, 54, 57, 0.756); */
+  background: rgba(26, 41, 61, 0.9); /* Light glass effect */
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  box-shadow: 0 2px 16px 0 rgba(0,0,0,0.04);
 }
 
 .logo img {
