@@ -34,8 +34,8 @@
           <p>Supporte les artistes que tu aimes en achetant leurs albums et en allant les voir en concert ! Nous n'avons
             aucune affiliation avec les liens Bandcamp que tu trouveras sur le site. Le plaisir de partager avant
             tout.<br><br>
-            <a class="ext-link" target="_blank" href="https://body-music.netlify.app/albums">Tous nos albums préférés
-              ici.&nbsp;<font-awesome-icon :icon="['fas', 'link']" /></a>
+            <router-link to="/albums">Tous nos albums préférés
+              ici.&nbsp;<font-awesome-icon :icon="['fas', 'link']" /></router-link>
           </p>
 
         </div>
