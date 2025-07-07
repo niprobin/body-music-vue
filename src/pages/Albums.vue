@@ -64,19 +64,22 @@ onMounted(async () => {
 }
 
 .album-card {
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 0.75rem;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  text-align: left;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .album-info {
     width: 100%;
-    max-width: 180px;
 }
 
 .album-cover-wrapper {
@@ -88,38 +91,43 @@ onMounted(async () => {
 
 .album-rating-badge {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  background: gold;
+  top: 4px;
+  right: 4px;
+  background:linear-gradient(to right, #BF953F, #FCF6BA);
   color: #222;
-  border-radius: 50%;
-  width: 2.2em;
-  height: 2.2em;
+  border-radius: 0.33rem;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  font-size: 1.1em;
+  font-size: 12px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-  border: 2px solid #fff;
   z-index: 2;
 }
 
 .album-cover {
     width: 100%;
-    max-width: 180px;
-    border-radius: 8px;
-    margin-bottom: 1rem;
+    border-radius: 0.5rem;
     object-fit: cover;
 }
 
-@media (max-width: 600px) {
-    .albums-page {
-        padding: 80px 4px 16px 4px;
-    }
+@media (max-width: 800px) {
 
     .albums-grid {
-        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        width:100%;
     }
+    .album-card {
+        flex-direction: row;
+        justify-content: flex-start;
+        
+    }
+
+    .album-cover-wrapper {
+        width:250px;
+    }
+
 }
 </style>
