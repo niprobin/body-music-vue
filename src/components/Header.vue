@@ -11,6 +11,7 @@
       <router-link to="/">Accueil</router-link>
       <router-link to="/schedule">Programmation</router-link>
       <router-link to="/last-songs">Trouver un son</router-link>
+      <router-link to="/albums">Nos albums</router-link>
     </nav>
   </header>
 </template>
