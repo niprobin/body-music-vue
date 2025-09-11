@@ -9,12 +9,14 @@
       </router-view>
     </main>
     <RadioPlayer />
+    <Footer />
   </div>
 </template>
 
 <script setup>
 import Header from './components/Header.vue'
 import RadioPlayer from './components/RadioPlayer.vue'
+import Footer from './components/SiteFooter.vue'
 </script>
 
 <style>

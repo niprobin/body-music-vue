@@ -7,7 +7,7 @@
           <h1>Bienvenue sur Body Music Radio</h1>
           <p>
             Selecta réalisé par nos soins pour te faire danser &amp; chiller toute la journée&nbsp;! Tu aimes une
-            track&nbsp;? Tu peux directement checker ce qui est entrain de jouer. Tu peux Ã©galement regarder notre
+            track&nbsp;? Tu peux directement checker ce qui est entrain de jouer.<br><br>Tu peux également regarder notre
             planning pour savoir à quoi t'attendre sur la radio.
           </p>
         </section>
@@ -36,19 +36,10 @@
         </div>
       </div>
     </section>
-    <div class="svg-wave reverse">
-      <svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"
-        style="display:block; width:100%; height:80px;">
-        <path fill="#d5c4b1"
-          d="M0,192 C120,160 280,200 400,160 C520,120 680,200 800,180 C920,160 1080,120 1200,160 C1320,200 1440,160 1440,160 L1440,320 L0,320 Z" />
-      </svg>
-    </div>
   </main>
-  <Footer />
 </template>
 
 <script setup>
-import Footer from '../components/SiteFooter.vue'
 import { ref, onMounted, computed } from 'vue'
 
 const albumOfTheMoment = ref(null)
@@ -172,7 +163,6 @@ onMounted(async () => {
 
 <style scoped>
 main {
-  padding-top: 0px;
   display: flex;
   justify-content: center;
   align-items: center;

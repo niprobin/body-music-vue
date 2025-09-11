@@ -205,6 +205,7 @@ onUnmounted(() => {
   max-height: 86px;
   min-height: 86px;
   padding: 1.5rem;
+  border:1px solid var(--primary-color);
 }
 
 .radio-player-controls {
