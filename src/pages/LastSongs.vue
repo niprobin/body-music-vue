@@ -56,7 +56,7 @@ const filteredHistory = computed(() => {
 
 async function fetchSongs(force = false) {
   try {
-    const res = await fetch("https://radio.niprobin.com/api/nowplaying/1?cb=" + Date.now())
+    const res = await fetch("https://azuracast.niprobin.com/api/nowplaying/body_music_radio?cb=" + Date.now())
     const data = await res.json()
     nowPlaying.value = data.now_playing
     history.value = data.song_history.slice(0, 10)

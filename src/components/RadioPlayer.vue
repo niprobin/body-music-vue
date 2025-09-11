@@ -36,7 +36,7 @@
 import { ref, computed, onUnmounted } from 'vue'
 import { Howl } from 'howler'
 
-const streamUrl = 'https://radio.niprobin.com/listen/body_music_radio/body-radio-256'
+const streamUrl = 'https://azuracast.niprobin.com/listen/body_music_radio/public.mp3'
 const isPlaying = ref(false)
 const isLoading = ref(false)
 const isError = ref(false)
