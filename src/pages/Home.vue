@@ -6,9 +6,9 @@
         <section>
           <h1>Bienvenue sur Body Music Radio</h1>
           <p>
-            Selecta rÃ©alisÃ©e par nos soins pour te faire danser &amp; chiller toute la journÃ©e&nbsp;! Tu aimes une
+            Selecta réalisé par nos soins pour te faire danser &amp; chiller toute la journée&nbsp;! Tu aimes une
             track&nbsp;? Tu peux directement checker ce qui est entrain de jouer. Tu peux Ã©galement regarder notre
-            planning pour savoir Ã  quoi t'attendre sur la radio.
+            planning pour savoir à quoi t'attendre sur la radio.
           </p>
         </section>
       </div>
@@ -172,7 +172,7 @@ onMounted(async () => {
 
 <style scoped>
 main {
-  padding-top: 150px;
+  padding-top: 0px;
   display: flex;
   justify-content: center;
   align-items: center;
