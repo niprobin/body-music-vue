@@ -29,8 +29,6 @@ import RadioPlayer from './components/RadioPlayer.vue'
 
 .main-content {
   flex: 1 0 auto;
-  padding-bottom: 70px;
-  /* Add bottom padding to prevent content from being hidden behind the player */
 }
 
 .fade-enter-active,

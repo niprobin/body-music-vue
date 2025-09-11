@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <main>
     <section class="home">
       <div class="home-content">
@@ -6,9 +6,9 @@
         <section>
           <h1>Bienvenue sur Body Music Radio</h1>
           <p>
-            Selecta réalisée par nos soins pour te faire danser &amp; chiller toute la journée&nbsp;! Tu aimes une
-            track&nbsp;? Tu peux directement checker ce qui est entrain de jouer. Tu peux également regarder notre
-            planning pour savoir à quoi t'attendre sur la radio.
+            Selecta rÃ©alisÃ©e par nos soins pour te faire danser &amp; chiller toute la journÃ©e&nbsp;! Tu aimes une
+            track&nbsp;? Tu peux directement checker ce qui est entrain de jouer. Tu peux Ã©galement regarder notre
+            planning pour savoir Ã  quoi t'attendre sur la radio.
           </p>
         </section>
       </div>
@@ -44,9 +44,11 @@
       </svg>
     </div>
   </main>
+  <Footer />
 </template>
 
 <script setup>
+import Footer from '../components/SiteFooter.vue'
 import { ref, onMounted, computed } from 'vue'
 
 const albumOfTheMoment = ref(null)
@@ -154,7 +156,7 @@ onMounted(async () => {
         albumOfTheMoment.value = parsed
         useCache = true
       }
-    } catch {}
+    } catch { }
   }
 
   if (!useCache) {
@@ -170,7 +172,7 @@ onMounted(async () => {
 
 <style scoped>
 main {
-  padding: 150px 0px;
+  padding-top: 150px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -227,9 +229,9 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction:column;
+  flex-direction: column;
   background: var(--secondary-color);
-  padding:2%;
+  padding: 2%;
 }
 
 .album-moment-content {
@@ -270,10 +272,6 @@ main {
 
 @media (max-width: 800px) {
 
-  main {
-    padding: 0px 0px 40px 0px;
-  }
-
   .home-content,
   .album-moment-content {
     flex-direction: column;
@@ -295,7 +293,7 @@ main {
 
   .album-artwork img {
     max-width: 60%;
-    margin-bottom:30px;
+    margin-bottom: 30px;
   }
 
   .overlay-spotify-btn {
@@ -306,3 +304,13 @@ main {
   }
 }
 </style>
+
+
+
+
+
+
+
+
+
+
