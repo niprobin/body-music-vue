@@ -1,90 +1,99 @@
-<!-- filepath: src/components/Header.vue -->
 <template>
-  <header class="header" :class="{ scrolled }">
-    <div class="logo">
-      <!-- Replace with your logo image or SVG -->
-      <router-link to="/">
-        <img src="/body_music_letters_logo.png" alt="Logo" width="220" />
+  <header :class="['site-header', { 'site-header--scrolled': scrolled }]">
+    <div class="header-inner">
+      <router-link to="/" class="header-logo">
+        <img src="/body_music_letters_logo.png" alt="Body Music Radio" />
       </router-link>
+      <nav class="header-nav">
+        <router-link to="/">Accueil</router-link>
+        <router-link to="/schedule">Programmation</router-link>
+        <router-link to="/last-songs">Dernières tracks</router-link>
+        <router-link to="/albums">Nos albums</router-link>
+      </nav>
     </div>
-    <nav class="nav">
-      <router-link to="/">Accueil</router-link>
-      <router-link to="/schedule">Programmation</router-link>
-      <router-link to="/last-songs">Dernières tracks</router-link>
-      <router-link to="/albums">Nos albums</router-link>
-    </nav>
   </header>
 </template>
 
 <script setup>
-  import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 
-  const scrolled = ref(false)
+const scrolled = ref(false)
 
-  function onScroll() {
-    scrolled.value = window.scrollY > window.innerHeight * 0.25
-  }
+function onScroll() {
+  scrolled.value = window.scrollY > 10
+}
 
-  onMounted(() => {
-    window.addEventListener('scroll', onScroll)
-  })
+onMounted(() => {
+  window.addEventListener('scroll', onScroll)
+})
 
-  onUnmounted(() => {
-    window.removeEventListener('scroll', onScroll)
+onUnmounted(() => {
+  window.removeEventListener('scroll', onScroll)
 })
 </script>
 
 <style scoped>
-.header {
+.site-header {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  backdrop-filter: blur(12px);
+  background: rgba(15, 23, 42, 0.65);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.site-header--scrolled {
+  background: rgba(15, 23, 42, 0.9);
+}
+
+.header-inner {
+  width: 100%;
+  max-width: 100vw;
+  margin: 0 auto;
+  padding: 0.85rem clamp(0.75rem, 2.5vw, 1.5rem);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: var(--header-height);
-  padding:0 25px;
-  color: #fff;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 2000;
-  transition: border-bottom 0.2s;
-  background: rgba(26, 41, 61, 0.9); /* Light glass effect */
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  box-shadow: 0 2px 16px 0 rgba(0,0,0,0.04);
+  box-sizing: border-box;
 }
 
-.logo img {
-  width: 150px;
+.header-logo img {
+  height: 40px;
+  object-fit: contain;
 }
 
-.nav {
-  max-width:100%;
+.header-nav {
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
-.nav a {
-  color: var(--secondary-color);
+.header-nav a {
+  color: #f8fafc;
   text-decoration: none;
   font-weight: 500;
+  position: relative;
+  padding-bottom: 0.2rem;
 }
 
-.nav a.router-link-exact-active {
-  border-bottom: 2px solid var(--secondary-color);
+.header-nav a.router-link-active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: #f8fafc;
 }
 
-@media (max-width: 800px) {
-  .header {
-    position:relative;
+@media (max-width: 720px) {
+  .header-inner {
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
+    gap: 0.75rem;
   }
 
-  .nav {
-    display:none;
+  .header-nav {
+    display: none;
   }
 }
 </style>

@@ -1,0 +1,334 @@
+   1: <template>
+   2:   <div class="radio-player-bar section-card">
+   3:     <div class="player-stack">
+   4:       <div class="player-primary">
+   5:         <button class="player-btn" @click="togglePlay" :disabled="isLoading">
+   6:           <span class="btn-glow" />
+   7:           <span class="icon-wrapper">
+   8:             <font-awesome-icon :icon="isPlaying ? 'pause' : 'play'" />
+   9:           </span>
+  10:         </button>
+  11:         <div class="player-meta">
+  12:           <p class="player-title">Body Music Radio</p>
+  13:           <p class="player-status">{{ statusText }}</p>
+  14:         </div>
+  15:       </div>
+  16:       <div class="player-controls">
+  17:         <label class="volume-label" for="volume-range">Volume</label>
+  18:         <input id="volume-range" type="range" min="0" max="1" step="0.01" v-model="volume"
+  19:           @input="onVolumeInput" />
+  20:       </div>
+  21:     </div>
+  22:     <div class="action-menu">
+  23:       <button class="action-menu__btn" type="button" @click="togglePlay">
+  24:         <font-awesome-icon :icon="isPlaying ? 'pause' : 'play'" />
+  25:       </button>
+  26:       <router-link to="/" class="action-menu__btn">
+  27:         <font-awesome-icon :icon="['fas', 'house']" />
+  28:         <span>Accueil</span>
+  29:       </router-link>
+  30:       <router-link to="/schedule" class="action-menu__btn">
+  31:         <font-awesome-icon :icon="['fas', 'calendar']" />
+  32:         <span>Prog</span>
+  33:       </router-link>
+  34:       <router-link to="/last-songs" class="action-menu__btn">
+  35:         <font-awesome-icon :icon="['fas', 'music']" />
+  36:         <span>Historique</span>
+  37:       </router-link>
+  38:     </div>
+  39:   </div>
+  40: </template>
+  41: 
+  42: <script setup>
+  43: import { ref, computed, onUnmounted } from 'vue'
+  44: import { Howl } from 'howler'
+  45: 
+  46: const streamUrl = 'https://azuracast.niprobin.com/listen/body_music_radio/public.mp3'
+  47: const isPlaying = ref(false)
+  48: const isLoading = ref(false)
+  49: const isError = ref(false)
+  50: const volume = ref(0.85)
+  51: let howl
+  52: 
+  53: const statusText = computed(() => {
+  54:   if (isError.value) return 'Erreur, réessayez'
+  55:   if (isLoading.value) return 'Connexion au stream...'
+  56:   if (isPlaying.value) return 'Bonne écoute !'
+  57:   return 'Lancer la radio'
+  58: })
+  59: 
+  60: function initHowler() {
+  61:   isLoading.value = true
+  62:   isError.value = false
+  63:   howl = new Howl({
+  64:     src: [streamUrl],
+  65:     html5: true,
+  66:     volume: volume.value,
+  67:     format: ['mp3'],
+  68:     onplay: () => {
+  69:       isPlaying.value = true
+  70:       isLoading.value = false
+  71:       if ('mediaSession' in navigator) {
+  72:         navigator.mediaSession.metadata = new window.MediaMetadata({
+  73:           title: 'Body Music Radio',
+  74:           artist: 'Live',
+  75:           album: 'Body Music',
+  76:           artwork: [
+  77:             { src: '/browser_icon.png', sizes: '512x512', type: 'image/png' }
+  78:           ]
+  79:         })
+  80: 
+  81:         navigator.mediaSession.setActionHandler('play', () => {
+  82:           if (!isPlaying.value) {
+  83:             if (howl) {
+  84:               howl.unload()
+  85:               howl = null
+  86:             }
+  87:             initHowler()
+  88:             howl.play()
+  89:           }
+  90:         })
+  91: 
+  92:         navigator.mediaSession.setActionHandler('pause', () => {
+  93:           if (isPlaying.value && howl) {
+  94:             howl.unload()
+  95:             howl = null
+  96:             isPlaying.value = false
+  97:             isLoading.value = false
+  98:             navigator.mediaSession.metadata = null
+  99:           }
+ 100:         })
+ 101:       }
+ 102:     },
+ 103:     onend: () => {
+ 104:       isPlaying.value = false
+ 105:     },
+ 106:     onloaderror: () => handleStreamError(),
+ 107:     onplayerror: () => handleStreamError()
+ 108:   })
+ 109: }
+ 110: 
+ 111: function handleStreamError() {
+ 112:   isError.value = true
+ 113:   isLoading.value = false
+ 114:   isPlaying.value = false
+ 115: }
+ 116: 
+ 117: function togglePlay() {
+ 118:   if (isLoading.value) return
+ 119:   if (!isPlaying.value) {
+ 120:     if (howl) {
+ 121:       howl.unload()
+ 122:       howl = null
+ 123:     }
+ 124:     initHowler()
+ 125:     howl.play()
+ 126:   } else if (howl) {
+ 127:     howl.unload()
+ 128:     howl = null
+ 129:     isPlaying.value = false
+ 130:   }
+ 131: }
+ 132: 
+ 133: function onVolumeInput(event) {
+ 134:   const newVolume = parseFloat(event.target.value)
+ 135:   volume.value = newVolume
+ 136:   if (howl) {
+ 137:     howl.volume(newVolume)
+ 138:   }
+ 139: }
+ 140: 
+ 141: onUnmounted(() => {
+ 142:   if (howl) {
+ 143:     howl.unload()
+ 144:     howl = null
+ 145:   }
+ 146: })
+ 147: </script>
+ 148: 
+ 149: <style scoped>
+ 150: .radio-player-bar {
+ 151:   position: fixed;
+ 152:   left: 50%;
+ 153:   bottom: 24px;
+ 154:   transform: translateX(-50%);
+ 155:   width: min(960px, calc(100% - 32px));
+ 156:   padding: 1.25rem 1.5rem;
+ 157:   background: #0f0f12;
+ 158:   border: 1px solid rgba(148, 163, 184, 0.2);
+ 159:   border-radius: 18px;
+ 160:   box-shadow: 0 8px 20px rgba(2, 6, 23, 0.25);
+ 161:   display: flex;
+ 162:   flex-direction: column;
+ 163:   gap: 1rem;
+ 164:   z-index: 3000;
+ 165: }
+ 166: 
+ 167: .player-stack {
+ 168:   display: flex;
+ 169:   align-items: center;
+ 170:   justify-content: space-between;
+ 171:   gap: 1.5rem;
+ 172: }
+ 173: 
+ 174: .player-primary {
+ 175:   display: flex;
+ 176:   align-items: center;
+ 177:   gap: 1rem;
+ 178:   flex: 1;
+ 179: }
+ 180: 
+ 181: .player-btn {
+ 182:   width: 56px;
+ 183:   height: 56px;
+ 184:   border-radius: 14px;
+ 185:   border: 1px solid rgba(148, 163, 184, 0.4);
+ 186:   background: #1e293b;
+ 187:   color: #f8fafc;
+ 188:   display: flex;
+ 189:   align-items: center;
+ 190:   justify-content: center;
+ 191:   font-size: 1.25rem;
+ 192:   cursor: pointer;
+ 193:   transition: transform 0.2s ease, box-shadow 0.2s ease;
+ 194: }
+ 195: 
+ 196: .player-btn:disabled {
+ 197:   opacity: 0.6;
+ 198:   cursor: not-allowed;
+ 199: }
+ 200: 
+ 201: .player-btn:not(:disabled):hover {
+ 202:   transform: translateY(-2px);
+ 203:   box-shadow: 0 10px 25px rgba(15, 23, 42, 0.55);
+ 204: }
+ 205: 
+ 206: .btn-glow {
+ 207:   display: none;
+ 208: }
+ 209: 
+ 210: .player-meta {
+ 211:   display: flex;
+ 212:   flex-direction: column;
+ 213:   gap: 0.2rem;
+ 214: }
+ 215: 
+ 216: .player-title {
+ 217:   margin: 0;
+ 218:   font-weight: 600;
+ 219: }
+ 220: 
+ 221: .player-status {
+ 222:   margin: 0;
+ 223:   color: #cbd5f5;
+ 224:   font-size: 0.9rem;
+ 225: }
+ 226: 
+ 227: .player-controls {
+ 228:   display: flex;
+ 229:   flex-direction: column;
+ 230:   gap: 0.35rem;
+ 231:   width: 180px;
+ 232: }
+ 233: 
+ 234: .volume-label {
+ 235:   font-size: 0.75rem;
+ 236:   text-transform: uppercase;
+ 237:   letter-spacing: 0.08em;
+ 238:   color: #94a3b8;
+ 239: }
+ 240: 
+ 241: .player-controls input[type="range"] {
+ 242:   width: 100%;
+ 243:   -webkit-appearance: none;
+ 244:   appearance: none;
+ 245:   height: 4px;
+ 246:   border-radius: 999px;
+ 247:   background: rgba(248, 250, 252, 0.25);
+ 248:   cursor: pointer;
+ 249: }
+ 250: 
+ 251: .player-controls input[type="range"]::-webkit-slider-thumb {
+ 252:   -webkit-appearance: none;
+ 253:   appearance: none;
+ 254:   width: 14px;
+ 255:   height: 14px;
+ 256:   border-radius: 50%;
+ 257:   background: #f8fafc;
+ 258:   border: 1px solid rgba(15, 23, 42, 0.3);
+ 259:   transition: transform 0.15s ease;
+ 260: }
+ 261: 
+ 262: .player-controls input[type="range"]::-webkit-slider-thumb:active {
+ 263:   transform: scale(1.1);
+ 264: }
+ 265: 
+ 266: .player-controls input[type="range"]::-moz-range-thumb {
+ 267:   width: 14px;
+ 268:   height: 14px;
+ 269:   border-radius: 50%;
+ 270:   background: #f8fafc;
+ 271:   border: 1px solid rgba(15, 23, 42, 0.3);
+ 272:   transition: transform 0.15s ease;
+ 273: }
+ 274: 
+ 275: .player-controls input[type="range"]::-moz-range-progress {
+ 276:   background: #f8fafc;
+ 277:   height: 4px;
+ 278: }
+ 279: 
+ 280: .player-controls input[type="range"]::-moz-range-track {
+ 281:   background: rgba(248, 250, 252, 0.25);
+ 282:   border-radius: 999px;
+ 283:   height: 4px;
+ 284: }
+ 285: 
+ 286: .action-menu {
+ 287:   display: flex;
+ 288:   gap: 0.5rem;
+ 289:   justify-content: space-between;
+ 290: }
+ 291: 
+ 292: .action-menu__btn {
+ 293:   flex: 1;
+ 294:   text-align: center;
+ 295:   color: #cbd5f5;
+ 296:   text-decoration: none;
+ 297:   font-size: 0.8rem;
+ 298:   padding: 0.6rem 0.5rem;
+ 299:   border-radius: 10px;
+ 300:   border: 1px solid transparent;
+ 301:   display: flex;
+ 302:   flex-direction: column;
+ 303:   gap: 0.2rem;
+ 304:   align-items: center;
+ 305: }
+ 306: 
+ 307: .action-menu__btn:hover {
+ 308:   border-color: rgba(148, 163, 184, 0.4);
+ 309:   color: #f8fafc;
+ 310: }
+ 311: 
+ 312: @media (max-width: 720px) {
+ 313:   .radio-player-bar {
+ 314:     padding: 1rem;
+ 315:     bottom: 16px;
+ 316:   }
+ 317: 
+ 318:   .player-stack,
+ 319:   .player-meta,
+ 320:   .player-controls {
+ 321:     display: none;
+ 322:   }
+ 323: 
+ 324:   .action-menu {
+ 325:     display: flex;
+ 326:   }
+ 327: } 
+ 328: 
+ 329: @media (min-width: 721px) {
+ 330:   .action-menu {
+ 331:     display: none;
+ 332:   }
+ 333: }
+ 334: </style>

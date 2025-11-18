@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="app-shell">
     <Header />
     <main class="main-content">
       <router-view v-slot="{ Component }">
@@ -20,31 +20,13 @@ import Footer from './components/SiteFooter.vue'
 </script>
 
 <style>
-#app {
-  width: 100%;
-  max-width: 100%;
-  height: 100%;
-  margin: 0 auto;
-  text-align: left;
-  box-sizing: border-box;
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .main-content {
   flex: 1 0 auto;
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-
-.fade-enter-to,
-.fade-leave-from {
-  opacity: 1;
 }
 </style>

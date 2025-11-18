@@ -1,91 +1,38 @@
-@import url('https://fonts.googleapis.com/css2?family=Fustat:wght@200..800&family=Matangi:wght@300..900&display=swap');
-
-@font-face {
-  font-family: 'Banta';
-  src: url('/banta-woff.woff') format('woff');
-  font-weight: normal;
-  font-style: normal;
-}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 
 :root {
-  --header-height: 86px;
-  --player-height: 86px;
-
-  font-family: 'Fustat', Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 300;
-  font-size: 16px;
-
-  --primary-color: #1a293d;
-  --secondary-color: #d5c4b1;
-  --background-color: #1a293d;
-  --player-primary-color:rgba(26, 41, 61, 0.95);
-  --player-secondary-color:#fff;
-  --box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-
-  color-scheme: light dark;
-  color: #fff;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  color: #f8fafc;
+  background-color: #0f172a;
 }
 
-*, *::before, *::after {
-  box-sizing: border-box;
-}
-
-body,
-html,
-#app {
-  font-family: 'Fustat', Helvetica, Arial, sans-serif;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-}
-
-p, h2, h3 {
-  margin: 0;
-  padding: 0;
+html {
+  font-size: 14px;
 }
 
 body {
-  background-color: var(--background-color);
   margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
-  /* Remove display: flex; and place-items: center; */
-
-}
-
-h1, h2 {
-  font-size: 2.3em;
-  font-weight: 400;
-  letter-spacing: 1px;
-  font-family: 'Banta', Trebuchet, sans-serif;
-  line-height: 1.1;
-}
-
-.card {
-  padding: 2em;
+  min-height: 100%;
+  background-color: #0f172a;
+  color: #f8fafc;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
 }
 
 #app {
-  width: 100%;
-  height: 100%;
-  margin: 0 auto;
-  text-align: left;
+  min-height: 100vh;
+  background-color: #0f172a;
+  color: inherit;
 }
 
-@media (max-width: 800px) {
-  h1, h2 {
-    font-size: 1.8em;
-    padding-bottom: 12px;
-  }
+h1 {
+  font-size: 2rem;
+}
 
-  #app {
-    padding: 0;
-  }
+h2 {
+  font-size: 1.6rem;
+}
+
+h3 {
+  font-size: 1.3rem;
 }

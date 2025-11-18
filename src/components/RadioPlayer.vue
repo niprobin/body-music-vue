@@ -1,33 +1,37 @@
 <template>
-  <div class="radio-player-bar">
-    <div class="radio-player-controls">
-      <div :class="['player-btn-wrapper', { 'breathe-animate': isPlaying }]">
+  <div class="radio-player-bar section-card">
+    <div class="player-stack">
+      <div class="player-primary">
         <button class="player-btn" @click="togglePlay" :disabled="isLoading">
+          <span class="btn-glow" />
           <span class="icon-wrapper">
             <font-awesome-icon :icon="isPlaying ? 'pause' : 'play'" />
           </span>
         </button>
-      </div>
-      <span class="player-status">
-        {{ statusText }}
-      </span>
-      <div class="volume-bar-container" @mousedown="startDrag" @touchstart.prevent="startDrag"
-        @click="setVolume($event)" ref="volumeBar">
-        <div class="volume-bar-bg">
-          <div class="volume-bar-fill" :style="{ width: (volume * 100) + '%' }"></div>
+        <div class="player-meta">
+          <p class="player-title">Body Music Radio</p>
+          <p class="player-status">{{ statusText }}</p>
         </div>
-        <!-- Hidden native range for accessibility only -->
-        <input type="range" min="0" max="1" step="0.01" v-model="volume" @input="onVolumeInput" class="visually-hidden"
-          aria-label="Volume" />
+      </div>
+      <div class="player-controls">
+        <label class="volume-label" for="volume-range">Volume</label>
+        <input id="volume-range" type="range" min="0" max="1" step="0.01" v-model="volume"
+          @input="onVolumeInput" />
       </div>
     </div>
     <div class="action-menu">
-      <router-link to="/"><font-awesome-icon :icon="['fas', 'house']" /><br><span
-          class="label">Accueil</span></router-link>
-      <router-link to="/schedule"><font-awesome-icon :icon="['fas', 'calendar']" /><br><span
-          class="label">Programme</span></router-link>
-      <router-link to="/last-songs"><font-awesome-icon :icon="['fas', 'music']" /><br><span
-          class="label">Historique</span></router-link>
+      <router-link to="/">
+        <font-awesome-icon :icon="['fas', 'house']" />
+        <span>Accueil</span>
+      </router-link>
+      <router-link to="/schedule">
+        <font-awesome-icon :icon="['fas', 'calendar']" />
+        <span>Programmation</span>
+      </router-link>
+      <router-link to="/last-songs">
+        <font-awesome-icon :icon="['fas', 'music']" />
+        <span>Historique</span>
+      </router-link>
     </div>
   </div>
 </template>
@@ -40,20 +44,19 @@ const streamUrl = 'https://azuracast.niprobin.com/listen/body_music_radio/public
 const isPlaying = ref(false)
 const isLoading = ref(false)
 const isError = ref(false)
-const volume = ref(0.9)
+const volume = ref(0.85)
 let howl
-const volumeBar = ref(null)
-let dragging = false
 
 const statusText = computed(() => {
-  if (isError.value) return 'Erreur, rechargez la page'
-  if (isLoading.value) return 'Chargement...'
+  if (isError.value) return 'Erreur, réessayez'
+  if (isLoading.value) return 'Connexion au stream...'
   if (isPlaying.value) return 'Bonne écoute !'
-  return 'écouter la radio'
+  return 'Lancer la radio'
 })
 
 function initHowler() {
   isLoading.value = true
+  isError.value = false
   howl = new Howl({
     src: [streamUrl],
     html5: true,
@@ -68,113 +71,68 @@ function initHowler() {
           artist: 'Live',
           album: 'Body Music',
           artwork: [
-            { src: '/browser_icon', sizes: '512x512', type: 'image/png' }
+            { src: '/browser_icon.png', sizes: '512x512', type: 'image/png' }
           ]
-        });
+        })
 
         navigator.mediaSession.setActionHandler('play', () => {
           if (!isPlaying.value) {
             if (howl) {
-              howl.unload();
-              howl = null;
+              howl.unload()
+              howl = null
             }
-            initHowler();
-            howl.play();
+            initHowler()
+            howl.play()
           }
-        });
+        })
 
         navigator.mediaSession.setActionHandler('pause', () => {
           if (isPlaying.value && howl) {
-            howl.unload();
-            howl = null;
-            isPlaying.value = false;
-            isLoading.value = false;
-            // Optionally clear Media Session metadata if you want to remove the notification immediately:
-            if ('mediaSession' in navigator) {
-              navigator.mediaSession.metadata = null;
-            }
+            howl.unload()
+            howl = null
+            isPlaying.value = false
+            isLoading.value = false
+            navigator.mediaSession.metadata = null
           }
-        });
+        })
       }
     },
     onend: () => {
       isPlaying.value = false
     },
-    onloaderror: () => {
-      isError.value = true
-      isLoading.value = false
-      isPlaying.value = false
-    },
-    onplayerror: () => {
-      isError.value = true
-      isLoading.value = false
-      isPlaying.value = false
-    }
+    onloaderror: () => handleStreamError(),
+    onplayerror: () => handleStreamError()
   })
 }
 
+function handleStreamError() {
+  isError.value = true
+  isLoading.value = false
+  isPlaying.value = false
+}
+
 function togglePlay() {
-  if (isError.value) return
+  if (isLoading.value) return
   if (!isPlaying.value) {
-    // Always create a new Howl instance for each play
     if (howl) {
       howl.unload()
       howl = null
     }
     initHowler()
     howl.play()
-  } else {
-    // Stop: unload the stream
-    if (howl) {
-      howl.unload()
-      howl = null
-    }
+  } else if (howl) {
+    howl.unload()
+    howl = null
     isPlaying.value = false
-    isLoading.value = false
   }
 }
 
-function setVolume(event) {
-  const bar = volumeBar.value
-  const rect = bar.getBoundingClientRect()
-  let x
-  if (event.touches && event.touches.length) {
-    x = event.touches[0].clientX - rect.left
-  } else {
-    x = event.clientX - rect.left
+function onVolumeInput(event) {
+  const newVolume = parseFloat(event.target.value)
+  volume.value = newVolume
+  if (howl) {
+    howl.volume(newVolume)
   }
-  let newVolume = x / rect.width
-  newVolume = Math.max(0, Math.min(1, newVolume))
-  volume.value = newVolume
-  if (howl) howl.volume(newVolume)
-}
-
-function onVolumeInput(e) {
-  const newVolume = parseFloat(e.target.value)
-  volume.value = newVolume
-  if (howl) howl.volume(newVolume)
-}
-
-function startDrag(event) {
-  dragging = true
-  setVolume(event)
-  window.addEventListener('mousemove', onDrag)
-  window.addEventListener('mouseup', stopDrag)
-  window.addEventListener('touchmove', onDrag)
-  window.addEventListener('touchend', stopDrag)
-}
-
-function onDrag(event) {
-  if (!dragging) return
-  setVolume(event)
-}
-
-function stopDrag() {
-  dragging = false
-  window.removeEventListener('mousemove', onDrag)
-  window.removeEventListener('mouseup', stopDrag)
-  window.removeEventListener('touchmove', onDrag)
-  window.removeEventListener('touchend', stopDrag)
 }
 
 onUnmounted(() => {
@@ -182,175 +140,175 @@ onUnmounted(() => {
     howl.unload()
     howl = null
   }
-  stopDrag()
 })
 </script>
 
 <style scoped>
 .radio-player-bar {
-  width: 90%;
-  background: #0c0c0c;
-  box-shadow: var(--box-shadow);
-  backdrop-filter: blur(2px);
-  border-radius: 50px;
-  color: #fff;
   position: fixed;
-  left: 5%;
-  bottom: 2.5%;
-  z-index: 1000;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  width: min(960px, calc(100% - 32px));
+  padding: 1.25rem 1.5rem;
+  background: #0c0c0c;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 2rem;
+  box-shadow: 0 25px 60px rgba(2, 6, 23, 0.6);
   display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 86px;
-  max-height: 86px;
-  min-height: 86px;
-  padding: 1.5rem;
-  border:1px solid var(--primary-color);
+  flex-direction: column;
+  gap: 1rem;
+  z-index: 3000;
 }
 
-.radio-player-controls {
-  width: 100%;
+.player-stack {
   display: flex;
   align-items: center;
-  gap: 1.2rem;
+  justify-content: space-between;
+  gap: 1.5rem;
 }
 
-.player-btn-wrapper {
-  position: relative;
+.player-primary {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 1rem;
+  flex: 1;
 }
 
 .player-btn {
-  position: relative;
+  width: 56px;
+  height: 56px;
+  border-radius: 56px;
+  border: 1px solid #fff;
+  background: #fff;
   color: #0c0c0c;
-  background: #fff;
-  border:none;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  font-size: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.2s;
+  font-size: 1.25rem;
   cursor: pointer;
-  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.player-btn .icon-wrapper {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-
+.player-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
-/* The wave effect */
-
-
-
-/* --------- End Sound wave effect ----*/
-
-.player-btn:active {
-  transform: scale(0.95);
-  box-shadow: inset 6px 6px 29px 3px rgba(0, 0, 0, 0.1);
-
-}
-
-.player-status {
-  font-size: 1rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  flex: 1 1 auto;
-  margin-left: 1rem;
-}
-
-.volume-bar-container {
-  width: 180px;
-  height: 16px;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  margin-left: auto;
-  position: relative;
-}
-
-.volume-bar-bg {
-  width: 100%;
-  height: 8px;
-  background: #222;
-  border-radius: 4px;
-  overflow: hidden;
-  position: relative;
-}
-
-.volume-bar-fill {
-  height: 100%;
-  background: #fff;
-  border-radius: 4px 0 0 4px;
-}
-
-.visually-hidden {
-  position: absolute;
-  left: -9999px;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.action-menu {
+.btn-glow {
   display: none;
 }
 
-@media (min-width: 801px) {
-
-  .radio-player-bar {
-    width: 50%;
-    max-width: 50%;
-    min-width: 50%;
-    left: 25%;
-  }
-
+.player-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
 }
 
 
-@media (max-width: 800px) {
+.player-title {
+  margin: 0;
+  font-weight: 600;
+}
 
+.player-status {
+  margin: 0;
+  color: #cbd5f5;
+  font-size: 0.9rem;
+}
+
+.player-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  width: 180px;
+}
+
+.volume-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #94a3b8;
+}
+
+.player-controls input[type="range"] {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 999px;
+  background: #eaeaea;
+  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.5);
+  cursor: pointer;
+}
+
+.player-controls input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #eaeaea;
+  border: 2px solid #020617;
+  box-shadow: 0 4px 10px rgba(8, 145, 178, 0.4);
+  transition: transform 0.15s ease;
+}
+
+.player-controls input[type="range"]::-webkit-slider-thumb:active {
+  transform: scale(1.1);
+}
+
+.player-controls input[type="range"]::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #eaeaea;
+  border: 1px solid #eaeaea;
+  transition: transform 0.15s ease;
+}
+
+.player-controls input[type="range"]::-moz-range-progress {
+  background: #eaeaea;
+  border-radius:0px;
+  height: 6px;
+}
+
+.player-controls input[type="range"]::-moz-range-track {
+  background: rgba(15, 23, 42, 0.8);
+  border-radius: 999px;
+  height: 6px;
+}
+
+@media (max-width: 720px) {
   .radio-player-bar {
-    padding: 1.5rem;
-    justify-content: space-between;
+    padding: 1rem;
+    bottom: 16px;
+    flex-direction: row;
+    align-items: center;
+    max-width: 90%;
+    width:90%;
   }
 
-  .radio-player-controls {
-    width: 20%;
-    min-width: 20%;
-    max-width: 20%;
+  .player-stack {
+    flex-direction: row;
+    align-items: flex-start;
   }
 
-  .player-status {
-    margin-left: 0.5rem;
-    display: none;
-  }
-
-  .volume-bar-container {
+  .player-controls, .player-title, .player-status {
     display: none;
   }
 
   .action-menu {
-    display: flex;
     width: 80%;
-    justify-content: flex-end;
-    align-items: center;
-    color: #fff;
+    display: flex;
+    gap: 0.5rem;
+    justify-content: space-between;
   }
 
   .action-menu a {
+    display:flex;
+    flex-direction: column;
+    gap:0.5rem;
     min-width: 33%;
     width: 33%;
     max-width: 33%;
@@ -358,15 +316,13 @@ onUnmounted(() => {
     text-decoration: none;
     text-align: center;
     -webkit-tap-highlight-color: transparent;
-    /* Removes blue highlight on iOS/Android */
     outline: none;
-    /* Removes focus outline */
   }
+} 
 
-  .action-menu .label {
-    font-size: 0.7rem;
-    text-transform: uppercase;
+@media (min-width: 721px) {
+  .action-menu {
+    display: none;
   }
-
 }
 </style>
