@@ -42,12 +42,30 @@ const albums = ref([])
 const loading = ref(true)
 const error = ref('')
 const fallbackArt = 'https://music.niprobin.com/radio_cover.png'
+const CACHE_KEY = 'albums_cache'
+const CACHE_TIME_KEY = 'albums_cache_time'
+const CACHE_TTL = 24 * 60 * 60 * 1000
 
 async function loadAlbums() {
   try {
+    const cachedValue = localStorage.getItem(CACHE_KEY)
+    const cachedTime = localStorage.getItem(CACHE_TIME_KEY)
+    const cached = cachedValue ? JSON.parse(cachedValue) : null
+    const isCacheValid = cached && cachedTime && Date.now() - Number(cachedTime) < CACHE_TTL
+
+    if (isCacheValid) {
+      albums.value = cached
+    }
+
     const res = await fetch('https://n8n.niprobin.com/webhook/liked-albums')
     const data = await res.json()
-    albums.value = Array.isArray(data) ? data : data ? [data] : []
+    const list = Array.isArray(data) ? data : data ? [data] : []
+
+    if (!cached || JSON.stringify(list) !== JSON.stringify(cached)) {
+      albums.value = list
+      localStorage.setItem(CACHE_KEY, JSON.stringify(list))
+      localStorage.setItem(CACHE_TIME_KEY, String(Date.now()))
+    }
   } catch (err) {
     error.value = 'Impossible de charger les albums.'
   } finally {

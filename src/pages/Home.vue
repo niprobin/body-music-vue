@@ -46,6 +46,9 @@ import { ref, computed, onMounted } from 'vue'
 const featuredAlbum = ref(null)
 const loadingFeatured = ref(true)
 const fallbackCover = 'https://music.niprobin.com/radio_cover.png'
+const CACHE_KEY = 'featured_album_cache'
+const CACHE_TIME_KEY = 'featured_album_cache_time'
+const CACHE_TTL = 24 * 60 * 60 * 1000
 
 function formatReleaseDate(value) {
   if (!value) return 'Date inconnue'
@@ -63,19 +66,35 @@ const formattedText = computed(() => {
     .filter(Boolean)
 })
 
-onMounted(async () => {
+async function loadFeaturedAlbum() {
   try {
+    const cachedValue = localStorage.getItem(CACHE_KEY)
+    const cachedTime = localStorage.getItem(CACHE_TIME_KEY)
+    const cached = cachedValue ? JSON.parse(cachedValue) : null
+    const isCacheValid = cached && cachedTime && Date.now() - Number(cachedTime) < CACHE_TTL
+
+    if (isCacheValid) {
+      featuredAlbum.value = cached
+    }
+
     const res = await fetch('https://opensheet.elk.sh/1LOx-C1USXeC92Mtv0u6NizEvcTMWkKJNGiNTwAtSj3E/3')
     const data = await res.json()
     if (Array.isArray(data) && data.length) {
-      featuredAlbum.value = data[0]
+      const nextAlbum = data[0]
+      if (!cached || JSON.stringify(nextAlbum) !== JSON.stringify(cached)) {
+        featuredAlbum.value = nextAlbum
+        localStorage.setItem(CACHE_KEY, JSON.stringify(nextAlbum))
+        localStorage.setItem(CACHE_TIME_KEY, String(Date.now()))
+      }
     }
   } catch (_) {
-    featuredAlbum.value = null
+    featuredAlbum.value = featuredAlbum.value || null
   } finally {
     loadingFeatured.value = false
   }
-})
+}
+
+onMounted(loadFeaturedAlbum)
 </script>
 
 <style scoped>
