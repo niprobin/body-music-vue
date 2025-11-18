@@ -2,6 +2,7 @@
   <main>
     <section class="home">
       <div class="home-content">
+        <img src="/body_music_duck_logo.png" alt="Body Music Radio Logo" class="home-logo" />
         <div class="home-text">
           <h1>Bienvenue sur Body Music Radio</h1>
           <p>
@@ -10,7 +11,6 @@
             planning pour savoir à quoi t'attendre sur la radio.
           </p>
         </div>
-        <img src="/body_music_duck_logo.png" alt="Body Music Radio Logo" class="home-logo" />
       </div>
     </section>
 
@@ -106,6 +106,7 @@ onMounted(loadFeaturedAlbum)
 
 .home-content {
   display: flex;
+  flex-direction: row-reverse;
   align-items: center;
   justify-content: space-between;
   gap: 2rem;
