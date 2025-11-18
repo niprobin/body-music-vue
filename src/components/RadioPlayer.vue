@@ -18,21 +18,22 @@
         <input id="volume-range" type="range" min="0" max="1" step="0.01" v-model="volume"
           @input="onVolumeInput" />
       </div>
-    </div>
-    <div class="action-menu">
+      <div class="action-menu">
       <router-link to="/">
         <font-awesome-icon :icon="['fas', 'house']" />
         <span>Accueil</span>
       </router-link>
       <router-link to="/schedule">
         <font-awesome-icon :icon="['fas', 'calendar']" />
-        <span>Programmation</span>
+        <span>Prog</span>
       </router-link>
       <router-link to="/last-songs">
         <font-awesome-icon :icon="['fas', 'music']" />
         <span>Historique</span>
       </router-link>
     </div>
+    </div>
+    
   </div>
 </template>
 
@@ -171,7 +172,6 @@ box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
   display: flex;
   align-items: center;
   gap: 1rem;
-  flex: 1;
 }
 
 .player-btn {
@@ -283,14 +283,15 @@ box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
     padding: 1rem;
     bottom: 16px;
     flex-direction: row;
-    align-items: center;
     max-width: 90%;
     width:90%;
   }
 
   .player-stack {
     flex-direction: row;
-    align-items: flex-start;
+    align-items: center;
+    width:100%;
+    gap:0;
   }
 
   .player-controls, .player-title, .player-status {
@@ -298,15 +299,18 @@ box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
   }
 
   .action-menu {
+    height: 56px;
     width: 80%;
     display: flex;
-    gap: 0.5rem;
+    gap: 0.2rem;
     justify-content: space-between;
   }
 
   .action-menu a {
     display:flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
     gap:0.5rem;
     min-width: 33%;
     width: 33%;
