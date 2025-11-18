@@ -154,11 +154,10 @@ onUnmounted(() => {
   background: #0c0c0c;
   border: 1px solid rgba(148, 163, 184, 0.25);
   border-radius: 2rem;
-  box-shadow: 0 25px 60px rgba(2, 6, 23, 0.6);
-  display: flex;
   flex-direction: column;
   gap: 1rem;
   z-index: 3000;
+box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
 }
 
 .player-stack {
