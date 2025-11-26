@@ -90,8 +90,8 @@ onUnmounted(() => {
 }
 
 .schedule-list {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr;
   gap: 1.2rem;
 }
 
@@ -157,6 +157,12 @@ onUnmounted(() => {
 
   .schedule-item__time {
     font-size: 0.9rem;
+  }
+}
+
+@media (min-width: 960px) {
+  .schedule-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 </style>
