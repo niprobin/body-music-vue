@@ -13,8 +13,16 @@
         <h2>{{ group.label }}</h2>
         <div class="albums-grid">
           <article v-for="album in group.items" :key="album.id" class="album-card">
-            <img :src="album.cover_url || fallbackArt" :alt="album.release_name || 'Couverture album'"
-              class="album-cover" />
+            <template v-if="getAlbumLink(album)">
+              <a :href="getAlbumLink(album)" target="_blank" rel="noopener" class="album-cover-link">
+                <img :src="album.cover_url || fallbackArt" :alt="album.release_name || 'Couverture album'"
+                  class="album-cover" />
+              </a>
+            </template>
+            <template v-else>
+              <img :src="album.cover_url || fallbackArt" :alt="album.release_name || 'Couverture album'"
+                class="album-cover" />
+            </template>
             <div class="album-meta">
               <p class="album-name">{{ album.release_name || 'Titre inconnu' }}</p>
               <p class="album-date">
@@ -116,6 +124,24 @@ function formatReleaseDate(value) {
   if (Number.isNaN(dateObj.getTime())) return value
   return dateObj.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
 }
+
+function getAlbumLink(album) {
+  if (!album) return ''
+  const discogs = (album.discogs_url || '').trim()
+  const spotify = (album.spotify_url || '').trim()
+  const hasCompleteDiscogs =
+    discogs && (discogs.includes('/release') || discogs.includes('/master'))
+  if (hasCompleteDiscogs) {
+    return discogs
+  }
+  if (discogs === 'https://www.discogs.com' && spotify) {
+    return spotify
+  }
+  if (!discogs && spotify) {
+    return spotify
+  }
+  return ''
+}
 </script>
 
 <style scoped>
@@ -195,6 +221,11 @@ function formatReleaseDate(value) {
   border-radius: 0.5rem;
   object-fit: cover;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+
+.album-cover-link {
+  display: block;
+  width: 100%;
 }
 
 .album-meta {
