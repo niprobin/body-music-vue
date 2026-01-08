@@ -68,9 +68,9 @@ const formattedText = computed(() => {
 
 async function loadFeaturedAlbum() {
   try {
-    const res = await fetch('https://opensheet.elk.sh/1LOx-C1USXeC92Mtv0u6NizEvcTMWkKJNGiNTwAtSj3E/3')
+    const res = await fetch('https://n8n.niprobin.com/webhook/featured-album')
     const data = await res.json()
-    featuredAlbum.value = Array.isArray(data) && data.length ? data[0] : null
+    featuredAlbum.value = data && typeof data === 'object' ? data : null
   } catch (_) {
     featuredAlbum.value = null
   } finally {
