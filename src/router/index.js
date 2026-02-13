@@ -4,12 +4,12 @@ import Schedule from '../pages/Schedule.vue'
 import LastSongs from '../pages/LastSongs.vue'
 import Albums from '../pages/Albums.vue'
 
-const routes = [
+export const routes = [
   { path: '/', name: 'Home', component: Home },
   { path: '/schedule', name: 'Schedule', component: Schedule },
   { path: '/last-songs', name: 'LastSongs', component: LastSongs },
-  { path: '/albums', name: 'Albums', component: Albums }
-  // ...other routes
+  { path: '/albums', name: 'Albums', component: Albums },
+  { path: '/albums/:slug', name: 'AlbumReview', component: () => import('../pages/AlbumReview.vue') }
 ]
 
 const router = createRouter({

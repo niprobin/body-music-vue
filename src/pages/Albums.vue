@@ -14,9 +14,17 @@
         <div class="albums-grid">
           <article v-for="album in group.items" :key="album.id" class="album-card">
             <template v-if="getAlbumLink(album)">
-              <a :href="getAlbumLink(album)" target="_blank" rel="noopener" class="album-cover-link">
-                <img :src="album.cover_url || fallbackArt" :alt="album.release_name || 'Couverture album'"
-                  class="album-cover" />
+              <a :href="getAlbumLink(album)"
+                 :target="isInternalLink(album) ? '' : '_blank'"
+                 :rel="isInternalLink(album) ? '' : 'noopener'"
+                 class="album-cover-link">
+                <div class="album-cover-container">
+                  <img :src="album.cover_url || fallbackArt" :alt="album.release_name || 'Couverture album'"
+                    class="album-cover" />
+                  <div v-if="isInternalLink(album)" class="review-badge">
+                    📝
+                  </div>
+                </div>
               </a>
             </template>
             <template v-else>
@@ -127,6 +135,13 @@ function formatReleaseDate(value) {
 
 function getAlbumLink(album) {
   if (!album) return ''
+
+  // Check for review first - internal route
+  if (album.has_review && album.slug) {
+    return `/albums/${album.slug}`
+  }
+
+  // Existing external link logic
   const discogs = (album.discogs_url || '').trim()
   const spotify = (album.spotify_url || '').trim()
   const hasCompleteDiscogs =
@@ -141,6 +156,11 @@ function getAlbumLink(album) {
     return spotify
   }
   return ''
+}
+
+function isInternalLink(album) {
+  if (!album) return false
+  return album.has_review && album.slug
 }
 </script>
 
@@ -215,6 +235,11 @@ function getAlbumLink(album) {
   box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
 }
 
+.album-cover-container {
+  position: relative;
+  width: 100%;
+}
+
 .album-cover {
   width: 100%;
   height: auto;
@@ -226,6 +251,20 @@ function getAlbumLink(album) {
 .album-cover-link {
   display: block;
   width: 100%;
+}
+
+.review-badge {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
 }
 
 .album-meta {

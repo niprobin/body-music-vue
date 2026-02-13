@@ -30,6 +30,9 @@
             {{ paragraph }}
           </p>
         </div>
+        <router-link to="/albums">
+          <button class="more-albums">Découvrir plus d'albums</button>
+        </router-link>
       </div>
     </section>
 
