@@ -5,7 +5,8 @@
       "Bash(npm install:*)",
       "Bash(npm run build:*)",
       "Bash(npm ci:*)",
-      "Bash(npm run build:spa:*)"
+      "Bash(npm run build:spa:*)",
+      "Bash(npm run dev:*)"
     ]
   }
 }

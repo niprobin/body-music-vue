@@ -187,6 +187,25 @@ onMounted(loadFeaturedAlbum)
   padding: 2rem 1rem;
 }
 
+.more-albums {
+  background-color: #f8f9fa;
+  border: 1px solid #f8f9fa;
+  border-radius: 4px;
+  color: #3c4043;
+  cursor: pointer;
+  font-family: arial,sans-serif;
+  font-size: 14px;
+  height: 36px;
+  line-height: 27px;
+  min-width: 54px;
+  padding: 0 16px;
+  text-align: center;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: pre;
+}
+
 @media (max-width: 700px) {
   .home-content {
     flex-direction: column;

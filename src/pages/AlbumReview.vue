@@ -40,7 +40,7 @@
                target="_blank"
                rel="noopener"
                class="external-link">
-              Voir sur {{ getExternalLinkText(album) }} →
+              Découvrir l'album →
             </a>
           </div>
         </div>
