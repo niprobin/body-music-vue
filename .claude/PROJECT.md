@@ -97,6 +97,18 @@ src/
 - `package.json`: Added SSG dependencies and build scripts
 - `vite.config.js`: Configured for potential SSG usage
 
+## Recent Changes (2024-02-24)
+
+### Added "Liked Date" Display to Album Reviews
+- **Enhanced AlbumReview.vue**: Added display of "liked_date" showing when albums were listened to
+- **New function**: Added `formatLikedDate()` function (lines 119-125) using same pattern as `formatReleaseDate()`
+- **Template update**: Added conditional liked date display (lines 29-31) showing "écouté le [date]" in French
+- **Edge case handling**: Uses `v-if="album.liked_date"` to only show when data exists, fallback for invalid dates
+- **Styling**: Uses existing `.album-details` class for visual consistency with release date
+
+### File Changes
+- `src/pages/AlbumReview.vue`: Added liked_date function and template display
+
 ## Development Notes
 - Uses ES modules and modern JavaScript
 - Mobile-first development approach

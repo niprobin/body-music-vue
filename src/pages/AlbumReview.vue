@@ -26,6 +26,9 @@
           <p class="album-details">
             Sortie le {{ formatReleaseDate(album.release_date) }}
           </p>
+          <p class="album-details" v-if="album.liked_date">
+            Écouté le {{ formatLikedDate(album.liked_date) }}
+          </p>
           <div class="album-rating" v-if="album.rating">
             <span
               v-for="n in 5"
@@ -110,6 +113,14 @@ const formattedReviewText = computed(() => {
 })
 
 function formatReleaseDate(value) {
+  if (!value) return 'Date inconnue'
+  const [day, month, year] = String(value).split('-')
+  const dateObj = new Date(Number(year), Number(month) - 1, Number(day))
+  if (Number.isNaN(dateObj.getTime())) return value
+  return dateObj.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
+}
+
+function formatLikedDate(value) {
   if (!value) return 'Date inconnue'
   const [day, month, year] = String(value).split('-')
   const dateObj = new Date(Number(year), Number(month) - 1, Number(day))

@@ -6,9 +6,11 @@
     </div>
 
     <div v-if="loading" class="status-card">Chargement…</div>
-    <div v-else-if="error" class="status-card error">{{ error }}</div>
+    <div v-else-if="error && !albums.length" class="status-card error">{{ error }}</div>
 
     <div v-else class="albums-sections">
+      <!-- Optional: Subtle refresh indicator -->
+      <div v-if="refreshing" class="refresh-indicator">↻ Mise à jour…</div>
       <!-- Reviewed Albums Section -->
       <div v-if="reviewedAlbums.length > 0" class="albums-section albums-reviewed">
         <h2 class="section-title">Nos coups de cœurs</h2>
@@ -108,7 +110,8 @@
 import { ref, computed, onMounted } from 'vue'
 
 const albums = ref([])
-const loading = ref(true)
+const loading = ref(false) // Start as false, set conditionally
+const refreshing = ref(false) // Track background refresh
 const error = ref('')
 const fallbackArt = 'https://music.niprobin.com/radio_cover.png'
 const CACHE_KEY = 'albums_cache'
@@ -123,17 +126,21 @@ async function loadAlbums() {
     const isCacheValid = cached && cachedTime && Date.now() - Number(cachedTime) < CACHE_TTL
 
     if (isCacheValid) {
+      // Show cached data immediately, no loading state
       albums.value = cached
+      refreshing.value = true // Background fetch indicator
+    } else {
+      // No valid cache - show loading
+      loading.value = true
     }
 
     const res = await fetch('https://n8n.niprobin.com/webhook/liked-albums')
     const data = await res.json()
     const list = Array.isArray(data) ? data : data ? [data] : []
 
-    // Always set albums.value to fresh data since we fetched it
     albums.value = list
 
-    // Only update cache if data has changed
+    // Update cache if data changed
     if (!cached || JSON.stringify(list) !== JSON.stringify(cached)) {
       localStorage.setItem(CACHE_KEY, JSON.stringify(list))
       localStorage.setItem(CACHE_TIME_KEY, String(Date.now()))
@@ -141,9 +148,12 @@ async function loadAlbums() {
 
   } catch (err) {
     console.error('Error loading albums:', err)
-    error.value = 'Impossible de charger les albums.'
+    if (!albums.value.length) { // Only show error if no cached data
+      error.value = 'Impossible de charger les albums.'
+    }
   } finally {
     loading.value = false
+    refreshing.value = false
   }
 }
 
@@ -408,5 +418,25 @@ function isInternalLink(album) {
 
 .album-star--filled {
   color: #facc15;
+}
+
+.refresh-indicator {
+  position: fixed;
+  top: 4.5rem;
+  right: 1rem;
+  background: rgba(15, 23, 42, 0.9);
+  color: #94a3b8;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  z-index: 100;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+@media (max-width: 640px) {
+  .refresh-indicator {
+    top: 4rem;
+    font-size: 0.7rem;
+  }
 }
 </style>
