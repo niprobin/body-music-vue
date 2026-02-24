@@ -53,52 +53,63 @@
         </div>
       </div>
 
-      <!-- Non-Reviewed Albums Section -->
+      <!-- Non-Reviewed Albums Section with Tabs -->
       <div class="albums-section">
-        <h2 class="section-title">Nos dernières découvertes mois par mois</h2>
-        <div class="albums-group">
-          <div v-for="group in groupedNonReviewedAlbums" :key="group.label" class="albums-month">
-            <h3>{{ group.label }}</h3>
-            <div class="albums-grid">
-              <article v-for="album in group.items" :key="album.id" class="album-card">
-                <template v-if="getAlbumLink(album)">
-                  <a :href="getAlbumLink(album)"
-                     :target="isInternalLink(album) ? '' : '_blank'"
-                     :rel="isInternalLink(album) ? '' : 'noopener'"
-                     class="album-cover-link">
-                    <div class="album-cover-container">
-                      <img :src="album.cover_url || fallbackArt" :alt="album.release_name || 'Couverture album'"
-                        class="album-cover" />
-                      <div v-if="isInternalLink(album)" class="review-badge">
-                        📝
-                      </div>
-                    </div>
-                  </a>
-                </template>
-                <template v-else>
-                  <img :src="album.cover_url || fallbackArt" :alt="album.release_name || 'Couverture album'"
-                    class="album-cover" />
-                </template>
-                <div class="album-meta">
-                  <p class="album-name">{{ album.release_name || 'Titre inconnu' }}</p>
-                  <p class="album-date">
-                    Sortie le {{ formatReleaseDate(album.release_date) }}
-                  </p>
-                  <div class="album-rating" v-if="album.rating">
-                    <span
-                      v-for="n in 5"
-                      :key="n"
-                      :class="['album-star', { 'album-star--filled': n <= album.rating }]"
-                    >★</span>
+        <!-- Sticky wrapper for title and tabs -->
+        <div class="albums-sticky-header">
+          <h2 class="section-title">Toutes nos découvertes</h2>
+
+          <!-- Tab Navigation -->
+          <div class="albums-tabs">
+          <div class="albums-tabs-container">
+            <button
+              v-for="(group, index) in groupedNonReviewedAlbums"
+              :key="group.label"
+              :class="['albums-tab', { 'albums-tab--active': activeTab === index }]"
+              @click="activeTab = index"
+            >
+              {{ group.label }}
+            </button>
+          </div>
+        </div>
+        </div>
+
+        <!-- Active Tab Content -->
+        <div class="albums-tab-content" v-if="groupedNonReviewedAlbums[activeTab]">
+          <div class="albums-grid">
+            <article v-for="album in groupedNonReviewedAlbums[activeTab].items"
+                     :key="album.id"
+                     class="album-card">
+              <template v-if="getAlbumLink(album)">
+                <a :href="getAlbumLink(album)"
+                   :target="isInternalLink(album) ? '' : '_blank'"
+                   :rel="isInternalLink(album) ? '' : 'noopener'"
+                   class="album-cover-link">
+                  <div class="album-cover-container">
+                    <img :src="album.cover_url || fallbackArt"
+                         :alt="album.release_name || 'Couverture album'"
+                         class="album-cover" />
+                    <div v-if="isInternalLink(album)" class="review-badge">📝</div>
                   </div>
-                </div>
-                <a v-if="isInternalLink(album)"
-                   :href="getAlbumLink(album)"
-                   class="review-button">
-                  Notre avis
                 </a>
-              </article>
-            </div>
+              </template>
+              <template v-else>
+                <img :src="album.cover_url || fallbackArt"
+                     :alt="album.release_name || 'Couverture album'"
+                     class="album-cover" />
+              </template>
+              <div class="album-meta">
+                <p class="album-name">{{ album.release_name || 'Titre inconnu' }}</p>
+                <p class="album-date">Sortie le {{ formatReleaseDate(album.release_date) }}</p>
+                <div class="album-rating" v-if="album.rating">
+                  <span v-for="n in 5" :key="n"
+                        :class="['album-star', { 'album-star--filled': n <= album.rating }]">★</span>
+                </div>
+              </div>
+              <a v-if="isInternalLink(album)" :href="getAlbumLink(album)" class="review-button">
+                Notre avis
+              </a>
+            </article>
           </div>
         </div>
       </div>
@@ -107,11 +118,12 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 
 const albums = ref([])
 const loading = ref(false) // Start as false, set conditionally
 const refreshing = ref(false) // Track background refresh
+const activeTab = ref(0) // Default to first (most recent) month
 const error = ref('')
 const fallbackArt = 'https://music.niprobin.com/radio_cover.png'
 const CACHE_KEY = 'albums_cache'
@@ -220,6 +232,13 @@ const groupedNonReviewedAlbums = computed(() => {
     }))
 })
 
+// Watch for changes in grouped albums to reset tab if needed
+watch(groupedNonReviewedAlbums, (newGroups) => {
+  if (newGroups.length > 0 && activeTab.value >= newGroups.length) {
+    activeTab.value = 0
+  }
+}, { immediate: true })
+
 function formatReleaseDate(value) {
   if (!value) return 'Date inconnue'
   const [day, month, year] = String(value).split('-')
@@ -301,9 +320,7 @@ function isInternalLink(album) {
 }
 
 .albums-reviewed > .albums-grid {
-  background-image:url('/reviewed-album-bg.svg');
-  background-size:cover;
-  border: 1px solid #191913;
+  border: 1px solid #F9C846;
   border-radius: 4px;
   padding: 8px 12px;
 }
@@ -437,6 +454,100 @@ function isInternalLink(album) {
   .refresh-indicator {
     top: 4rem;
     font-size: 0.7rem;
+  }
+}
+
+/* Sticky Header for Tabs */
+.albums-sticky-header {
+  position: sticky;
+  top: 70px; /* Position below header with margin */
+  z-index: 500; /* Between header (1000) and default content */
+  background: #0f172a; /* Fully opaque background to prevent bleed-through */
+  backdrop-filter: blur(12px); /* Match header blur effect */
+  padding: 1rem 0 0.5rem; /* Add top padding back for coverage */
+  margin: -0.5rem 0 1rem; /* Negative top margin to extend coverage */
+  border-bottom: 1px solid rgba(148, 163, 184, 0.2); /* Subtle separator */
+  transition: background-color 0.2s ease, backdrop-filter 0.2s ease;
+}
+
+/* Ensure the section title has no top margin when sticky */
+.albums-sticky-header .section-title {
+  margin-bottom: 1rem;
+}
+
+/* Tab Navigation Styles */
+.albums-tabs {
+  margin-bottom: 1.5rem;
+}
+
+.albums-tabs-container {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding: 0.25rem 0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.albums-tabs-container::-webkit-scrollbar {
+  display: none;
+}
+
+.albums-tab {
+  flex-shrink: 0;
+  padding: 0.75rem 1.25rem;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  background: rgba(15, 23, 42, 0.7);
+  color: #94a3b8;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.albums-tab:hover {
+  background: rgba(15, 23, 42, 0.9);
+  border-color: rgba(148, 163, 184, 0.5);
+  color: #f8fafc;
+}
+
+.albums-tab--active {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #f8fafc;
+  color: #f8fafc;
+  font-weight: 500;
+}
+
+.albums-tab--active:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.albums-tab-content {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 720px) {
+  .albums-sticky-header {
+    top: 65px; /* Adjust for potentially shorter mobile header with margin */
+    padding: 0.75rem 0 0.375rem; /* Restore padding for coverage */
+    margin: -0.375rem 0 1rem; /* Negative margin for extended coverage */
+  }
+}
+
+@media (max-width: 640px) {
+  .albums-tabs-container {
+    gap: 0.375rem;
+  }
+  .albums-tab {
+    padding: 0.625rem 1rem;
+    font-size: 0.85rem;
   }
 }
 </style>
