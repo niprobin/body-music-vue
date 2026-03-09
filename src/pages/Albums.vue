@@ -36,13 +36,7 @@
               <p class="album-date">
                 Sortie le {{ formatReleaseDate(album.release_date) }}
               </p>
-              <div class="album-rating" v-if="album.rating">
-                <span
-                  v-for="n in 5"
-                  :key="n"
-                  :class="['album-star', { 'album-star--filled': n <= album.rating }]"
-                >★</span>
-              </div>
+              <StarRating v-if="album.rating" :rating="album.rating" size="medium" />
             </div>
             <a v-if="isInternalLink(album)"
                :href="getAlbumLink(album)"
@@ -101,10 +95,7 @@
               <div class="album-meta">
                 <p class="album-name">{{ album.release_name || 'Titre inconnu' }}</p>
                 <p class="album-date">Sortie le {{ formatReleaseDate(album.release_date) }}</p>
-                <div class="album-rating" v-if="album.rating">
-                  <span v-for="n in 5" :key="n"
-                        :class="['album-star', { 'album-star--filled': n <= album.rating }]">★</span>
-                </div>
+                <StarRating v-if="album.rating" :rating="album.rating" size="medium" />
               </div>
               <a v-if="isInternalLink(album)" :href="getAlbumLink(album)" class="review-button">
                 Notre avis
@@ -119,6 +110,7 @@
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
+import StarRating from '../components/StarRating.vue'
 
 const albums = ref([])
 const loading = ref(false) // Start as false, set conditionally
@@ -404,7 +396,7 @@ function isInternalLink(album) {
 .album-meta {
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
+  gap: 0.4rem;
   text-align: left;
   width: 100%;
   padding-left:4px;
@@ -430,20 +422,6 @@ function isInternalLink(album) {
 }
 
 .album-star {
-  color: #475569;
-}
-
-.album-star--filled {
-  color: #facc15;
-}
-
-.refresh-indicator {
-  position: fixed;
-  top: 4.5rem;
-  right: 1rem;
-  background: rgba(15, 23, 42, 0.9);
-  color: #94a3b8;
-  padding: 0.4rem 0.8rem;
   border-radius: 6px;
   font-size: 0.75rem;
   z-index: 100;

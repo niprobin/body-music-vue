@@ -29,14 +29,7 @@
           <p class="album-details" v-if="album.liked_date">
             Écouté le {{ formatLikedDate(album.liked_date) }}
           </p>
-          <div class="album-rating" v-if="album.rating">
-            <span
-              v-for="n in 5"
-              :key="n"
-              :class="['album-star', { 'album-star--filled': n <= album.rating }]"
-            >★</span>
-            <span class="rating-text">{{ album.rating }}/5</span>
-          </div>
+          <div class="album-rating" v-if="album.rating">            <StarRating :rating="album.rating" size="large" />            <span class="rating-text">{{ album.rating }}/5</span>          </div>
           <div class="album-links">
             <a v-if="getExternalLink(album)"
                :href="getExternalLink(album)"
@@ -60,6 +53,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import StarRating from '../components/StarRating.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -251,13 +245,6 @@ function getExternalLinkText(album) {
   font-size: 1.2rem;
 }
 
-.album-star {
-  color: #475569;
-}
-
-.album-star--filled {
-  color: #facc15;
-}
 
 .rating-text {
   margin-left: 0.5rem;

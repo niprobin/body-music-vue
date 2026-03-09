@@ -115,3 +115,34 @@ src/
 - External API integrations for live data
 - Clean component architecture with Vue 3 best practices
 - Ready for future SSG implementation when needed
+## Recent Changes (2026-03-09)
+
+### Improved Star Ratings with FontAwesome Icons
+- **Created StarRating.vue component**: New reusable component for displaying star ratings using FontAwesome icons
+  - Props: `rating` (number 0-5) and `size` ('medium'|'large')
+  - FontAwesome `faStar` icons instead of Unicode characters
+  - Enhanced styling with transitions and better spacing
+  - Medium size (1.1rem) and Large size (1.4rem) - bigger than previous implementation
+- **Updated main.js**: Added `faStar` import and library registration for FontAwesome
+- **Updated Albums.vue**: Replaced two star rating sections (lines 39-45 and 104-107) with StarRating component
+  - Added StarRating import
+  - Removed duplicated CSS for `.album-rating`, `.album-star`, `.album-star--filled`
+  - Both locations use size="medium"
+- **Updated AlbumReview.vue**: Replaced star rating section (lines 32-39) with StarRating component
+  - Added StarRating import
+  - Removed CSS for `.album-star` and `.album-star--filled`
+  - Uses size="large" for bigger stars
+  - Kept `.rating-text` CSS for "X/5" text display
+
+### Benefits
+- **Prettier icons**: Professional FontAwesome stars instead of Unicode characters
+- **Bigger sizes**: Increased from 0.95rem/1.2rem to 1.1rem/1.4rem respectively
+- **Eliminated duplication**: Single reusable component instead of copy-pasted code
+- **Enhanced styling**: Better visual appearance with transitions
+- **Maintainable**: All star rating logic centralized in one component
+
+### File Changes
+- `src/main.js`: Added faStar import and registration
+- `src/components/StarRating.vue`: New reusable component (new file)
+- `src/pages/Albums.vue`: Replaced star rating sections, removed CSS, added import
+- `src/pages/AlbumReview.vue`: Replaced star rating section, removed CSS, added import
