@@ -2,7 +2,7 @@
   <main v-if="!loadingFeatured">
     <section class="home">
       <div class="home-content">
-        <img src="/body_music_duck_logo.png" alt="Body Music Radio Logo" class="home-logo" />
+        <!-- <img src="/body_music_duck_logo.png" alt="Body Music Radio Logo" class="home-logo" /> -->
         <div class="home-text">
           <h1>Bienvenue sur Body Music Radio</h1>
           <p>

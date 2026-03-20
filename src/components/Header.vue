@@ -2,7 +2,7 @@
   <header :class="['site-header', { 'site-header--scrolled': scrolled }]">
     <div class="header-inner">
       <router-link to="/" class="header-logo">
-        <img src="/body_music_letters_logo.png" alt="Body Music Radio" />
+        <img src="/body-music-gradient.png" alt="Body Music Radio" />
       </router-link>
       <nav class="header-nav">
         <router-link to="/">Accueil</router-link>
@@ -59,7 +59,7 @@ onUnmounted(() => {
 }
 
 .header-logo img {
-  height: 40px;
+  width:256px;
   object-fit: contain;
 }
 
