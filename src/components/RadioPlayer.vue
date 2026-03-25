@@ -61,7 +61,7 @@ const displayTitle = computed(() => {
   const title = getTrackTitle()
 
   if (artist && title) {
-    return `${artist} - ${title}`
+    return `${title} — ${artist}`
   }
 
   return 'Body Music Radio'
@@ -208,7 +208,7 @@ onUnmounted(() => {
   align-items: center; /* Full height alignment */
   justify-content: space-between;
   gap: 0;
-  height: 10vh; /* Fixed height for desktop */
+  height: 11vh; /* Fixed height for desktop */
 }
 
 .player-primary {
@@ -219,8 +219,9 @@ onUnmounted(() => {
 }
 
 .player-btn {
-  width: 64px; /* Square button, full height */
-  height: 10vh;
+  height: 11vh;
+  max-height:100%;
+  aspect-ratio: 1 / 1;
   border-radius: 0; /* Squared, no rounded corners */
   border: none; /* Remove border for seamless look */
   background: #fff;
@@ -319,12 +320,12 @@ onUnmounted(() => {
     align-items: center;
     width: 100%;
     gap: 0;
-    height: 10vh;
+    height: 11vh;
   }
 
   .player-btn {
-    width: 64px;
-    height: 10vh;
+    height: 11vh;
+    aspect-ratio: 1 / 1;
     border-radius: 0;
     font-size: 1.1rem;
     flex-shrink: 0;
@@ -338,11 +339,13 @@ onUnmounted(() => {
   .player-meta {
     flex: 1;
     min-width: 0;
+    max-width: calc(100% - 112px); /* Reserve space for play button (64px) + more button (48px) */
     gap: 0.1rem;
     padding: 0.5rem 1rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    overflow: hidden; /* Ensure content doesn't overflow */
   }
 
   .player-title {
@@ -364,7 +367,7 @@ onUnmounted(() => {
 
   .mobile-more-btn {
     width: 48px;
-    height: 48px;
+    height: 10vh; /* Match player height */
     border: none;
     background: transparent;
     color: #f8fafc;
@@ -373,7 +376,7 @@ onUnmounted(() => {
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
+    flex-shrink: 0; /* Always maintain size */
     transition: all 0.2s ease;
   }
 

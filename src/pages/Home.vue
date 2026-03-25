@@ -103,7 +103,9 @@ onMounted(loadFeaturedAlbum)
   display: flex;
   justify-content: center;
   padding: 1rem;
+  height:80vh;
   min-height:80vh;
+  max-height:80vh;
 }
 
 .home-content {
@@ -231,6 +233,12 @@ onMounted(loadFeaturedAlbum)
 
   .home-text {
     text-align: center;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .scroll-to-album {
+    align-self: center;
   }
 
   .home-logo {
@@ -240,10 +248,11 @@ onMounted(loadFeaturedAlbum)
   .featured-album {
     flex-direction: column;
     align-items: center;
+    padding:4rem 1rem;
   }
 
   .featured-cover img {
-    width: 60vw;
+    width: 80vw;
     max-width: 280px;
   }
 
