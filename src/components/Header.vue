@@ -20,7 +20,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 const scrolled = ref(false)
 
 function onScroll() {
-  scrolled.value = window.scrollY > window.innerHeight * 0.25
+  scrolled.value = window.scrollY > 0.10
 }
 
 onMounted(() => {
@@ -38,12 +38,16 @@ onUnmounted(() => {
   top: 0;
   width: 100%;
   z-index: 1000;
-  height:10vh;
+  height:15vh;
+  border-bottom:1px solid transparent;
+  transition: height 0.3s ease
 }
 
 .site-header--scrolled {
+  height:10vh;
   background: rgba(15, 23, 42, 1);
   border-bottom:1px solid #0f2236;
+  transition: height 0.3s ease;
 }
 
 .header-inner {
@@ -79,22 +83,19 @@ onUnmounted(() => {
   font-weight: 500;
   position: relative;
   padding-bottom: 0.2rem;
+  padding:6px 10px;
+  border-radius:4px;
 }
 
-.header-nav a.router-link-active::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 2px;
-  background: #f8fafc;
+.header-nav a.router-link-active {
+  background-color: #f8fafc7a;
 }
 
 @media (max-width: 720px) {
+
   .header-inner {
     flex-direction: column;
-    gap: 0.75rem;
+    justify-content: center;
   }
 
   .header-nav {

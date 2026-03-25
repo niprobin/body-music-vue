@@ -11,7 +11,7 @@
             planning pour savoir à quoi t'attendre sur la radio.
           </p>
           <button class="scroll-to-album" @click="scrollToFeaturedAlbum">
-            Découvrir un album sympa
+            Tu connais cet album ?
           </button>
         </div>
       </div>
@@ -103,19 +103,17 @@ onMounted(loadFeaturedAlbum)
   display: flex;
   justify-content: center;
   padding: 1rem;
-  height:80vh;
-  min-height:80vh;
-  max-height:80vh;
+  height:89vh;
+  min-height:89vh;
+  max-height:89vh;
 }
 
 .home-content {
   display: flex;
-  flex-direction: row-reverse;
-  align-items: center;
-  justify-content: space-between;
-  gap: 2rem;
+  align-items:start;
   max-width: 960px;
   width: 100%;
+  padding-top:5rem;
 }
 
 .home-text {
@@ -139,6 +137,10 @@ onMounted(loadFeaturedAlbum)
   
   padding: 4rem;
   background: #0b101d;
+}
+
+#featured-album {
+  scroll-margin-top: 12vh;
 }
 
 .featured-cover img {
@@ -209,7 +211,7 @@ onMounted(loadFeaturedAlbum)
   border-radius: 4px;
   color: #3c4043;
   cursor: pointer;
-  font-family: arial,sans-serif;
+  font-family: 'Inter',sans-serif;
   font-size: 14px;
   height: 36px;
   line-height: 27px;
@@ -223,18 +225,21 @@ onMounted(loadFeaturedAlbum)
   display: inline-block;
   width: auto;
   align-self: flex-start;
+  border:1px solid rgba(214, 212, 212, 0.5);
+  -webkit-box-shadow: 2px 4px 4px 0px rgba(0,0,0,0.25); 
+  box-shadow: 2px 4px 4px 0px rgba(0,0,0,0.25);
 }
 
 @media (max-width: 700px) {
   .home-content {
     flex-direction: column;
     text-align: center;
+    align-items: start;
+    padding-top:2rem;
   }
 
   .home-text {
     text-align: center;
-    justify-content: center;
-    align-items: center;
   }
 
   .scroll-to-album {
