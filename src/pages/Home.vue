@@ -10,21 +10,25 @@
             track&nbsp;? Tu peux directement checker ce qui est entrain de jouer.<br><br>Tu peux également regarder notre
             planning pour savoir à quoi t'attendre sur la radio.
           </p>
+          <button class="scroll-to-album" @click="scrollToFeaturedAlbum">
+            Découvrir un album sympa
+          </button>
         </div>
       </div>
     </section>
 
-    <section class="featured-album" v-if="featuredAlbum">
+    <section id="featured-album" class="featured-album" v-if="featuredAlbum">
         <div class="featured-cover">
           <img :src="featuredAlbum.cover_url || fallbackCover" :alt="featuredAlbum.release_name || 'Album du moment'" />
       </div>
       <div class="featured-info">
-        <p class="featured-label">Album du moment</p>
-        <h2>{{ featuredAlbum.release_name }}</h2>
-        <p class="featured-meta">
-          Sortie le {{ formatReleaseDate(featuredAlbum.release_date) }}
+        <p class="featured-label">Album du moment </p>
+        <h2>{{ featuredAlbum.release_name }} </h2>
+        <div class="featured-meta">
+          <p class="featured-date">Sortie le {{ formatReleaseDate(featuredAlbum.release_date) }}
         </p>
-        <span class="featured-genre">{{ featuredAlbum.genre || 'Genre inconnu' }}</span>
+        <p class="featured-genre">{{ featuredAlbum.genre || 'Genre inconnu' }}</p>
+        </div>
         <div class="featured-text">
           <p v-for="(paragraph, idx) in formattedText" :key="idx">
             {{ paragraph }}
@@ -81,6 +85,16 @@ async function loadFeaturedAlbum() {
   }
 }
 
+function scrollToFeaturedAlbum() {
+  const element = document.getElementById('featured-album')
+  if (element) {
+    element.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    })
+  }
+}
+
 onMounted(loadFeaturedAlbum)
 </script>
 
@@ -88,7 +102,8 @@ onMounted(loadFeaturedAlbum)
 .home {
   display: flex;
   justify-content: center;
-  padding: 2rem 1rem;
+  padding: 1rem;
+  min-height:80vh;
 }
 
 .home-content {
@@ -116,13 +131,12 @@ onMounted(loadFeaturedAlbum)
 
 .featured-album {
   display: flex;
-  gap: 2rem;
-  align-items: center;
-  max-width: 960px;
-  margin: 0 auto 2rem;
-  padding: 2rem 1rem;
+  gap: 4rem;
+  align-items: start;
+  justify-content: top;
+  
+  padding: 4rem;
   background: #0b101d;
-  border-radius: 1.2rem;
 }
 
 .featured-cover img {
@@ -156,10 +170,11 @@ onMounted(loadFeaturedAlbum)
   margin: 0;
   color: #fff;
   font-size: 0.9rem;
+  display:flex;
+  gap:1rem;
 }
 
 .featured-genre {
-  display: inline;
   color: #0f172a;
   background: #fde047;
   font-size: 0.8rem;
@@ -167,8 +182,6 @@ onMounted(loadFeaturedAlbum)
   border-radius: 999px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  margin-top: 0.4rem;
-  align-self: flex-start;
 }
 
 .featured-text p {
@@ -187,7 +200,8 @@ onMounted(loadFeaturedAlbum)
   padding: 2rem 1rem;
 }
 
-.more-albums {
+.more-albums,
+.scroll-to-album {
   background-color: #f8f9fa;
   border: 1px solid #f8f9fa;
   border-radius: 4px;
@@ -204,6 +218,9 @@ onMounted(loadFeaturedAlbum)
   -webkit-user-select: none;
   touch-action: manipulation;
   white-space: pre;
+  display: inline-block;
+  width: auto;
+  align-self: flex-start;
 }
 
 @media (max-width: 700px) {
@@ -222,7 +239,7 @@ onMounted(loadFeaturedAlbum)
 
   .featured-album {
     flex-direction: column;
-    text-align: center;
+    align-items: center;
   }
 
   .featured-cover img {
@@ -232,10 +249,16 @@ onMounted(loadFeaturedAlbum)
 
   .featured-info {
     align-items: center;
+    text-align: center;
+  }
+
+  .featured-meta {
+    flex-direction: column;
+    gap:0;
   }
 
   .featured-text p {
-    text-align: left;
+    text-align: center;
   }
 }
 </style>

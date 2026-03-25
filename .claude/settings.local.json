@@ -6,7 +6,11 @@
       "Bash(npm run build:*)",
       "Bash(npm ci:*)",
       "Bash(npm run build:spa:*)",
-      "Bash(npm run dev:*)"
+      "Bash(npm run dev:*)",
+      "Bash(find C:UsersrobinDocumentsGithubbody-music-vue/src -type f \\\\\\(-name *.vue -o -name *.js -o -name *.ts \\\\\\))",
+      "Bash(ls -la *.config.* vite.config.*)",
+      "Bash(pkill -f \"npm run dev\")",
+      "Bash(pkill -f \"vite\")"
     ]
   }
 }

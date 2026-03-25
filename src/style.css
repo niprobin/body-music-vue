@@ -36,3 +36,11 @@ h2 {
 h3 {
   font-size: 1.3rem;
 }
+
+/* Mobile layout adjustments */
+@media (max-width: 720px) {
+  .main-content {
+    /* Add padding only for the player (48px height + some margin) */
+    padding-bottom: 64px;
+  }
+}

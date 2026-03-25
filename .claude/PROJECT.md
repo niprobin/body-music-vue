@@ -146,3 +146,89 @@ src/
 - `src/components/StarRating.vue`: New reusable component (new file)
 - `src/pages/Albums.vue`: Replaced star rating sections, removed CSS, added import
 - `src/pages/AlbumReview.vue`: Replaced star rating section, removed CSS, added import
+
+## Recent Changes (2026-03-25)
+
+### Now-Playing Integration in Audio Player
+- **Created useNowPlaying composable**: New shared state management for now-playing API data
+  - Single polling instance with reference counting prevents duplicate API calls
+  - 10-second polling interval consistent with existing LastSongs implementation
+  - Automatic cleanup when components unmount
+  - Error handling with graceful fallbacks
+  - API: `https://azuracast.niprobin.com/api/nowplaying/body_music_radio?cb=[timestamp]`
+
+- **Enhanced RadioPlayer component**: Dynamic track information display
+  - Replaced static "Body Music Radio" with current track title
+  - Shows artist name as subtitle when track data is available
+  - Falls back to "Vous écoutez Body Music Radio" when no track data or not playing
+  - Enhanced MediaSession integration with real track metadata and album art
+  - Maintains responsive behavior (hidden on mobile <720px)
+
+- **Refactored LastSongs component**: Uses shared composable instead of direct API calls
+  - Removed duplicate API fetching and polling logic
+  - Uses shared state from useNowPlaying composable
+  - Maintains existing UI with no visual changes
+  - Improved performance by eliminating duplicate network requests
+
+### Display Format
+- **When track data available**: Title as headline, Artist as subtitle
+- **When no track data**: "Body Music Radio" headline, "Vous écoutez Body Music Radio" subtitle
+- **During connection states**: Shows appropriate status messages (loading, error, etc.)
+
+### Technical Benefits
+- **Efficient resource usage**: Single API call every 10 seconds regardless of active components
+- **Follows project patterns**: Uses composable pattern consistent with existing useAnalytics.js
+- **Enhanced media controls**: Rich MediaSession integration with current track info and album art
+- **Graceful degradation**: Radio player works normally even if now-playing API fails
+
+### File Changes
+- `src/composables/useNowPlaying.js`: New shared composable for API state management (new file)
+- `src/components/RadioPlayer.vue`: Added dynamic track display and enhanced MediaSession
+- `src/pages/LastSongs.vue`: Refactored to use shared composable, removed direct API calls
+
+## Recent Changes (2026-03-25) - Mobile UI Rework
+
+### Mobile Audio Player UI Redesign
+- **Created MobileNavigation component**: New bottom navigation bar for mobile devices
+  - Fixed positioning at screen bottom with proper z-index layering
+  - Three navigation items (Accueil, Prog, Historique) with FontAwesome icons
+  - Touch-optimized 44px minimum touch targets
+  - Active state indication for current page
+  - Safe area support for devices with home indicators
+  - Hidden on desktop (>720px), visible only on mobile (≤720px)
+
+- **Restructured RadioPlayer for mobile**: Major mobile layout improvements
+  - **Removed action menu**: Eliminated navigation buttons from player (previously taking 80% width)
+  - **Repositioned player**: Moved from `bottom: 16px` to `bottom: 80px` to accommodate bottom navigation
+  - **Show track info on mobile**: Removed `display: none` rule for `.player-title` and `.player-status`
+  - **Optimized mobile layout**: New structure `[Play Button 56px] [Track Info - flexible] [Hidden Volume]`
+  - **Enhanced typography**: Added text truncation, responsive font sizes, proper ellipsis handling
+  - **Maintained desktop experience**: No changes to desktop layout (>720px)
+
+- **App integration**: Updated root application structure
+  - Added MobileNavigation component to App.vue template
+  - Proper component ordering: Header → Main → RadioPlayer → MobileNavigation → Footer
+  - Conditional rendering ensures mobile-only visibility
+
+- **Responsive enhancements**: Global mobile layout improvements
+  - Added mobile-specific padding (240px) to main content area
+  - Prevents content from being hidden behind bottom navigation and player
+  - Safe area handling for modern mobile devices
+  - Smooth transitions between desktop and mobile breakpoints
+
+### Mobile UX Improvements
+- **Before**: Track info hidden, navigation taking 80% of player space, poor mobile experience
+- **After**: Full track visibility with "Artist - Song" display, dedicated bottom navigation bar, app-like mobile experience
+
+### Design Benefits
+- **Industry Standard**: Follows iOS/Android bottom navigation patterns
+- **Thumb Accessibility**: Navigation at bottom edge for easy one-handed use
+- **Space Efficiency**: Player space dedicated to music information display
+- **Visual Hierarchy**: Clear separation between navigation and player functionality
+- **Future-Scalable**: Easy to add more navigation items or features
+
+### File Changes
+- `src/components/MobileNavigation.vue`: New bottom navigation component (new file)
+- `src/components/RadioPlayer.vue`: Removed mobile action menu, repositioned player, enabled track display
+- `src/App.vue`: Added MobileNavigation component integration
+- `src/style.css`: Added mobile-specific padding and safe area support

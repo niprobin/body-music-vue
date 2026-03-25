@@ -30,12 +30,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { computed } from 'vue'
+import { useNowPlaying } from '../composables/useNowPlaying.js'
 
-const nowPlaying = ref(null)
-const history = ref([])
-const fallbackArt = 'https://music.niprobin.com/radio_cover.png'
-let intervalId
+const { nowPlaying, songHistory, FALLBACK_ART } = useNowPlaying()
+const fallbackArt = FALLBACK_ART
 
 function formatPlayedAt(ts) {
   const date = new Date(ts * 1000)
@@ -47,8 +46,8 @@ function formatPlayedAt(ts) {
 }
 
 const filteredHistory = computed(() => {
-  if (!nowPlaying.value) return history.value
-  return history.value.filter(
+  if (!nowPlaying.value) return songHistory.value
+  return songHistory.value.filter(
     entry =>
       !(
         entry.song?.title === nowPlaying.value.song?.title &&
@@ -57,27 +56,7 @@ const filteredHistory = computed(() => {
   )
 })
 
-async function fetchSongs() {
-  try {
-    const res = await fetch('https://azuracast.niprobin.com/api/nowplaying/body_music_radio?cb=' + Date.now())
-    const data = await res.json()
-    nowPlaying.value = data.now_playing
-    history.value = data.song_history.slice(0, 10)
-  } catch (err) {
-    history.value = []
-    nowPlaying.value = null
-    console.error(err)
-  }
-}
-
-onMounted(() => {
-  fetchSongs()
-  intervalId = setInterval(() => fetchSongs(), 10000)
-})
-
-onUnmounted(() => {
-  if (intervalId) clearInterval(intervalId)
-})
+// Note: All API fetching and polling is now handled by the useNowPlaying composable
 </script>
 
 <style scoped>
