@@ -22,7 +22,7 @@
       <div class="section-header">
       <h2>Ton prochain coup de coeur</h2>
       <router-link to="/albums">
-          <button class="more-albums">Découvrir plus d'albums&ensp;<font-awesome-icon icon="fa-solid fa-arrow-right" /></button>
+          <button class="more-albums">Découvrir plus d'albums&ensp;<LucideIcon icon="arrow-right" /></button>
         </router-link>
         </div>
       <div class="section-content">
@@ -57,6 +57,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import LucideIcon from '../components/LucideIcon.vue'
 
 const featuredAlbum = ref(null)
 const loadingFeatured = ref(true)
@@ -183,10 +184,10 @@ onMounted(loadFeaturedAlbum)
   cursor: pointer;
   font-family: 'Inter',sans-serif;
   font-size: 14px;
-  height: 36px;
-  line-height: 27px;
-  min-width: 54px;
-  padding: 0 16px;
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
   text-align: center;
   user-select: none;
   -webkit-user-select: none;

@@ -3,9 +3,8 @@
     <div class="player-stack">
       <div class="player-primary">
         <button class="player-btn" @click="togglePlay" :disabled="isLoading">
-          <span class="btn-glow" />
           <span class="icon-wrapper">
-            <font-awesome-icon :icon="isPlaying ? 'pause' : 'play'" />
+            <LucideIcon :icon="isPlaying ? 'pause' : 'play'" />
           </span>
         </button>
         <div class="player-meta">
@@ -14,12 +13,12 @@
       </div>
      <!-- <div class="player-controls">
         <button class="volume-btn" @click="toggleMute" :title="isMuted ? 'Unmute' : 'Mute'">
-          <font-awesome-icon :icon="isMuted ? 'volume-xmark' : 'volume-high'" />
+          <LucideIcon :icon="isMuted ? 'volume-xmark' : 'volume-high'" />
         </button>
       </div> -->
       <!-- Mobile More Button -->
       <button class="mobile-more-btn" @click="toggleMobileNav">
-        <font-awesome-icon icon="ellipsis" />
+        <LucideIcon icon="ellipsis" />
       </button>
     </div>
 
@@ -33,6 +32,7 @@ import { ref, computed, onUnmounted } from 'vue'
 import { Howl } from 'howler'
 import { useNowPlaying } from '../composables/useNowPlaying.js'
 import MobileNavigation from './MobileNavigation.vue'
+import LucideIcon from './LucideIcon.vue'
 
 const streamUrl = 'https://azuracast.niprobin.com/listen/body_music_radio/public.mp3'
 const isPlaying = ref(false)
@@ -227,25 +227,32 @@ onUnmounted(() => {
 .player-btn {
   height: 6vh;
   aspect-ratio: 1 / 1;
-  border-radius: 0; /* Squared, no rounded corners */
-  border: none; /* Remove border for seamless look */
   background: #f3efe8;
   color: #111;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.25rem;
   cursor: pointer;
   border-radius:100%;
+  border:transparent;
+}
+
+.icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+
+.icon-wrapper > svg {
+  width:16px;
+  stroke:1px;
+  fill: #111;
 }
 
 .player-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
-}
-
-.btn-glow {
-  display: none;
 }
 
 .player-meta {

@@ -1,17 +1,22 @@
 <template>
   <div class="star-rating" :class="`star-rating--${size}`">
-    <font-awesome-icon
+    <LucideIcon
       v-for="n in 5"
       :key="n"
-      :icon="['fas', 'star']"
+      icon="star"
       :class="['star', { 'star--filled': n <= rating }]"
     />
   </div>
 </template>
 
 <script>
+import LucideIcon from './LucideIcon.vue'
+
 export default {
   name: 'StarRating',
+  components: {
+    LucideIcon
+  },
   props: {
     rating: {
       type: Number,

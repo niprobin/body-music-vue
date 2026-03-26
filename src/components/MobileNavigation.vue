@@ -5,15 +5,15 @@
   <!-- Navigation popup -->
   <nav class="mobile-navigation-popup">
     <router-link to="/" class="nav-item" :class="{ active: isActive('/') }" @click="$emit('close')">
-      <font-awesome-icon :icon="['fas', 'house']" class="nav-icon" />
+      <LucideIcon icon="house" class="nav-icon" />
       <span class="nav-label">Accueil</span>
     </router-link>
     <router-link to="/schedule" class="nav-item" :class="{ active: isActive('/schedule') }" @click="$emit('close')">
-      <font-awesome-icon :icon="['fas', 'calendar']" class="nav-icon" />
+      <LucideIcon icon="calendar" class="nav-icon" />
       <span class="nav-label">Prog</span>
     </router-link>
     <router-link to="/last-songs" class="nav-item" :class="{ active: isActive('/last-songs') }" @click="$emit('close')">
-      <font-awesome-icon :icon="['fas', 'music']" class="nav-icon" />
+      <LucideIcon icon="music" class="nav-icon" />
       <span class="nav-label">Historique</span>
     </router-link>
   </nav>
@@ -22,6 +22,7 @@
 <script setup>
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
+import LucideIcon from './LucideIcon.vue'
 
 const emit = defineEmits(['close'])
 const route = useRoute()
