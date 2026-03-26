@@ -199,7 +199,7 @@ onMounted(loadFeaturedAlbum)
 
 .home-loading {
   text-align: center;
-  color: #94a3b8;
+  color: #f3efe8;
   padding: 2rem 1rem;
 }
 
@@ -230,11 +230,19 @@ onMounted(loadFeaturedAlbum)
 }
 
 @media (max-width: 700px) {
+
+  p {font-size:1.1rem;}
+
+  .home {
+    padding:0rem 2rem;
+    margin:0;
+    width:100%;
+  }
+
   .home-content {
-    flex-direction: column;
-    text-align: center;
-    align-items: start;
-    padding-top:2rem;
+    padding:0;
+    margin:0;
+    width:100%;
   }
 
   .home-text {
@@ -252,7 +260,10 @@ onMounted(loadFeaturedAlbum)
   .featured-album {
     flex-direction: column;
     align-items: center;
-    padding:4rem 1rem;
+    padding:4rem 2rem;
+    margin:0;
+    width:100%;
+    text-align:center;
   }
 
   .featured-cover img {
@@ -262,16 +273,11 @@ onMounted(loadFeaturedAlbum)
 
   .featured-info {
     align-items: center;
-    text-align: center;
   }
 
   .featured-meta {
     flex-direction: column;
     gap:0;
-  }
-
-  .featured-text p {
-    text-align: center;
   }
 }
 </style>

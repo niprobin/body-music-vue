@@ -149,6 +149,13 @@ const filteredHistory = computed(() => {
 }
 
 @media (max-width: 640px) {
+
+  .last-songs {
+  max-width: 100%;
+  margin: 2rem auto;
+  padding:0rem 2rem;
+}
+
   .history-item {
     grid-template-columns: 75px 1fr;
     grid-template-rows: auto auto;

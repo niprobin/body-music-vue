@@ -146,6 +146,13 @@ onUnmounted(() => {
 }
 
 @media (max-width: 640px) {
+
+  .schedule-page {
+  max-width: 100%;
+  margin: 2rem auto;
+  padding:0rem 2rem;
+}
+
   .schedule-item {
     grid-template-columns: 120px 1fr;
     gap: 0.5rem;
