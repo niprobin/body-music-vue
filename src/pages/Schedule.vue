@@ -75,9 +75,9 @@ onUnmounted(() => {
 
 <style scoped>
 .schedule-page {
-  max-width: 900px;
+  max-width: 100%;
   margin: 2rem auto;
-  padding: 0 1rem 4rem;
+  padding:0rem 6rem;
 }
 
 .schedule-header {
@@ -86,7 +86,6 @@ onUnmounted(() => {
 
 .schedule-header p {
   margin: 0.3rem 0 0;
-  color: #94a3b8;
 }
 
 .schedule-list {
@@ -96,9 +95,9 @@ onUnmounted(() => {
 }
 
 .schedule-day {
-  border: 1px solid rgba(148, 163, 184, 0.3);
+  border:1px solid rgba(70, 69, 69, 0.95);
   border-radius: 16px;
-  background: rgba(15, 23, 42, 0.65);
+  background: #111;
   overflow: hidden;
 }
 
@@ -106,7 +105,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.5rem 0.85rem;
+  padding: 0rem 0.85rem;
   border-bottom: 1px solid rgba(148, 163, 184, 0.2);
 }
 
@@ -114,8 +113,9 @@ onUnmounted(() => {
   font-size: 0.75rem;
   padding: 0.05rem 0.35rem;
   border-radius: 999px;
-  border: 1px solid rgba(56, 189, 248, 0.4);
-  color: #38bdf8;
+  border: 1px solid #f3efe8;
+  background-color: #f3efe8;
+  color:#111;
 }
 
 .schedule-day__body {
@@ -128,7 +128,7 @@ onUnmounted(() => {
   grid-template-columns: 140px 1fr;
   gap: 0.75rem;
   padding: 0.85rem 1rem;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+  border-bottom:1px solid rgba(70, 69, 69, 0.95);
 }
 
 .schedule-item:last-child {
@@ -137,16 +137,12 @@ onUnmounted(() => {
 
 .schedule-item__time {
   font-weight: 500;
-  color: #f8fafc;
-}
-
-.schedule-item__name {
-  color: #cbd5f5;
 }
 
 .schedule-item--current {
-  background: rgba(56, 189, 248, 0.08);
-  border-left: 3px solid #38bdf8;
+  background: #f3efe8;
+  color:#111;
+  border-left: 3px solid #f3efe8;
 }
 
 @media (max-width: 640px) {

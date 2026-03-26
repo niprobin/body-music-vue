@@ -37,17 +37,16 @@ onUnmounted(() => {
   position: sticky;
   top: 0;
   width: 100%;
-  z-index: 1000;
-  height:15vh;
+  z-index: 998;
+  height:10vh;
   border-bottom:1px solid transparent;
-  transition: height 0.3s ease
 }
 
 .site-header--scrolled {
   height:10vh;
-  background: rgba(15, 23, 42, 1);
-  border-bottom:1px solid #0f2236;
-  transition: height 0.3s ease;
+  background-color: rgba(17, 17, 17, 0.95);
+  backdrop-filter: blur(6px);
+  
 }
 
 .header-inner {
@@ -65,10 +64,11 @@ onUnmounted(() => {
   display:flex;
   justify-content: center;
   align-items: center;
+  width:180px;
 }
 
 .header-logo img {
-  width:256px;
+  width:100%;
   object-fit: contain;
 }
 
@@ -85,10 +85,12 @@ onUnmounted(() => {
   padding-bottom: 0.2rem;
   padding:6px 10px;
   border-radius:4px;
+  
 }
 
 .header-nav a.router-link-active {
-  background-color: #f8fafc7a;
+  background-color: #f3efe8;
+  color:#111;
 }
 
 @media (max-width: 720px) {

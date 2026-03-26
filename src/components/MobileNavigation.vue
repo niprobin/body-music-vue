@@ -33,42 +33,23 @@ const isActive = (path) => {
 
 <style scoped>
 /* Overlay backdrop */
-.nav-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 3001;
-}
+
 
 /* Navigation popup */
 .mobile-navigation-popup {
   position: fixed;
-  bottom: 48px; /* Above the player */
+  top: 9vh; /* below player */
   left: 0;
   right: 0;
-  background: #0c0c0c;
-  border-top: 1px solid rgba(148, 163, 184, 0.25);
+  background-color: #111;
+  border-top:1px solid rgba(70, 69, 69, 0.95);
+  border-bottom:1px solid rgba(70, 69, 69, 0.95);
+  transition: border 0.5s ease;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem 0.5rem;
-  z-index: 3002;
-  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
-  animation: slideUp 0.2s ease-out;
-}
-
-@keyframes slideUp {
-  from {
-    transform: translateY(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+  height:8vh;
+  z-index: 998;
 }
 
 .nav-item {
@@ -77,8 +58,7 @@ const isActive = (path) => {
   align-items: center;
   justify-content: center;
   flex: 1;
-  padding: 0.75rem 0.5rem;
-  min-height: 44px;
+  min-height: 6vh;
   color: #94a3b8;
   text-decoration: none;
   transition: all 0.2s ease;
@@ -87,14 +67,14 @@ const isActive = (path) => {
   border-radius: 8px;
 }
 
-.nav-item:hover,
+
 .nav-item.active {
-  color: #38bdf8;
-  background: rgba(56, 189, 248, 0.1);
+  color: #111;
+  background: #f3efe8;
 }
 
 .nav-icon {
-  font-size: 1.25rem;
+  font-size: 1rem;
   margin-bottom: 0.25rem;
 }
 

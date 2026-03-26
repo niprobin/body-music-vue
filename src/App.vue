@@ -1,6 +1,7 @@
 <template>
   <div id="app" class="app-shell">
     <Header />
+    <RadioPlayer />
     <main class="main-content">
       <router-view v-slot="{ Component }">
         <transition name="fade">
@@ -8,7 +9,6 @@
         </transition>
       </router-view>
     </main>
-    <RadioPlayer />
     <Footer />
   </div>
 </template>

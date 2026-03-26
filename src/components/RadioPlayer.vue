@@ -10,14 +10,13 @@
         </button>
         <div class="player-meta">
           <p class="player-title">{{ displayTitle }}</p>
-          <p v-if="shouldShowSubtitle" class="player-status">{{ displaySubtitle }}</p>
         </div>
       </div>
-      <div class="player-controls">
+     <!-- <div class="player-controls">
         <button class="volume-btn" @click="toggleMute" :title="isMuted ? 'Unmute' : 'Mute'">
           <font-awesome-icon :icon="isMuted ? 'volume-xmark' : 'volume-high'" />
         </button>
-      </div>
+      </div> -->
       <!-- Mobile More Button -->
       <button class="mobile-more-btn" @click="toggleMobileNav">
         <font-awesome-icon icon="ellipsis" />
@@ -61,7 +60,7 @@ const displayTitle = computed(() => {
   const title = getTrackTitle()
 
   if (artist && title) {
-    return `${title} — ${artist}`
+    return `${title}  •  ${artist}`
   }
 
   return 'Body Music Radio'
@@ -189,18 +188,21 @@ onUnmounted(() => {
 
 <style scoped>
 .radio-player-bar {
-  position: fixed;
-  left: 0;
-  bottom: 0; /* Stick to bottom of viewport */
-  width: 100%; /* Full width */
-  padding: 0; /* No padding for seamless design */
-  background: #0c0c0c;
-  border-top:1px solid #131313;
-  border-radius: 0; /* Remove rounded borders */
+  position: sticky;
+  top: 10vh;
+  width: 100%;
+  z-index: 1000;
+  height:9vh;
+  background-color: rgba(17, 17, 17, 0.95);
+  border-top:1px solid rgba(70, 69, 69, 0.95);
+  border-bottom:1px solid rgba(70, 69, 69, 0.95);
+  transition: border 0.5s ease;
+  backdrop-filter: blur(6px);
+  display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   gap: 0;
-  z-index: 3000;
-  box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
 }
 
 .player-stack {
@@ -208,19 +210,22 @@ onUnmounted(() => {
   align-items: center; /* Full height alignment */
   justify-content: space-between;
   gap: 0;
-  height: 11vh; /* Fixed height for desktop */
+  height: 9vh; /* Fixed height for desktop */
+  
+  width:95vw;
+  
 }
 
 .player-primary {
   display: flex;
-  align-items: stretch;
+  justify-content: center;
+  align-items: center;
   gap: 0;
   flex: 1;
 }
 
 .player-btn {
-  height: 11vh;
-  max-height:100%;
+  height: 6vh;
   aspect-ratio: 1 / 1;
   border-radius: 0; /* Squared, no rounded corners */
   border: none; /* Remove border for seamless look */
@@ -231,8 +236,7 @@ onUnmounted(() => {
   justify-content: center;
   font-size: 1.25rem;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  flex-shrink: 0;
+  border-radius:100%;
 }
 
 .player-btn:disabled {
@@ -324,12 +328,7 @@ onUnmounted(() => {
   }
 
   .player-btn {
-    height: 11vh;
-    aspect-ratio: 1 / 1;
-    border-radius: 0;
     font-size: 1.1rem;
-    flex-shrink: 0;
-    border: none;
   }
 
   .player-controls {
@@ -367,7 +366,7 @@ onUnmounted(() => {
 
   .mobile-more-btn {
     width: 48px;
-    height: 10vh; /* Match player height */
+    height: 6vh; /* Match player height */
     border: none;
     background: transparent;
     color: #f8fafc;
@@ -378,11 +377,6 @@ onUnmounted(() => {
     justify-content: center;
     flex-shrink: 0; /* Always maintain size */
     transition: all 0.2s ease;
-  }
-
-  .mobile-more-btn:hover {
-    background: rgba(148, 163, 184, 0.1);
-    color: #38bdf8;
   }
 
   .mobile-more-btn:active {

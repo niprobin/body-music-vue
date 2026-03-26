@@ -102,7 +102,8 @@ onMounted(loadFeaturedAlbum)
 .home {
   display: flex;
   justify-content: center;
-  padding: 1rem;
+  width:100%;
+  padding:0rem 6rem;
   height:89vh;
   min-height:89vh;
   max-height:89vh;
@@ -111,9 +112,8 @@ onMounted(loadFeaturedAlbum)
 .home-content {
   display: flex;
   align-items:start;
-  max-width: 960px;
   width: 100%;
-  padding-top:5rem;
+  padding-top:4rem;
 }
 
 .home-text {
@@ -134,13 +134,12 @@ onMounted(loadFeaturedAlbum)
   gap: 4rem;
   align-items: start;
   justify-content: top;
-  
+  border-top:1px solid rgba(70, 69, 69, 0.95);
   padding: 4rem;
-  background: #0b101d;
 }
 
 #featured-album {
-  scroll-margin-top: 12vh;
+  scroll-margin-top: 19vh;
 }
 
 .featured-cover img {

@@ -272,13 +272,12 @@ function isInternalLink(album) {
 
 <style scoped>
 .albums-page {
-  max-width: 1100px;
-  margin: 2rem auto;
-  padding: 0 1rem 4rem;
+  max-width: 100%;
 }
 
 .albums-header {
   margin-bottom: 1.5rem;
+  padding:0rem 6rem;
 }
 
 .albums-header p {
@@ -303,6 +302,7 @@ function isInternalLink(album) {
   display: flex;
   flex-direction: column;
   gap: 3rem;
+  padding:0rem 6rem;
 }
 
 .albums-section {
@@ -438,11 +438,11 @@ function isInternalLink(album) {
 /* Sticky Header for Tabs */
 .albums-sticky-header {
   position: sticky;
-  top: 70px; /* Position below header with margin */
+  top: 19vh; /* Position below header with margin */
   z-index: 500; /* Between header (1000) and default content */
-  background: #0f172a; /* Fully opaque background to prevent bleed-through */
-  backdrop-filter: blur(12px); /* Match header blur effect */
+  backdrop-filter: blur(6px); /* Match header blur effect */
   padding: 1rem 0 0.5rem; /* Add top padding back for coverage */
+  background-color: rgba(17, 17, 17, 0.95);
   margin: -0.5rem 0 1rem; /* Negative top margin to extend coverage */
   border-bottom: 1px solid rgba(148, 163, 184, 0.2); /* Subtle separator */
   transition: background-color 0.2s ease, backdrop-filter 0.2s ease;
@@ -474,9 +474,9 @@ function isInternalLink(album) {
 .albums-tab {
   flex-shrink: 0;
   padding: 0.75rem 1.25rem;
-  border: 1px solid rgba(148, 163, 184, 0.3);
-  background: rgba(15, 23, 42, 0.7);
-  color: #94a3b8;
+  border: 1px solid rgba(70, 69, 69, 0.95);
+  color: #f3efe8;
+  background:#111;
   border-radius: 50px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -485,23 +485,12 @@ function isInternalLink(album) {
   white-space: nowrap;
 }
 
-.albums-tab:hover {
-  background: rgba(15, 23, 42, 0.9);
-  border-color: rgba(148, 163, 184, 0.5);
-  color: #f8fafc;
-}
-
 .albums-tab--active {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: #f8fafc;
-  color: #f8fafc;
+  background: #f3efe8;
+  border-color: #f3efe8;
+  color: #111;
   font-weight: 500;
 }
-
-.albums-tab--active:hover {
-  background: rgba(255, 255, 255, 0.15);
-}
-
 .albums-tab-content {
   animation: fadeIn 0.3s ease-in-out;
 }
@@ -513,9 +502,7 @@ function isInternalLink(album) {
 
 @media (max-width: 720px) {
   .albums-sticky-header {
-    top: 65px; /* Adjust for potentially shorter mobile header with margin */
-    padding: 0.75rem 0 0.375rem; /* Restore padding for coverage */
-    margin: -0.375rem 0 1rem; /* Negative margin for extended coverage */
+    top: 19vh; /* Adjust for potentially shorter mobile header with margin */
   }
 }
 

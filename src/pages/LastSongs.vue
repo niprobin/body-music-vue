@@ -61,9 +61,9 @@ const filteredHistory = computed(() => {
 
 <style scoped>
 .last-songs {
-  max-width: 900px;
+  max-width: 100%;
   margin: 2rem auto;
-  padding: 0 1rem 4rem;
+  padding:0rem 6rem;
 }
 
 .last-songs__header {
@@ -71,14 +71,13 @@ const filteredHistory = computed(() => {
 }
 
 .last-songs__header p {
-  color: #94a3b8;
   margin: 0.2rem 0 0;
 }
 
 .history-list {
   display: flex;
   flex-direction: column;
-  border: 1px solid rgba(148, 163, 184, 0.3);
+  border:1px solid rgba(70, 69, 69, 0.95);
   border-radius: 16px;
   overflow: hidden;
 }
@@ -89,23 +88,19 @@ const filteredHistory = computed(() => {
   align-items: center;
   gap: 1rem;
   padding: 1rem 1.2rem;
-  background: rgba(15, 23, 42, 0.6);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+  border-bottom:1px solid rgba(70, 69, 69, 0.95);
 }
 
 .history-item:last-child {
   border-bottom: none;
 }
 
-.history-item.current {
-  background: rgba(56, 189, 248, 0.1);
-  border-bottom-color: rgba(56, 189, 248, 0.3);
-}
+
 
 .history-cover {
   width: 75px;
   height: 75px;
-  border-radius: 12px;
+  border-radius: 6px;
   object-fit: cover;
 }
 
@@ -130,26 +125,27 @@ const filteredHistory = computed(() => {
 .history-title {
   margin: 0;
   font-weight: 600;
-  color: #f8fafc;
+  color: #f3efe8;
 }
 
 .history-artist {
   margin: 0;
-  color: #94a3b8;
+  color: #fff;
   font-size: 0.95rem;
 }
 
 .history-time,
 .history-tag {
   font-size: 0.85rem;
-  color: #cbd5f5;
+  color: #f3efe8;
 }
 
 .history-tag {
   padding: 0.15rem 0.6rem;
   border-radius: 999px;
-  border: 1px solid rgba(56, 189, 248, 0.4);
-  color: #38bdf8;
+  border: 1px solid #f3efe8;
+  background-color: #f3efe8;
+  color:#111;
 }
 
 @media (max-width: 640px) {
