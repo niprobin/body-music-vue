@@ -268,19 +268,19 @@ h2 {
 
   p {font-size:1.1rem;}
 
-  .home {
+  .hero {
     padding: 2rem;
     margin:0;
     width:100%;
   }
 
-  .home-content {
+  .hero-content {
     padding:0;
     margin:0;
     width:100%;
   }
 
-  .home-text {
+  .hero-text {
     text-align: center;
   }
 
@@ -294,6 +294,10 @@ h2 {
 
   .featured-album {
     gap:0rem;
+    padding: 2rem;
+    margin:0;
+    width:100%;
+    text-align:center;
   }
 
   .featured-album > .section-header {
@@ -307,7 +311,6 @@ h2 {
     padding: 2rem;
     margin:0;
     width:100%;
-    text-align:center;
   }
 
   .featured-cover img {

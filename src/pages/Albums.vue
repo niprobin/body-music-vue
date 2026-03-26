@@ -4,7 +4,6 @@
       <h1>Les albums en rotation</h1>
       <p>On écoute un paquet de musique et parfois on tente de vous partager nos albums préférés !</p>
     </div>
-
     <div v-if="loading" class="status-card">Chargement…</div>
     <div v-else-if="error && !albums.length" class="status-card error">{{ error }}</div>
 
@@ -338,18 +337,6 @@ function isInternalLink(album) {
   gap: 0.75rem;
 }
 
-@media (max-width: 900px) {
-  .albums-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 600px) {
-  .albums-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
 .album-card {
   border-radius: 0.75rem;
   padding: 0.75rem;
@@ -425,13 +412,6 @@ function isInternalLink(album) {
   border: 1px solid rgba(148, 163, 184, 0.3);
 }
 
-@media (max-width: 640px) {
-  .refresh-indicator {
-    top: 4rem;
-    font-size: 0.7rem;
-  }
-}
-
 /* Sticky Header for Tabs */
 .albums-sticky-header {
   position: sticky;
@@ -488,22 +468,26 @@ function isInternalLink(album) {
   color: #111;
   font-weight: 500;
 }
+
 .albums-tab-content {
   animation: fadeIn 0.3s ease-in-out;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+@media (max-width: 700px) {
 
-@media (max-width: 720px) {
+  .albums-sections, .albums-header {
+    width:100%;
+    padding:0rem 2rem;
+  }
+
+  .albums-grid {
+    grid-template-columns: 1fr;
+  }
+
   .albums-sticky-header {
     top: 19vh; /* Adjust for potentially shorter mobile header with margin */
   }
-}
 
-@media (max-width: 640px) {
   .albums-tabs-container {
     gap: 0.375rem;
   }
