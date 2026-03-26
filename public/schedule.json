@@ -1,49 +1,49 @@
 {
     "lundi": [
         { "start": "06:30", "end": "10:00", "show": "Bonjour tout le monde" },
-        { "start": "10:00", "end": "21:00", "show": "Toute la musique que tu aimes" },
+        { "start": "10:00", "end": "21:00", "show": "On groove ensemble" },
         { "start": "21:00", "end": "22:00", "show": "DNB & Downtempo" },
         { "start": "22:00", "end": "23:59", "show": "Bonne nuit les enfants" }
         
     ],
     "mardi": [
         { "start": "06:30", "end": "10:00", "show": "Bonjour tout le monde" },
-        { "start": "10:00", "end": "21:00", "show": "Toute la musique que tu aimes" },
+        { "start": "10:00", "end": "21:00", "show": "On groove ensemble" },
         { "start": "21:00", "end": "22:00", "show": "House & Disco" },
         { "start": "22:00", "end": "23:59", "show": "Bonne nuit les enfants" }
         
     ],
     "mercredi": [
         { "start": "06:30", "end": "10:00", "show": "Bonjour tout le monde" },
-        { "start": "10:00", "end": "21:00", "show": "Toute la musique que tu aimes" },
+        { "start": "10:00", "end": "21:00", "show": "On groove ensemble" },
         { "start": "21:00", "end": "22:00", "show": "DNB & Downtempo" },
         { "start": "22:00", "end": "23:59", "show": "Bonne nuit les enfants" }
         
     ],
     "jeudi": [
         { "start": "06:30", "end": "10:00", "show": "Bonjour tout le monde" },
-        { "start": "10:00", "end": "21:00", "show": "Toute la musique que tu aimes" },
+        { "start": "10:00", "end": "21:00", "show": "On groove ensemble" },
         { "start": "21:00", "end": "22:00", "show": "House & Disco" },
         { "start": "22:00", "end": "23:59", "show": "Bonne nuit les enfants" }
         
     ],
     "vendredi": [
         { "start": "06:30", "end": "10:00", "show": "Bonjour tout le monde" },
-        { "start": "10:00", "end": "21:00", "show": "Toute la musique que tu aimes" },
+        { "start": "10:00", "end": "21:00", "show": "On groove ensemble" },
         { "start": "21:00", "end": "22:00", "show": "DNB & Downtempo" },
         { "start": "22:00", "end": "23:59", "show": "Bonne nuit les enfants" }
         
     ],
     "samedi": [
         { "start": "06:30", "end": "10:00", "show": "Bonjour tout le monde" },
-        { "start": "10:00", "end": "21:00", "show": "Toute la musique que tu aimes" },
+        { "start": "10:00", "end": "21:00", "show": "On groove ensemble" },
         { "start": "21:00", "end": "22:00", "show": "House & Disco" },
         { "start": "22:00", "end": "23:59", "show": "Bonne nuit les enfants" }
         
     ],
     "dimanche": [
         { "start": "06:30", "end": "10:00", "show": "Bonjour tout le monde" },
-        { "start": "10:00", "end": "21:00", "show": "Toute la musique que tu aimes" },
+        { "start": "10:00", "end": "21:00", "show": "On groove ensemble" },
         { "start": "21:00", "end": "22:00", "show": "DNB & Downtempo" },
         { "start": "22:00", "end": "23:59", "show": "Bonne nuit les enfants" }
     ]
