@@ -1,29 +1,36 @@
 <template>
-  <main v-if="!loadingFeatured">
-    <section class="home">
-      <div class="home-content">
+  <main class="homepage" v-if="!loadingFeatured">
+    <section class="hero">
+      <div class="hero-content">
         <!-- <img src="/body_music_duck_logo.png" alt="Body Music Radio Logo" class="home-logo" /> -->
-        <div class="home-text">
-          <h1>Bienvenue sur Body Music Radio</h1>
+        <div class="hero-text">
+          <h2>On est pas bien là ?</h2>
           <p>
-            Selecta réalisée par nos soins pour te faire danser &amp; chiller toute la journée&nbsp;! Tu aimes une
-            track&nbsp;? Tu peux directement checker ce qui est entrain de jouer.<br><br>Tu peux également regarder notre
-            planning pour savoir à quoi t'attendre sur la radio.
+            Toute la musique qu'on aime sans interruption et sans pubs pour ton plaisir auditif. On commence tout doucement le matin pour se réveiller tranquillement, avant de groover tout le reste de la journée !<br><br>
+            On ajoute des nouvelles tracks au fur et à mesure de nos découvertes.<br><br>
+            Si tu cherches ton nouvel album préféré, tu peux jeter un oeil à la collection qu'on partage.<br><br>
+            <b>Body Music Radio te souhaite une très bonne écoute !</b>
           </p>
-          <button class="scroll-to-album" @click="scrollToFeaturedAlbum">
+          <!--<button class="scroll-to-album" @click="scrollToFeaturedAlbum">
             Tu connais cet album ?
-          </button>
+          </button> -->
         </div>
       </div>
     </section>
 
     <section id="featured-album" class="featured-album" v-if="featuredAlbum">
+      <div class="section-header">
+      <h2>Ton prochain coup de coeur</h2>
+      <router-link to="/albums">
+          <button class="more-albums">Découvrir plus d'albums&ensp;<font-awesome-icon icon="fa-solid fa-arrow-right" /></button>
+        </router-link>
+        </div>
+      <div class="section-content">
         <div class="featured-cover">
           <img :src="featuredAlbum.cover_url || fallbackCover" :alt="featuredAlbum.release_name || 'Album du moment'" />
       </div>
       <div class="featured-info">
-        <p class="featured-label">Album du moment </p>
-        <h2>{{ featuredAlbum.release_name }} </h2>
+        <h3>{{ featuredAlbum.release_name }} </h3>
         <div class="featured-meta">
           <p class="featured-date">Sortie le {{ formatReleaseDate(featuredAlbum.release_date) }}
         </p>
@@ -34,9 +41,7 @@
             {{ paragraph }}
           </p>
         </div>
-        <router-link to="/albums">
-          <button class="more-albums">Découvrir plus d'albums</button>
-        </router-link>
+      </div>
       </div>
     </section>
 
@@ -99,43 +104,104 @@ onMounted(loadFeaturedAlbum)
 </script>
 
 <style scoped>
-.home {
+
+/* STYLES FOR THE HERO SECTION ON THE HOMEPAGE */
+
+.homepage {
+  max-width: 100%;
+}
+
+.hero {
   display: flex;
   justify-content: center;
   width:100%;
-  padding:0rem 6rem;
-  height:89vh;
-  min-height:89vh;
-  max-height:89vh;
+  padding:2rem 6rem;
 }
 
-.home-content {
+.hero-content {
   display: flex;
   align-items:start;
   width: 100%;
-  padding-top:4rem;
 }
 
-.home-text {
+.hero-text {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
   text-align: left;
 }
 
-.home-logo {
-  width: 220px;
-  max-width: 40%;
+.scroll-to-album {
+  background-color: #f8f9fa;
+  border: 1px solid #f8f9fa;
+  border-radius: 4px;
+  color: #111;
+  cursor: pointer;
+  font-family: 'Inter',sans-serif;
+  font-size: 14px;
+  height: 36px;
+  line-height: 27px;
+  min-width: 54px;
+  padding: 0 16px;
+  text-align: center;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: pre;
+  display: inline-block;
+  width: auto;
+  align-self: flex-start;
+  border:1px solid rgba(214, 212, 212, 0.5);
+  -webkit-box-shadow: 2px 4px 4px 0px rgba(0,0,0,0.25); 
+  box-shadow: 2px 4px 4px 0px rgba(0,0,0,0.25);
 }
 
+/* STYLES FOR THE FEATURED ALBUM SECTION ON THE HOMEPAGE */
+
 .featured-album {
+  /* border-top:1px solid rgba(70, 69, 69, 0.95); */
+  width:100%;
+  display:flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding:2rem 6rem;
+}
+
+/* HEADER OF THE FEATURED SECTION (CTA) */
+
+.featured-album > .section-header {
+ display:flex;
+ justify-content: space-between;
+ align-items: center;
+}
+
+.more-albums {
+  background-color: #111;
+  border: 1px solid #f3efe8;
+  border-radius: 4px;
+  color: #f3efe8;
+  cursor: pointer;
+  font-family: 'Inter',sans-serif;
+  font-size: 14px;
+  height: 36px;
+  line-height: 27px;
+  min-width: 54px;
+  padding: 0 16px;
+  text-align: center;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: pre;
+  width: auto;
+}
+
+/* HEADER OF THE FEATURED SECTION (ALBUM) */
+
+.featured-album > .section-content {
   display: flex;
-  gap: 4rem;
+  gap: 2rem;
   align-items: start;
   justify-content: top;
-  border-top:1px solid rgba(70, 69, 69, 0.95);
-  padding: 4rem;
 }
 
 #featured-album {
@@ -143,11 +209,14 @@ onMounted(loadFeaturedAlbum)
 }
 
 .featured-cover img {
-  width: 260px;
-  max-width: 40vw;
-  border-radius: 1rem;
+  max-width: 320px;
+  width: 100%;
+  height: auto;
+  border-radius: 0.25rem;
   object-fit: cover;
-  box-shadow: rgba(3, 7, 18, 0.45) 0px 20px 45px;
+  border:1px solid rgba(51, 51, 51, 0.5);
+  -webkit-box-shadow: 2px 4px 4px 0px rgba(0,0,0,0.25); 
+  box-shadow: 2px 4px 4px 0px rgba(0,0,0,0.25);
 }
 
 .featured-info {
@@ -157,15 +226,7 @@ onMounted(loadFeaturedAlbum)
   gap: 0.75rem;
 }
 
-.featured-label {
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: 0.8rem;
-  color: #94a3b8;
-  margin: 0;
-}
-
-.featured-info h2 {
+h2 {
   margin: 0;
 }
 
@@ -203,38 +264,12 @@ onMounted(loadFeaturedAlbum)
   padding: 2rem 1rem;
 }
 
-.more-albums,
-.scroll-to-album {
-  background-color: #f8f9fa;
-  border: 1px solid #f8f9fa;
-  border-radius: 4px;
-  color: #3c4043;
-  cursor: pointer;
-  font-family: 'Inter',sans-serif;
-  font-size: 14px;
-  height: 36px;
-  line-height: 27px;
-  min-width: 54px;
-  padding: 0 16px;
-  text-align: center;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  white-space: pre;
-  display: inline-block;
-  width: auto;
-  align-self: flex-start;
-  border:1px solid rgba(214, 212, 212, 0.5);
-  -webkit-box-shadow: 2px 4px 4px 0px rgba(0,0,0,0.25); 
-  box-shadow: 2px 4px 4px 0px rgba(0,0,0,0.25);
-}
-
 @media (max-width: 700px) {
 
   p {font-size:1.1rem;}
 
   .home {
-    padding:0rem 2rem;
+    padding: 2rem;
     margin:0;
     width:100%;
   }
@@ -258,9 +293,18 @@ onMounted(loadFeaturedAlbum)
   }
 
   .featured-album {
+    gap:0rem;
+  }
+
+  .featured-album > .section-header {
+    flex-direction: column-reverse;
+    gap:4rem;
+  }
+
+  .featured-album > .section-content {
     flex-direction: column;
     align-items: center;
-    padding:4rem 2rem;
+    padding: 2rem;
     margin:0;
     width:100%;
     text-align:center;

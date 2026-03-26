@@ -229,8 +229,8 @@ onUnmounted(() => {
   aspect-ratio: 1 / 1;
   border-radius: 0; /* Squared, no rounded corners */
   border: none; /* Remove border for seamless look */
-  background: #fff;
-  color: #0c0c0c;
+  background: #f3efe8;
+  color: #111;
   display: flex;
   align-items: center;
   justify-content: center;

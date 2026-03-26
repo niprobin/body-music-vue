@@ -277,11 +277,10 @@ function isInternalLink(album) {
 
 .albums-header {
   margin-bottom: 1.5rem;
-  padding:0rem 6rem;
+  padding:2rem 6rem;
 }
 
 .albums-header p {
-  color: #94a3b8;
   margin: 0.25rem 0 0;
 }
 
@@ -319,8 +318,6 @@ function isInternalLink(album) {
 
 .section-title {
   margin: 0;
-  font-size: 1.3rem;
-  font-weight: 600;
 }
 
 .albums-group {
