@@ -5,13 +5,6 @@
     <div v-else-if="!album" class="status-card error">Album non trouvé</div>
 
     <div v-else class="review-content">
-      <!-- Navigation -->
-      <nav class="review-nav">
-        <router-link to="/albums" class="back-link">
-          ← Retour aux albums
-        </router-link>
-      </nav>
-
       <!-- Album Header -->
       <header class="album-header">
         <div class="album-cover-section">
@@ -22,21 +15,24 @@
           />
         </div>
         <div class="album-info">
-          <h1>{{ album.release_name || 'Titre inconnu' }}</h1>
-          <p class="album-details">
+          <h2>{{ album.release_name || 'Titre inconnu' }}</h2>
+          <div class="album-details">
+            <p>
             Sortie le {{ formatReleaseDate(album.release_date) }}
           </p>
-          <p class="album-details" v-if="album.liked_date">
+          <p>—</p>
+          <p v-if="album.liked_date">
             Écouté le {{ formatLikedDate(album.liked_date) }}
           </p>
-          <div class="album-rating" v-if="album.rating">            <StarRating :rating="album.rating" size="large" />            <span class="rating-text">{{ album.rating }}/5</span>          </div>
+          </div>
+          <div class="album-rating" v-if="album.rating"><StarRating :rating="album.rating" size="large" /></div>
           <div class="album-links">
             <a v-if="getExternalLink(album)"
                :href="getExternalLink(album)"
                target="_blank"
                rel="noopener"
                class="external-link">
-              Découvrir l'album →
+              En savoir plus
             </a>
           </div>
         </div>
@@ -152,9 +148,9 @@ function getExternalLinkText(album) {
 
 <style scoped>
 .album-review-page {
-  max-width: 900px;
+  max-width: 100%;
   margin: 2rem auto;
-  padding: 0 1rem 4rem;
+  padding:2rem 6rem;
 }
 
 .status-card {
@@ -192,25 +188,24 @@ function getExternalLinkText(album) {
 }
 
 .album-header {
-  display: grid;
-  grid-template-columns: 300px 1fr;
+  display: flex;
   gap: 2rem;
   align-items: start;
 }
 
-@media (max-width: 768px) {
-  .album-header {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-    text-align: center;
-  }
+.album-cover-section {
+  width:320px;
+  max-width:320px;
 }
 
 .album-cover-large {
   width: 100%;
   height: auto;
-  border-radius: 1rem;
-  box-shadow: rgba(0, 0, 0, 0.3) 0px 4px 12px;
+  border-radius: 0.25rem;
+  object-fit: cover;
+  border:1px solid rgba(51, 51, 51, 0.5);
+  -webkit-box-shadow: 2px 4px 4px 0px rgba(0,0,0,0.25); 
+  box-shadow: 2px 4px 4px 0px rgba(0,0,0,0.25);
 }
 
 .album-info {
@@ -219,23 +214,25 @@ function getExternalLinkText(album) {
   gap: 1rem;
 }
 
-.album-info h1 {
+.album-info h2 {
   margin: 0;
   font-size: 2rem;
   font-weight: 700;
   line-height: 1.2;
-}
-
-@media (max-width: 768px) {
-  .album-info h1 {
-    font-size: 1.5rem;
-  }
+  font-family: 'Inter','sans-serif' !important;
 }
 
 .album-details {
+  display:flex;
+  gap:1rem;
+  width:100%;
   margin: 0;
   color: #94a3b8;
   font-size: 1rem;
+}
+
+.album-details p {
+  line-height:1;
 }
 
 .album-rating {
@@ -244,7 +241,6 @@ function getExternalLinkText(album) {
   align-items: center;
   font-size: 1.2rem;
 }
-
 
 .rating-text {
   margin-left: 0.5rem;
@@ -258,21 +254,28 @@ function getExternalLinkText(album) {
 }
 
 .external-link {
-  color: #60a5fa;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s;
-}
-
-.external-link:hover {
-  color: #93c5fd;
+  background-color: #111;
+  border: 1px solid #f3efe8;
+  border-radius: 4px;
+  color: #f3efe8;
+  cursor: pointer;
+  font-family: 'Inter',sans-serif;
+  font-size: 14px;
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  text-align: center;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: pre;
+  width: auto;
 }
 
 .review-main {
-  background: rgba(15, 23, 42, 0.5);
-  border-radius: 1rem;
-  padding: 2rem;
-  border: 1px solid rgba(148, 163, 184, 0.1);
+  color: #f3efe8;
+  padding: 1rem 0rem;
 }
 
 .review-text {
@@ -286,5 +289,41 @@ function getExternalLinkText(album) {
 
 .review-text :deep(p:last-child) {
   margin-bottom: 0;
+}
+
+@media (max-width: 700px) {
+
+  p {font-size:1.1rem;}
+
+  .album-header {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  .album-info {
+    align-items: center;
+  }
+
+  .album-details {
+    flex-direction: column;
+    gap:0rem;
+    align-items: center;
+  }
+
+  .album-details p:nth-child(2) {
+    display:none;
+  }
+
+  .album-review-page {
+    padding:2rem;
+  }
+
+  .album-header {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      text-align: center;
+    }
 }
 </style>
