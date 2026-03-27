@@ -96,9 +96,9 @@
                 <p class="album-date">Sortie le {{ formatReleaseDate(album.release_date) }}</p>
                 <StarRating v-if="album.rating" :rating="album.rating" size="medium" />
               </div>
-              <a v-if="isInternalLink(album)" :href="getAlbumLink(album)" class="review-button">
+              <router-link v-if="isInternalLink(album)" :to="getAlbumLink(album)" class="review-button">
                 Notre avis
-              </a>
+              </router-link>
             </article>
           </div>
         </div>
