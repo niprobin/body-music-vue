@@ -1,44 +1,62 @@
 <template>
-  <div class="radio-player-bar section-card">
-    <div class="player-stack">
-      <div class="player-primary">
-        <button class="player-btn" @click="togglePlay" :disabled="isLoading">
-          <span class="icon-wrapper">
-            <LucideIcon :icon="isPlaying ? 'pause' : 'play'" />
-          </span>
-        </button>
-        <div class="player-meta">
-          <p class="player-title">{{ displayTitle }}</p>
-        </div>
+  <div :class="['header-player', { 'header-player--scrolled': scrolled }]">
+    <!-- Header Section (10vh) -->
+    <header class="header-section">
+      <div class="header-inner">
+        <router-link to="/" class="header-logo">
+          <img src="/body-music-gradient.png" alt="Body Music Radio" />
+        </router-link>
+        <nav class="header-nav">
+          <router-link to="/">Accueil</router-link>
+          <router-link to="/schedule">Programmation</router-link>
+          <router-link to="/last-songs">Dernières tracks</router-link>
+          <router-link to="/albums">Nos albums</router-link>
+        </nav>
       </div>
-     <!-- <div class="player-controls">
-        <button class="volume-btn" @click="toggleMute" :title="isMuted ? 'Unmute' : 'Mute'">
-          <LucideIcon :icon="isMuted ? 'volume-xmark' : 'volume-high'" />
-        </button>
-      </div> -->
-      <!-- Mobile More Button -->
-      <button class="mobile-more-btn" @click="toggleMobileNav">
-        <LucideIcon icon="ellipsis" />
-      </button>
-    </div>
+    </header>
 
-    <!-- Mobile Navigation Popup -->
-    <MobileNavigation v-if="showMobileNav" @close="showMobileNav = false" />
+    <!-- Player Section (9vh) -->
+    <div class="player-section">
+      <div class="player-stack">
+        <div class="player-primary">
+          <button class="player-btn" @click="togglePlay" :disabled="isLoading">
+            <span class="icon-wrapper">
+              <LucideIcon :icon="isPlaying ? 'pause' : 'play'" />
+            </span>
+          </button>
+          <div class="player-meta">
+            <p class="player-title">{{ displayTitle }}</p>
+          </div>
+        </div>
+
+        <!-- Mobile More Button -->
+        <button class="mobile-more-btn" @click="toggleMobileNav">
+          <LucideIcon icon="ellipsis" />
+        </button>
+      </div>
+
+      <!-- Mobile Navigation Popup -->
+      <MobileNavigation v-if="showMobileNav" @close="showMobileNav = false" />
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { Howl } from 'howler'
 import { useNowPlaying } from '../composables/useNowPlaying.js'
 import MobileNavigation from './MobileNavigation.vue'
 import LucideIcon from './LucideIcon.vue'
 
+// Header state - scroll detection
+const scrolled = ref(false)
+
+// RadioPlayer state - audio functionality
 const streamUrl = 'https://azuracast.niprobin.com/listen/body_music_radio/public.mp3'
 const isPlaying = ref(false)
 const isLoading = ref(false)
 const isError = ref(false)
-const volume = ref(1.0) // 100% by default
+const volume = ref(1.0)
 const isMuted = ref(false)
 const showMobileNav = ref(false)
 let howl
@@ -46,16 +64,12 @@ let howl
 // Now-playing integration
 const { nowPlaying, getTrackTitle, getTrackArtist, getTrackArt } = useNowPlaying()
 
-// Display logic for track information
+// Display logic for track information (from RadioPlayer)
 const displayTitle = computed(() => {
-  // If there's an error or loading state, show status
   if (isError.value) return 'Erreur, réessayez'
   if (isLoading.value) return 'Connexion au stream...'
-
-  // If not playing, show launch message
   if (!isPlaying.value) return 'Lancer la radio'
 
-  // When playing, show track info or station name
   const artist = getTrackArtist()
   const title = getTrackTitle()
 
@@ -66,35 +80,24 @@ const displayTitle = computed(() => {
   return 'Body Music Radio'
 })
 
-const displaySubtitle = computed(() => {
-  return 'Vous écoutez Body Music Radio'
-})
+// Scroll detection function (from Header)
+function onScroll() {
+  scrolled.value = window.scrollY > 0.10
+}
 
-const shouldShowSubtitle = computed(() => {
-  // Only show subtitle when playing (not during error, loading, or paused states)
-  return isPlaying.value && !isError.value && !isLoading.value
-})
-
-const statusText = computed(() => {
-  if (isError.value) return 'Erreur, réessayez'
-  if (isLoading.value) return 'Connexion au stream...'
-  if (isPlaying.value) return 'Bonne écoute !'
-  return 'Lancer la radio'
-})
-
+// Audio functions (from RadioPlayer)
 function initHowler() {
   isLoading.value = true
   isError.value = false
   howl = new Howl({
     src: [streamUrl],
     html5: true,
-    volume: isMuted.value ? 0 : volume.value, // Respect mute state on initialization
+    volume: isMuted.value ? 0 : volume.value,
     format: ['mp3'],
     onplay: () => {
       isPlaying.value = true
       isLoading.value = false
       if ('mediaSession' in navigator) {
-        // Use track data if available, otherwise fallback to station info
         const trackTitle = getTrackTitle()
         const trackArtist = getTrackArtist()
         const trackArt = getTrackArt()
@@ -164,21 +167,17 @@ function togglePlay() {
   }
 }
 
-function toggleMute() {
-  isMuted.value = !isMuted.value
-
-  // Apply volume change if howl is already created
-  if (howl) {
-    const targetVolume = isMuted.value ? 0 : volume.value
-    howl.volume(targetVolume)
-  }
-}
-
 function toggleMobileNav() {
   showMobileNav.value = !showMobileNav.value
 }
 
+// Lifecycle hooks - merged from both components
+onMounted(() => {
+  window.addEventListener('scroll', onScroll)
+})
+
 onUnmounted(() => {
+  window.removeEventListener('scroll', onScroll)
   if (howl) {
     howl.unload()
     howl = null
@@ -187,33 +186,97 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.radio-player-bar {
+/* Main container with unified blur background */
+.header-player {
   position: sticky;
-  top: 10vh;
+  top: 1vh;
+  width: 99%;
+  margin:0 auto;
+  height: 18vh; /* Combined height of both components */
+  z-index: 998;
+  display: flex;
+  flex-direction: column;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0.5px 1px hsla(0, 0%, 100%, 0.1),
+              /* 2. shadow ring 👇 */
+              0 0 0 1px hsla(230, 13%, 9%, 0.075),
+              /* 3. multiple soft shadows 👇 */
+              0 0.3px 0.4px hsla(230, 13%, 9%, 0.02),
+              0 0.9px 1.5px hsla(230, 13%, 9%, 0.045),
+              0 3.5px 6px hsla(230, 13%, 9%, 0.09);
+
+  /* Unified blur background */
+  background-color: rgba(244, 241, 241, 0.05);
+  backdrop-filter: blur(12px);
+  /* border-bottom: 1px solid rgba(70, 69, 69, 0.95); */
+}
+
+/* Header Section Styles (from Header.vue) */
+.header-section {
+  height: 9vh;
+  display: flex;
+  align-items: center;
+}
+
+.header-inner {
   width: 100%;
-  z-index: 1000;
-  height:9vh;
-  background-color: rgba(17, 17, 17, 0.95);
-  border-top:1px solid rgba(70, 69, 69, 0.95);
-  border-bottom:1px solid rgba(70, 69, 69, 0.95);
-  transition: border 0.5s ease;
-  backdrop-filter: blur(6px);
+  height: 100%;
+  max-width: 95vw;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.header-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 180px;
+}
+
+.header-logo img {
+  width: 100%;
+  object-fit: contain;
+}
+
+.header-nav {
+  display: flex;
+  gap: 1rem;
+}
+
+.header-nav a {
+  color: #f8fafc;
+  text-decoration: none;
+  font-weight: 500;
+  position: relative;
+  padding: 6px 10px;
+  border-radius: 4px;
+}
+
+.header-nav a.router-link-active {
+  background-color: #f3efe8;
+  color: #111;
+}
+
+/* Player Section Styles (from RadioPlayer.vue) */
+.player-section {
+  height: 9vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 0;
+  border-top: 1px solid hsla(0, 0%, 100%, 0.1);
 }
 
 .player-stack {
   display: flex;
-  align-items: center; /* Full height alignment */
+  align-items: center;
   justify-content: space-between;
   gap: 0;
-  height: 9vh; /* Fixed height for desktop */
-  
-  width:95vw;
-  
+  height: 9vh;
+  width: 95vw;
 }
 
 .player-primary {
@@ -225,7 +288,7 @@ onUnmounted(() => {
 }
 
 .player-btn {
-  height: 6vh;
+  height: 5vh;
   aspect-ratio: 1 / 1;
   background: #f3efe8;
   color: #111;
@@ -233,20 +296,19 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  border-radius:100%;
-  border:transparent;
+  border-radius: 100%;
+  border: transparent;
 }
 
 .icon-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-
 }
 
 .icon-wrapper > svg {
-  width:16px;
-  stroke:1px;
+  width: 14px;
+  stroke: 1px;
   fill: #111;
 }
 
@@ -259,10 +321,10 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
-  padding: 1rem 1.5rem; /* Add padding only to content area */
+  padding: 1rem 1.5rem;
   justify-content: center;
   flex: 1;
-  min-width: 0; /* Allow text truncation */
+  min-width: 0;
 }
 
 .player-title {
@@ -271,87 +333,45 @@ onUnmounted(() => {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.player-status {
-  margin: 0;
-  color: #cbd5f5;
-  font-size: 0.9rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.player-controls {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem 1.5rem;
-  width: 64px; /* Match button size */
-}
-
-.volume-btn {
-  width: 40px;
-  height: 40px;
-  border: none;
-  background: transparent;
   color: #f8fafc;
-  font-size: 1.2rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  transition: all 0.2s ease;
 }
 
-.volume-btn:hover {
-  background: rgba(148, 163, 184, 0.1);
-  color: #38bdf8;
-}
-
-.volume-btn:active {
-  transform: scale(0.95);
-}
-
+/* Mobile Styles */
 @media (max-width: 720px) {
-  .radio-player-bar {
-    padding: 0;
-    bottom: 0; /* Move back to bottom since no permanent nav */
-    flex-direction: row;
-    width: 100%;
-    max-width: none;
-    left: 0;
-    transform: none;
-    border-radius: 0;
+  .header-inner {
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .header-nav {
+    display: none;
   }
 
   .player-stack {
     flex-direction: row;
     align-items: center;
-    width: 100%;
+    width:95%;
     gap: 0;
-    height: 11vh;
+  }
+
+  .player-primary {
+    justify-content: flex-start;
   }
 
   .player-btn {
     font-size: 1.1rem;
   }
 
-  .player-controls {
-    display: none; /* Hide volume control on mobile */
-  }
-
   .player-meta {
     flex: 1;
     min-width: 0;
-    max-width: calc(100% - 112px); /* Reserve space for play button (64px) + more button (48px) */
+    max-width: calc(100% - 112px);
     gap: 0.1rem;
     padding: 0.5rem 1rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    overflow: hidden; /* Ensure content doesn't overflow */
+    overflow: hidden;
   }
 
   .player-title {
@@ -363,17 +383,9 @@ onUnmounted(() => {
     font-weight: 600;
   }
 
-  .player-status {
-    font-size: 0.75rem;
-    margin: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
   .mobile-more-btn {
     width: 48px;
-    height: 6vh; /* Match player height */
+    height: 6vh;
     border: none;
     background: transparent;
     color: #f8fafc;
@@ -382,7 +394,7 @@ onUnmounted(() => {
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0; /* Always maintain size */
+    flex-shrink: 0;
     transition: all 0.2s ease;
   }
 
@@ -396,6 +408,5 @@ onUnmounted(() => {
   .mobile-more-btn {
     display: none;
   }
-} 
-
+}
 </style>

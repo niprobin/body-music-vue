@@ -11,7 +11,9 @@
       "Bash(ls -la *.config.* vite.config.*)",
       "Bash(pkill -f \"npm run dev\")",
       "Bash(pkill -f \"vite\")",
-      "Bash(find /c/Users/robin/Documents/Github/body-music-vue -maxdepth 2 -type d -name *ssg* -o -type d -name *temp* -o -type d -name dist)"
+      "Bash(find /c/Users/robin/Documents/Github/body-music-vue -maxdepth 2 -type d -name *ssg* -o -type d -name *temp* -o -type d -name dist)",
+      "Bash(git add *)",
+      "Bash(git commit -m 'Add HeaderPlayer merge design specification *)"
     ]
   }
 }

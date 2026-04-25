@@ -272,6 +272,7 @@ function isInternalLink(album) {
 <style scoped>
 .albums-page {
   max-width: 100%;
+  padding-bottom:5vh;
 }
 
 .albums-header {
@@ -419,7 +420,6 @@ function isInternalLink(album) {
   z-index: 500; /* Between header (1000) and default content */
   backdrop-filter: blur(6px); /* Match header blur effect */
   padding: 1rem 0 0.5rem; /* Add top padding back for coverage */
-  background-color: rgba(17, 17, 17, 0.95);
   margin: -0.5rem 0 1rem; /* Negative top margin to extend coverage */
   border-bottom: 1px solid rgba(148, 163, 184, 0.2); /* Subtle separator */
   transition: background-color 0.2s ease, backdrop-filter 0.2s ease;
@@ -453,7 +453,7 @@ function isInternalLink(album) {
   padding: 0.75rem 1.25rem;
   border: 1px solid rgba(70, 69, 69, 0.95);
   color: #f3efe8;
-  background:#111;
+  background:transparent;
   border-radius: 50px;
   cursor: pointer;
   transition: all 0.2s ease;

@@ -117,6 +117,7 @@ onMounted(loadFeaturedAlbum)
   justify-content: center;
   width:100%;
   padding:2rem 6rem;
+  /* border-bottom: 1px solid rgba(70, 69, 69, 0.95); */
 }
 
 .hero-content {
@@ -177,7 +178,7 @@ onMounted(loadFeaturedAlbum)
 }
 
 .more-albums {
-  background-color: #111;
+  background: transparent;
   border: 1px solid #f3efe8;
   border-radius: 4px;
   color: #f3efe8;

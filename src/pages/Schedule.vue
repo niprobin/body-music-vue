@@ -78,6 +78,7 @@ onUnmounted(() => {
   max-width: 100%;
   margin: 2rem auto;
   padding:0rem 6rem;
+  padding-bottom:5vh;
 }
 
 .schedule-header {
@@ -97,7 +98,6 @@ onUnmounted(() => {
 .schedule-day {
   border:1px solid rgba(70, 69, 69, 0.95);
   border-radius: 16px;
-  background: #111;
   overflow: hidden;
 }
 

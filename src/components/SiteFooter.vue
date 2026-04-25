@@ -36,7 +36,6 @@
   color: #f8fafc;
   padding: 2.5rem 1rem calc(180px + 1rem);
   border-top:1px solid rgba(70, 69, 69, 0.95);
-  margin-top: 4rem;
 }
 
 .footer-content {

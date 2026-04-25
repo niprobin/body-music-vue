@@ -1,7 +1,6 @@
 <template>
   <div id="app" class="app-shell">
-    <Header />
-    <RadioPlayer />
+    <HeaderPlayer />
     <main class="main-content">
       <router-view v-slot="{ Component }">
         <transition name="fade">
@@ -14,8 +13,7 @@
 </template>
 
 <script setup>
-import Header from './components/Header.vue'
-import RadioPlayer from './components/RadioPlayer.vue'
+import HeaderPlayer from './components/HeaderPlayer.vue'
 import Footer from './components/SiteFooter.vue'
 </script>
 

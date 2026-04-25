@@ -64,6 +64,7 @@ const filteredHistory = computed(() => {
   max-width: 100%;
   margin: 2rem auto;
   padding:0rem 6rem;
+  padding-bottom:5vh;
 }
 
 .last-songs__header {
