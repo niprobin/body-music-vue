@@ -4,67 +4,56 @@
       <h1>Dernières tracks jouées</h1>
       <p>Tu aimes le dernier son que t'as entendu ? Tu le trouves ici fastoche.</p>
     </div>
+
     <div class="history-list">
-      <div v-if="nowPlaying" class="history-item current">
-        <img class="history-cover" :src="nowPlaying.song.art || fallbackArt" alt="Album cover" />
-        <div class="history-meta">
-          <div class="history-row">
-            <p class="history-title">{{ nowPlaying.song.title || 'Unknown Title' }}</p>
-            <span class="history-tag">En ce moment</span>
+      <template v-if="isLoading && !hasLoadedOnce">
+        <div v-for="n in 5" :key="n" class="history-item history-item--skeleton">
+          <div class="history-meta">
+            <div class="skeleton-line skeleton-line--title"></div>
+            <div class="skeleton-line skeleton-line--artist"></div>
           </div>
-          <p class="history-artist">{{ nowPlaying.song.artist || 'Unknown Artist' }}</p>
         </div>
-      </div>
-      <div v-for="entry in filteredHistory" :key="entry.played_at" class="history-item">
-        <img class="history-cover" :src="entry.song.art || fallbackArt" alt="Album cover" />
-        <div class="history-meta">
-          <div class="history-row">
-            <p class="history-title">{{ entry.song.title || 'Unknown Title' }}</p>
-            <span class="history-time">{{ formatPlayedAt(entry.played_at) }}</span>
+      </template>
+
+      <p v-else-if="tracks.length === 0" class="history-empty">
+        Historique en cours de constitution
+      </p>
+
+      <template v-else>
+        <div
+          v-for="(entry, index) in tracks"
+          :key="`${entry.artist}-${entry.title}-${entry.fullDate}-${index}`"
+          :class="['history-item', { 'history-item--placeholder': isPlaceholder(entry) }]"
+        >
+          <div class="history-meta">
+            <div class="history-row">
+              <p class="history-title">{{ entry.title || 'Titre inconnu' }}</p>
+              <span class="history-time">{{ entry.fullDate }}</span>
+            </div>
+            <p class="history-artist">{{ entry.artist || 'Artiste inconnu' }}</p>
           </div>
-          <p class="history-artist">{{ entry.song.artist || 'Unknown Artist' }}</p>
         </div>
-      </div>
+      </template>
     </div>
   </section>
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import { useNowPlaying } from '../composables/useNowPlaying.js'
+import { useHistory } from '../composables/useHistory.js'
 
-const { nowPlaying, songHistory, FALLBACK_ART } = useNowPlaying()
-const fallbackArt = FALLBACK_ART
+const { tracks, isLoading, hasLoadedOnce } = useHistory()
 
-function formatPlayedAt(ts) {
-  const date = new Date(ts * 1000)
-  const now = new Date()
-  const isToday = date.toDateString() === now.toDateString()
-  const hours = date.getHours().toString().padStart(2, '0')
-  const mins = date.getMinutes().toString().padStart(2, '0')
-  return isToday ? `Aujourd'hui à ${hours}h${mins}` : `${date.toLocaleDateString()} à ${hours}h${mins}`
+function isPlaceholder(entry) {
+  return entry.artist === 'Body Music Radio' && entry.title === 'Nouveauté'
 }
-
-const filteredHistory = computed(() => {
-  if (!nowPlaying.value) return songHistory.value
-  return songHistory.value.filter(
-    entry =>
-      !(
-        entry.song?.title === nowPlaying.value.song?.title &&
-        entry.song?.artist === nowPlaying.value.song?.artist
-      )
-  )
-})
-
-// Note: All API fetching and polling is now handled by the useNowPlaying composable
 </script>
 
 <style scoped>
 .last-songs {
   max-width: 100%;
   margin: 2rem auto;
-  padding:0rem 6rem;
-  padding-bottom:5vh;
+  padding: 0rem 6rem;
+  padding-bottom: 5vh;
 }
 
 .last-songs__header {
@@ -78,31 +67,27 @@ const filteredHistory = computed(() => {
 .history-list {
   display: flex;
   flex-direction: column;
-  border:1px solid rgba(70, 69, 69, 0.95);
+  border: 1px solid rgba(70, 69, 69, 0.95);
   border-radius: 16px;
   overflow: hidden;
 }
 
 .history-item {
   display: grid;
-  grid-template-columns: 75px 1fr 120px;
+  grid-template-columns: 1fr;
   align-items: center;
-  gap: 1rem;
   padding: 1rem 1.2rem;
-  border-bottom:1px solid rgba(70, 69, 69, 0.95);
+  border-bottom: 1px solid rgba(70, 69, 69, 0.95);
 }
 
 .history-item:last-child {
   border-bottom: none;
 }
 
-
-
-.history-cover {
-  width: 75px;
-  height: 75px;
-  border-radius: 6px;
-  object-fit: cover;
+.history-item--placeholder .history-title,
+.history-item--placeholder .history-artist {
+  color: rgba(243, 239, 232, 0.55);
+  font-style: italic;
 }
 
 .history-meta {
@@ -135,42 +120,61 @@ const filteredHistory = computed(() => {
   font-size: 0.95rem;
 }
 
-.history-time,
-.history-tag {
+.history-time {
   font-size: 0.85rem;
   color: #f3efe8;
 }
 
-.history-tag {
-  padding: 0.15rem 0.6rem;
-  border-radius: 999px;
-  border: 1px solid #f3efe8;
-  background-color: #f3efe8;
-  color:#111;
+.history-empty {
+  padding: 1.5rem 1.2rem;
+  margin: 0;
+  color: rgba(243, 239, 232, 0.7);
+  text-align: center;
+}
+
+.history-item--skeleton .skeleton-line {
+  height: 0.9rem;
+  border-radius: 4px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.06) 25%,
+    rgba(255, 255, 255, 0.12) 37%,
+    rgba(255, 255, 255, 0.06) 63%
+  );
+  background-size: 400% 100%;
+  animation: skeleton-shimmer 1.4s ease infinite;
+}
+
+.skeleton-line--title {
+  width: 55%;
+  margin-bottom: 0.5rem;
+}
+
+.skeleton-line--artist {
+  width: 35%;
+  height: 0.75rem;
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
 }
 
 @media (max-width: 640px) {
-
   .last-songs {
-  max-width: 100%;
-  margin: 2rem auto;
-  padding:0rem 2rem;
-}
-
-  .history-item {
-    grid-template-columns: 75px 1fr;
-    grid-template-rows: auto auto;
-    gap: 0.6rem;
+    max-width: 100%;
+    margin: 2rem auto;
+    padding: 0rem 2rem;
   }
 
-  .history-cover {
-    width: 60px;
-    height: 60px;
-  }
-
-  .history-time,
-  .history-tag {
-    justify-self: flex-start;
+  .history-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
   }
 }
 </style>

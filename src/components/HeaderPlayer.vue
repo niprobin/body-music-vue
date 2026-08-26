@@ -62,7 +62,7 @@ const showMobileNav = ref(false)
 let howl
 
 // Now-playing integration
-const { nowPlaying, getTrackTitle, getTrackArtist, getTrackArt } = useNowPlaying()
+const { getTrackTitle, getTrackArtist, getTrackArt } = useNowPlaying()
 
 // Display logic for track information (from RadioPlayer)
 const displayTitle = computed(() => {
