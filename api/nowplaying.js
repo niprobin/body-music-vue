@@ -5,6 +5,8 @@ const ICECAST_STATUS_URL = 'https://azuracast.niprobin.com/listen/body_music_rad
 const MOUNT_SUFFIX = 'public.mp3'
 const FETCH_TIMEOUT_MS = 5000
 
+// yp_currently_playing is "Artist - Title" combined; only used as a
+// fallback when Icecast hasn't split them into separate fields.
 function parseStreamTitle(raw) {
   if (!raw) return { artist: null, title: null }
 
@@ -24,7 +26,9 @@ export default async function handler(req, res) {
     return res.status(405).json({ ok: false, error: 'Method not allowed' })
   }
 
-  res.setHeader('Cache-Control', 's-maxage=10, stale-while-revalidate=30')
+  // max-age=0 forces the browser to revalidate on every poll; s-maxage
+  // keeps the CDN response warm for 10s so that revalidation is cheap.
+  res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=10, stale-while-revalidate=30')
 
   try {
     const controller = new AbortController()
@@ -47,14 +51,22 @@ export default async function handler(req, res) {
       source = source.find((s) => s.listenurl?.endsWith(MOUNT_SUFFIX)) || source[0]
     }
 
-    const raw = source?.title || ''
-    const { artist, title } = parseStreamTitle(raw)
+    // Icecast already splits artist/title on this mount; fall back to
+    // parsing yp_currently_playing only if it hasn't.
+    let artist = source?.artist?.trim() || null
+    let title = source?.title?.trim() || null
+
+    if (!artist && !title) {
+      const parsed = parseStreamTitle(source?.yp_currently_playing || '')
+      artist = parsed.artist
+      title = parsed.title
+    }
 
     return res.status(200).json({
       ok: true,
       artist,
       title,
-      display: raw || null,
+      display: source?.yp_currently_playing || title || null,
       updatedAt: Date.now()
     })
   } catch (err) {
