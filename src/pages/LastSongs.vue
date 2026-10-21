@@ -164,7 +164,7 @@ function isPlaceholder(entry) {
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 720px) {
   .last-songs {
     max-width: 100%;
     margin: 2rem auto;

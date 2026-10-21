@@ -1,5 +1,5 @@
 <template>
-  <div :class="['header-player', { 'header-player--scrolled': scrolled }]">
+  <div class="header-player">
     <!-- Header Section (10vh) -->
     <header class="header-section">
       <div class="header-inner">
@@ -19,7 +19,12 @@
     <div class="player-section">
       <div class="player-stack">
         <div class="player-primary">
-          <button class="player-btn" @click="togglePlay" :disabled="isLoading">
+          <button
+            class="player-btn"
+            @click="togglePlay"
+            :disabled="isLoading"
+            :aria-label="isPlaying ? 'Mettre la radio en pause' : 'Lancer la radio'"
+          >
             <span class="icon-wrapper">
               <LucideIcon :icon="isPlaying ? 'pause' : 'play'" />
             </span>
@@ -30,7 +35,7 @@
         </div>
 
         <!-- Mobile More Button -->
-        <button class="mobile-more-btn" @click="toggleMobileNav">
+        <button class="mobile-more-btn" @click="toggleMobileNav" aria-label="Menu">
           <LucideIcon icon="ellipsis" />
         </button>
       </div>
@@ -42,100 +47,76 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { Howl } from 'howler'
 import { useNowPlaying } from '../composables/useNowPlaying.js'
+import { playerLabel, STATION_NAME } from '../lib/playerLabel.js'
 import MobileNavigation from './MobileNavigation.vue'
 import LucideIcon from './LucideIcon.vue'
 
-// Header state - scroll detection
-const scrolled = ref(false)
-
-// RadioPlayer state - audio functionality
 const streamUrl = 'https://azuracast.niprobin.com/listen/body_music_radio/public.mp3'
+const STATION_ARTWORK = '/android-chrome-512x512.png'
+
 const isPlaying = ref(false)
 const isLoading = ref(false)
 const isError = ref(false)
-const volume = ref(1.0)
-const isMuted = ref(false)
 const showMobileNav = ref(false)
 let howl
 
-// Now-playing integration
-const { getTrackTitle, getTrackArtist, getTrackArt } = useNowPlaying()
+const { nowPlaying } = useNowPlaying()
 
-// Display logic for track information (from RadioPlayer)
-const displayTitle = computed(() => {
-  if (isError.value) return 'Erreur, réessayez'
-  if (isLoading.value) return 'Connexion au stream...'
-  if (!isPlaying.value) return 'Lancer la radio'
+const displayTitle = computed(() => playerLabel({
+  isError: isError.value,
+  isLoading: isLoading.value,
+  isPlaying: isPlaying.value,
+  artist: nowPlaying.value?.artist,
+  title: nowPlaying.value?.title
+}))
 
-  const artist = getTrackArtist()
-  const title = getTrackTitle()
-
-  if (artist && title) {
-    return `${title}  •  ${artist}`
-  }
-
-  return 'Body Music Radio'
-})
-
-// Scroll detection function (from Header)
-function onScroll() {
-  scrolled.value = window.scrollY > 0.10
+// Lock-screen / notification metadata, kept in sync with what's on air.
+// Metadata is kept while paused: clearing it, or unloading the audio, makes
+// the OS hand the next Play media key to another app.
+function updateMediaSession() {
+  if (!('mediaSession' in navigator) || !howl) return
+  navigator.mediaSession.playbackState = isPlaying.value ? 'playing' : 'paused'
+  const title = nowPlaying.value?.title
+  const artist = nowPlaying.value?.artist
+  navigator.mediaSession.metadata = new window.MediaMetadata({
+    title: title || STATION_NAME,
+    artist: artist || 'Live',
+    album: STATION_NAME,
+    artwork: [{ src: STATION_ARTWORK, sizes: '512x512', type: 'image/png' }]
+  })
 }
 
-// Audio functions (from RadioPlayer)
+watch([nowPlaying, isPlaying], updateMediaSession)
+
+function registerMediaSessionHandlers() {
+  if (!('mediaSession' in navigator)) return
+  navigator.mediaSession.setActionHandler('play', () => {
+    if (!isPlaying.value) startStream()
+  })
+  navigator.mediaSession.setActionHandler('pause', () => {
+    if (isPlaying.value) pauseStream()
+  })
+  navigator.mediaSession.setActionHandler('stop', stopStream)
+}
+
 function initHowler() {
   isLoading.value = true
   isError.value = false
   howl = new Howl({
-    src: [streamUrl],
+    // Unique URL per play so the browser opens a new connection at the live
+    // point instead of reusing a buffered one.
+    src: [`${streamUrl}?t=${Date.now()}`],
     html5: true,
-    volume: isMuted.value ? 0 : volume.value,
     format: ['mp3'],
     onplay: () => {
       isPlaying.value = true
       isLoading.value = false
-      if ('mediaSession' in navigator) {
-        const trackTitle = getTrackTitle()
-        const trackArtist = getTrackArtist()
-        const trackArt = getTrackArt()
-
-        navigator.mediaSession.metadata = new window.MediaMetadata({
-          title: trackTitle || 'Body Music Radio',
-          artist: trackArtist || 'Live',
-          album: trackTitle ? 'Body Music Radio' : 'Body Music',
-          artwork: [
-            {
-              src: trackTitle ? trackArt : '/browser_icon.png',
-              sizes: '512x512',
-              type: 'image/png'
-            }
-          ]
-        })
-
-        navigator.mediaSession.setActionHandler('play', () => {
-          if (!isPlaying.value) {
-            if (howl) {
-              howl.unload()
-              howl = null
-            }
-            initHowler()
-            howl.play()
-          }
-        })
-
-        navigator.mediaSession.setActionHandler('pause', () => {
-          if (isPlaying.value && howl) {
-            howl.unload()
-            howl = null
-            isPlaying.value = false
-            isLoading.value = false
-            navigator.mediaSession.metadata = null
-          }
-        })
-      }
+    },
+    onpause: () => {
+      isPlaying.value = false
     },
     onend: () => {
       isPlaying.value = false
@@ -151,19 +132,45 @@ function handleStreamError() {
   isPlaying.value = false
 }
 
-function togglePlay() {
-  if (isLoading.value) return
-  if (!isPlaying.value) {
-    if (howl) {
-      howl.unload()
-      howl = null
-    }
-    initHowler()
-    howl.play()
-  } else if (howl) {
+function unloadHowl() {
+  if (howl) {
     howl.unload()
     howl = null
-    isPlaying.value = false
+  }
+}
+
+// Always reconnects, so playback resumes what's live now rather than
+// audio buffered before a pause.
+function startStream() {
+  unloadHowl()
+  initHowler()
+  howl.play()
+}
+
+// Keeps the paused audio element so the page stays the active media
+// session for the Play key.
+function pauseStream() {
+  if (howl) howl.pause()
+  isPlaying.value = false
+  isLoading.value = false
+}
+
+function stopStream() {
+  unloadHowl()
+  isPlaying.value = false
+  isLoading.value = false
+  if ('mediaSession' in navigator) {
+    navigator.mediaSession.metadata = null
+    navigator.mediaSession.playbackState = 'none'
+  }
+}
+
+function togglePlay() {
+  if (isLoading.value) return
+  if (isPlaying.value) {
+    pauseStream()
+  } else {
+    startStream()
   }
 }
 
@@ -171,18 +178,9 @@ function toggleMobileNav() {
   showMobileNav.value = !showMobileNav.value
 }
 
-// Lifecycle hooks - merged from both components
-onMounted(() => {
-  window.addEventListener('scroll', onScroll)
-})
+onMounted(registerMediaSessionHandlers)
 
-onUnmounted(() => {
-  window.removeEventListener('scroll', onScroll)
-  if (howl) {
-    howl.unload()
-    howl = null
-  }
-})
+onUnmounted(unloadHowl)
 </script>
 
 <style scoped>

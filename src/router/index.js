@@ -9,8 +9,7 @@ export const routes = [
   { path: '/', name: 'Home', component: Home },
   { path: '/schedule', name: 'Schedule', component: Schedule },
   { path: '/last-songs', name: 'LastSongs', component: LastSongs },
-  { path: '/albums', name: 'Albums', component: Albums },
-  { path: '/albums/:slug', name: 'AlbumReview', component: () => import('../pages/AlbumReview.vue') }
+  { path: '/albums', name: 'Albums', component: Albums }
 ]
 
 const router = createRouter({

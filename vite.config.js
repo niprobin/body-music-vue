@@ -1,14 +1,8 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { VitePWA } from 'vite-plugin-pwa'
-import { ViteSSG } from 'vite-ssg'
 
 export default defineConfig({
-  ssgOptions: {
-    script: 'async',
-    formatting: 'prettify',
-    mode: 'spa'
-  },
   plugins: [
     vue(),
     VitePWA({
@@ -30,7 +24,12 @@ export default defineConfig({
   },
   "icons": [
     {
-      "src": "/browser_icon.png",
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
     }

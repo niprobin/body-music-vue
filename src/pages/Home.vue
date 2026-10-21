@@ -1,5 +1,5 @@
 <template>
-  <main class="homepage" v-if="!loadingFeatured">
+  <main class="homepage">
     <section class="hero">
       <div class="hero-content">
         <!-- <img src="/body_music_duck_logo.png" alt="Body Music Radio Logo" class="home-logo" /> -->
@@ -11,14 +11,15 @@
             Si tu cherches ton nouvel album préféré, tu peux jeter un oeil à la collection qu'on partage.<br><br>
             <b>Body Music Radio te souhaite une très bonne écoute !</b>
           </p>
-          <!--<button class="scroll-to-album" @click="scrollToFeaturedAlbum">
-            Tu connais cet album ?
-          </button> -->
         </div>
       </div>
     </section>
 
-    <section id="featured-album" class="featured-album" v-if="featuredAlbum">
+    <section class="featured-placeholder" v-if="loadingFeatured">
+      <p>Chargement en cours…</p>
+    </section>
+
+    <section id="featured-album" class="featured-album" v-else-if="featuredAlbum">
       <div class="section-header">
       <h2>Ton prochain coup de coeur</h2>
       <router-link to="/albums">
@@ -27,12 +28,12 @@
         </div>
       <div class="section-content">
         <div class="featured-cover">
-          <img :src="featuredAlbum.cover_url || fallbackCover" :alt="featuredAlbum.release_name || 'Album du moment'" />
+          <img :src="featuredAlbum.cover_url || FALLBACK_COVER" :alt="featuredAlbum.release_name || 'Album du moment'" />
       </div>
       <div class="featured-info">
         <h3>{{ featuredAlbum.release_name }} </h3>
         <div class="featured-meta">
-          <p class="featured-date">Sortie le {{ formatReleaseDate(featuredAlbum.release_date) }}
+          <p class="featured-date">Sortie le {{ formatSheetDate(featuredAlbum.release_date) }}
         </p>
         <p class="featured-genre">{{ featuredAlbum.genre || 'Genre inconnu' }}</p>
         </div>
@@ -46,30 +47,18 @@
     </section>
 
     <section class="featured-placeholder" v-else>
-      <p v-if="loadingFeatured">Chargement en cours…</p>
-      <p v-else>Pas d'album du moment pour l'instant.</p>
+      <p>Pas d'album du moment pour l'instant.</p>
     </section>
   </main>
-  <section class="home-loading" v-else>
-    <p>Chargement en cours…</p>
-  </section>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import LucideIcon from '../components/LucideIcon.vue'
+import { FALLBACK_COVER, formatSheetDate } from '../lib/albums.js'
 
 const featuredAlbum = ref(null)
 const loadingFeatured = ref(true)
-const fallbackCover = 'https://music.niprobin.com/radio_cover.png'
-
-function formatReleaseDate(value) {
-  if (!value) return 'Date inconnue'
-  const [day, month, year] = String(value).split('-')
-  const dateObj = new Date(Number(year), Number(month) - 1, Number(day))
-  if (Number.isNaN(dateObj.getTime())) return value
-  return dateObj.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
-}
 
 const formattedText = computed(() => {
   if (!featuredAlbum.value?.text) return []
@@ -88,16 +77,6 @@ async function loadFeaturedAlbum() {
     featuredAlbum.value = null
   } finally {
     loadingFeatured.value = false
-  }
-}
-
-function scrollToFeaturedAlbum() {
-  const element = document.getElementById('featured-album')
-  if (element) {
-    element.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start'
-    })
   }
 }
 
@@ -131,31 +110,6 @@ onMounted(loadFeaturedAlbum)
   display: flex;
   flex-direction: column;
   text-align: left;
-}
-
-.scroll-to-album {
-  background-color: #f8f9fa;
-  border: 1px solid #f8f9fa;
-  border-radius: 4px;
-  color: #111;
-  cursor: pointer;
-  font-family: 'Inter',sans-serif;
-  font-size: 14px;
-  height: 36px;
-  line-height: 27px;
-  min-width: 54px;
-  padding: 0 16px;
-  text-align: center;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  white-space: pre;
-  display: inline-block;
-  width: auto;
-  align-self: flex-start;
-  border:1px solid rgba(214, 212, 212, 0.5);
-  -webkit-box-shadow: 2px 4px 4px 0px rgba(0,0,0,0.25); 
-  box-shadow: 2px 4px 4px 0px rgba(0,0,0,0.25);
 }
 
 /* STYLES FOR THE FEATURED ALBUM SECTION ON THE HOMEPAGE */
@@ -260,13 +214,8 @@ h2 {
   padding: 1rem;
 }
 
-.home-loading {
-  text-align: center;
-  color: #f3efe8;
-  padding: 2rem 1rem;
-}
 
-@media (max-width: 700px) {
+@media (max-width: 720px) {
 
   p {font-size:1.1rem;}
 
@@ -284,10 +233,6 @@ h2 {
 
   .hero-text {
     text-align: center;
-  }
-
-  .scroll-to-album {
-    align-self: center;
   }
 
   .home-logo {

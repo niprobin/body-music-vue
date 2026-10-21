@@ -1,78 +1,68 @@
 # Body Music Radio - Project Overview
 
 ## Project Summary
-Body Music Radio is a Vue 3 web application for streaming an online radio station. It provides live audio streaming, track discovery, schedule browsing, and album showcasing, optimized for mobile devices and deployable as a PWA.
+Body Music Radio is a Vue 3 web application for streaming an online radio station. It provides live audio streaming, track discovery, schedule browsing, and album showcasing, optimized for mobile devices and installable as a PWA.
 
 ## Core Features
 
 ### 🎵 Audio Streaming
-- Live radio stream with Howler.js audio player
-- Media Session API integration (lock screen controls)
-- Persistent bottom player with play/pause controls
+- Live radio stream with Howler.js, in a sticky header player shown on every page
+- Media Session API integration: lock-screen controls and track info, updated on every track change
 
-### 📱 Mobile-First UI
-- Responsive design optimized for mobile devices
-- Sticky header with scroll detection
+### 📱 Mobile UI
+- Single breakpoint at 720px: the desktop header nav is replaced by a popup menu (Accueil, Prog, Historique, Albums)
 - Smooth page transitions
-- Installable PWA with offline capabilities
+- Installable PWA
 
 ### 📻 Radio Information
-- **Now Playing**: Real-time current track display
-- **Track History**: Recently played songs
-- **Weekly Schedule**: Programming schedule from JSON
-- **Featured Album**: Highlighted album section via n8n webhook
-- **Albums Collection**: Browse albums via Google Sheets integration
+- **Now Playing**: current track in the header player (polled every 15s)
+- **Track History**: last 10 tracks played
+- **Weekly Schedule**: from `public/schedule.json`, current show highlighted in Paris time
+- **Featured Album**: home page section from an n8n webhook
+- **Albums Collection**: liked albums grouped by month (sticky full-width month tabs), from an n8n webhook backed by a Google Sheet. Album reviews are paused until the backend handling is reworked.
 
 ## Tech Stack
+- **Vue 3** (`<script setup>`), **Vue Router 4**, **Vite**
+- **Howler.js** + Media Session API
+- **Lucide** icons (`lucide-vue-next`, registered in `useIcons.js`), custom CSS
+- **vite-plugin-pwa**
+- **Vitest** for unit tests (`npm test`)
 
-### Frontend Framework
-- **Vue 3** (Composition API with `<script setup>`)
-- **Vue Router 4** (SPA routing)
-- **Vite** (build tooling and dev server)
-
-### Audio & Media
-- **Howler.js** (audio playback and controls)
-- Media Session API (lock screen integration)
-
-### UI & Styling
-- **Font Awesome** icons
-- Custom CSS with Bantayog font
-- Mobile-first responsive design
-
-### PWA & Performance
-- **vite-plugin-pwa** (installability and offline support)
-- Optimized for mobile performance
-
-### External Data Sources
-- **Radio Stream**: `https://radio.niprobin.com/listen/body_music_radio/body-radio-256`
-- **Now Playing API**: `https://radio.niprobin.com/api/nowplaying/1`
-- **Featured Album**: n8n webhook endpoint
-- **Albums Data**: Google Sheets via OpenSheet API
+### Data Sources
+- **Radio stream**: `https://azuracast.niprobin.com/listen/body_music_radio/public.mp3`
+- **Now playing**: `/api/nowplaying`, a Vercel function proxying Icecast's `status-json.xsl`. AzuraCast's own nowplaying API is deliberately not used (Liquidsoap 2.4.5 replay_metadata bug freezes metadata).
+- **History**: `/api/history`, a Vercel function proxying an n8n webhook (env var `N8N_HISTORY_WEBHOOK_URL`)
+- **Featured album**: `https://n8n.niprobin.com/webhook/featured-album`
+- **Albums**: `https://n8n.niprobin.com/webhook/liked-albums` (all fields are strings, dates are `DD-MM-YYYY`)
+- **Analytics**: page views POSTed to `https://n8n.niprobin.com/webhook/analytics`
 
 ## Project Structure
 
 ```
+api/                     # Vercel serverless functions
+├── _fetchJson.js        # Shared fetch-with-timeout (underscore = not deployed as a function)
+├── nowplaying.js
+└── history.js
 src/
-├── main.js              # App initialization
-├── App.vue              # Root layout component
-├── router/index.js      # Vue Router configuration
-├── components/          # Reusable components
-│   ├── Header.vue       # Navigation header
-│   ├── RadioPlayer.vue  # Audio player
-│   └── SiteFooter.vue   # Footer
-├── pages/               # Route components
-│   ├── Home.vue         # Landing page
-│   ├── Schedule.vue     # Weekly schedule
-│   ├── LastSongs.vue    # Track history
-│   ├── Albums.vue       # Album collection
-│   └── AlbumReview.vue  # Individual album review
-└── assets/              # Static assets (fonts, logos)
+├── main.js, App.vue
+├── router/index.js
+├── lib/                 # Pure logic, unit tested
+│   ├── albums.js        # Album rules: external link, dates
+│   ├── schedule.js      # Current show in Paris time
+│   ├── playerLabel.js   # Header player text
+│   └── poller.js        # Interval polling helper
+├── composables/         # useNowPlaying, useHistory, useAnalytics, useIcons
+├── components/          # HeaderPlayer, MobileNavigation, SiteFooter, StarRating, LucideIcon
+└── pages/               # Home, Schedule, LastSongs, Albums
+tests/                   # Vitest: lib modules + API handlers
 ```
 
 ## Deployment
-- **Platform**: Netlify
-- **Build**: Static SPA with redirect rules
-- **Environment**: Production-ready PWA
+- **Platform**: Vercel (`vercel.json` rewrites every non-`/api/` path to `index.html`)
+- **Build**: `vite build` → `dist/`
+
+## Change History
+The entries below are historical and describe the code as it was at the time.
 
 ## Recent Changes (2024-02-13)
 
@@ -232,3 +222,16 @@ src/
 - `src/components/RadioPlayer.vue`: Removed mobile action menu, repositioned player, enabled track display
 - `src/App.vue`: Added MobileNavigation component integration
 - `src/style.css`: Added mobile-specific padding and safe area support
+
+## Recent Changes (2026-10-21) - Review fixes (issue #1)
+- Review links use `router-link`, so opening a review no longer reloads the page and cuts the stream
+- Review page only opens albums with `has_review === "TRUE"`; review text rendered as text (no `v-html`)
+- Albums cache survives corrupt/blocked storage and refreshes its timestamp on every fetch
+- Lock-screen metadata follows the current track; player shows the title alone when the artist is unknown
+- Schedule computed in Paris time, `23:59` treated as midnight
+- Home hero renders immediately; Albums added to the mobile menu; analytics only drops same-path duplicates
+- Shared logic moved to `src/lib/`, Vitest added, Netlify config and unused deps/SSG leftovers removed, `vercel.json` added
+
+## Recent Changes (2026-10-21) - Album reviews removed from the frontend
+- Removed the "Nos coups de cœurs" section, the `/albums/:slug` review page and the review-only album rules: reviews are on hold until the backend handling is reworked (see `ALBUM_REVIEWS_IMPLEMENTATION_PLAN.md` and git history to restore)
+- Albums page shows every album grouped by liked month; the month tab bar is full width and sticks under the header player

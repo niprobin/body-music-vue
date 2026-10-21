@@ -4,14 +4,13 @@ import {
   Home,
   Calendar,
   Music,
+  Disc3,
   Star,
-  Volume2,
-  VolumeX,
   MoreHorizontal,
   ArrowRight
 } from 'lucide-vue-next'
 
-// Centralized icon mapping from Font Awesome names to Lucide components
+// Icon names used in templates, mapped to Lucide components
 export const iconMap = {
   // Player icons
   play: Play,
@@ -19,24 +18,17 @@ export const iconMap = {
 
   // Navigation icons
   house: Home,
-  home: Home, // alias
   calendar: Calendar,
   music: Music,
+  disc: Disc3,
 
   // UI icons
   star: Star,
   ellipsis: MoreHorizontal,
-  'more-horizontal': MoreHorizontal, // alias
-  'arrow-right': ArrowRight,
-
-  // Volume icons (currently hidden but preserved)
-  'volume-high': Volume2,
-  'volume-2': Volume2, // alias
-  'volume-xmark': VolumeX,
-  'volume-x': VolumeX // alias
+  'arrow-right': ArrowRight
 }
 
-// Icon size mapping (similar to Font Awesome sizes)
+// Icon size mapping, in pixels
 export const iconSizes = {
   xs: 12,
   sm: 16,
@@ -62,8 +54,6 @@ export function useIcons() {
   }
 
   return {
-    iconMap,
-    iconSizes,
     getIcon,
     getIconSize
   }
