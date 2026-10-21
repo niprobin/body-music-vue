@@ -6,7 +6,8 @@
 // an unreliable source. The n8n webhook reads history from a datatable that
 // is kept in sync by polling Icecast's ICY metadata separately.
 
-const FETCH_TIMEOUT_MS = 5000
+import { fetchJson } from './_fetchJson.js'
+
 const MAX_TRACKS = 10
 
 export default async function handler(req, res) {
@@ -23,18 +24,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const controller = new AbortController()
-    const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS)
-    let data
-    try {
-      const response = await fetch(webhookUrl, { signal: controller.signal })
-      if (!response.ok) {
-        throw new Error(`Upstream responded with ${response.status}`)
-      }
-      data = await response.json()
-    } finally {
-      clearTimeout(timeout)
-    }
+    const data = await fetchJson(webhookUrl)
 
     if (!Array.isArray(data)) {
       throw new Error('Unexpected response shape from n8n')

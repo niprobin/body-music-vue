@@ -13,19 +13,21 @@ function isBot(userAgent) {
   )
 }
 
-// Debounce function to prevent excessive API calls
+// Ignore a repeat of the same path within this window (duplicate
+// navigations); distinct page views are always sent.
+let lastTrackedPath = null
 let lastTrackTime = 0
-const DEBOUNCE_MS = 2000
+const DUPLICATE_WINDOW_MS = 2000
 
 export function useAnalytics() {
 
   const trackPageView = async (pagePath) => {
     try {
-      // Debounce requests - max 1 per 2 seconds
       const now = Date.now()
-      if (now - lastTrackTime < DEBOUNCE_MS) {
+      if (pagePath === lastTrackedPath && now - lastTrackTime < DUPLICATE_WINDOW_MS) {
         return
       }
+      lastTrackedPath = pagePath
       lastTrackTime = now
 
       // Skip if user agent indicates bot

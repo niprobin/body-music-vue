@@ -9,27 +9,21 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import LucideIcon from './LucideIcon.vue'
 
-export default {
-  name: 'StarRating',
-  components: {
-    LucideIcon
+defineProps({
+  rating: {
+    type: Number,
+    required: true,
+    validator: (value) => value >= 0 && value <= 5
   },
-  props: {
-    rating: {
-      type: Number,
-      required: true,
-      validator: (value) => value >= 0 && value <= 5
-    },
-    size: {
-      type: String,
-      default: 'medium',
-      validator: (value) => ['medium', 'large'].includes(value)
-    }
+  size: {
+    type: String,
+    default: 'medium',
+    validator: (value) => ['medium', 'large'].includes(value)
   }
-}
+})
 </script>
 
 <style scoped>

@@ -16,15 +16,18 @@
       <LucideIcon icon="music" class="nav-icon" />
       <span class="nav-label">Historique</span>
     </router-link>
+    <router-link to="/albums" class="nav-item" :class="{ active: isActive('/albums') }" @click="$emit('close')">
+      <LucideIcon icon="disc" class="nav-icon" />
+      <span class="nav-label">Albums</span>
+    </router-link>
   </nav>
 </template>
 
 <script setup>
-import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import LucideIcon from './LucideIcon.vue'
 
-const emit = defineEmits(['close'])
+defineEmits(['close'])
 const route = useRoute()
 
 const isActive = (path) => {

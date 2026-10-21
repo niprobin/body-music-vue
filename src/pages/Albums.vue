@@ -15,33 +15,22 @@
         <h2 class="section-title">Nos coups de cœurs</h2>
         <div class="albums-grid">
           <article v-for="album in reviewedAlbums" :key="album.id" class="album-card">
-            <template v-if="getAlbumLink(album)">
-              <a :href="getAlbumLink(album)"
-                 :target="isInternalLink(album) ? '' : '_blank'"
-                 :rel="isInternalLink(album) ? '' : 'noopener'"
-                 class="album-cover-link">
-                <div class="album-cover-container">
-                  <img :src="album.cover_url || fallbackArt" :alt="album.release_name || 'Couverture album'"
-                    class="album-cover" />
-                </div>
-              </a>
-            </template>
-            <template v-else>
-              <img :src="album.cover_url || fallbackArt" :alt="album.release_name || 'Couverture album'"
-                class="album-cover" />
-            </template>
+            <router-link :to="reviewPath(album)" class="album-cover-link">
+              <div class="album-cover-container">
+                <img :src="album.cover_url || FALLBACK_COVER" :alt="album.release_name || 'Couverture album'"
+                  class="album-cover" />
+              </div>
+            </router-link>
             <div class="album-meta">
               <p class="album-name">{{ album.release_name || 'Titre inconnu' }}</p>
               <p class="album-date">
-                Sortie le {{ formatReleaseDate(album.release_date) }}
+                Sortie le {{ formatSheetDate(album.release_date) }}
               </p>
               <StarRating v-if="album.rating" :rating="album.rating" size="medium" />
             </div>
-            <a v-if="isInternalLink(album)"
-               :href="getAlbumLink(album)"
-               class="review-button">
+            <router-link :to="reviewPath(album)" class="review-button">
               Notre avis
-            </a>
+            </router-link>
           </article>
         </div>
       </div>
@@ -73,32 +62,26 @@
             <article v-for="album in groupedNonReviewedAlbums[activeTab].items"
                      :key="album.id"
                      class="album-card">
-              <template v-if="getAlbumLink(album)">
-                <a :href="getAlbumLink(album)"
-                   :target="isInternalLink(album) ? '' : '_blank'"
-                   :rel="isInternalLink(album) ? '' : 'noopener'"
-                   class="album-cover-link">
-                  <div class="album-cover-container">
-                    <img :src="album.cover_url || fallbackArt"
-                         :alt="album.release_name || 'Couverture album'"
-                         class="album-cover" />
-                    <div v-if="isInternalLink(album)" class="review-badge">📝</div>
-                  </div>
-                </a>
-              </template>
-              <template v-else>
-                <img :src="album.cover_url || fallbackArt"
-                     :alt="album.release_name || 'Couverture album'"
-                     class="album-cover" />
-              </template>
+              <a v-if="externalLink(album)"
+                 :href="externalLink(album)"
+                 target="_blank"
+                 rel="noopener"
+                 class="album-cover-link">
+                <div class="album-cover-container">
+                  <img :src="album.cover_url || FALLBACK_COVER"
+                       :alt="album.release_name || 'Couverture album'"
+                       class="album-cover" />
+                </div>
+              </a>
+              <img v-else
+                   :src="album.cover_url || FALLBACK_COVER"
+                   :alt="album.release_name || 'Couverture album'"
+                   class="album-cover" />
               <div class="album-meta">
                 <p class="album-name">{{ album.release_name || 'Titre inconnu' }}</p>
-                <p class="album-date">Sortie le {{ formatReleaseDate(album.release_date) }}</p>
+                <p class="album-date">Sortie le {{ formatSheetDate(album.release_date) }}</p>
                 <StarRating v-if="album.rating" :rating="album.rating" size="medium" />
               </div>
-              <router-link v-if="isInternalLink(album)" :to="getAlbumLink(album)" class="review-button">
-                Notre avis
-              </router-link>
             </article>
           </div>
         </div>
@@ -110,45 +93,64 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import StarRating from '../components/StarRating.vue'
+import {
+  LIKED_ALBUMS_URL,
+  FALLBACK_COVER,
+  isReviewed,
+  reviewPath,
+  externalLink,
+  parseSheetDate,
+  formatSheetDate
+} from '../lib/albums.js'
 
 const albums = ref([])
 const loading = ref(false) // Start as false, set conditionally
 const refreshing = ref(false) // Track background refresh
 const activeTab = ref(0) // Default to first (most recent) month
 const error = ref('')
-const fallbackArt = 'https://music.niprobin.com/radio_cover.png'
 const CACHE_KEY = 'albums_cache'
 const CACHE_TIME_KEY = 'albums_cache_time'
 const CACHE_TTL = 24 * 60 * 60 * 1000
 
-async function loadAlbums() {
+// Storage can be blocked (private mode) or hold corrupt JSON; either way
+// treat it as "no cache" so the network fetch still runs.
+function readCache() {
   try {
-    const cachedValue = localStorage.getItem(CACHE_KEY)
-    const cachedTime = localStorage.getItem(CACHE_TIME_KEY)
-    const cached = cachedValue ? JSON.parse(cachedValue) : null
-    const isCacheValid = cached && cachedTime && Date.now() - Number(cachedTime) < CACHE_TTL
+    const cached = JSON.parse(localStorage.getItem(CACHE_KEY))
+    const cachedTime = Number(localStorage.getItem(CACHE_TIME_KEY))
+    const isFresh = Array.isArray(cached) && Date.now() - cachedTime < CACHE_TTL
+    return isFresh ? cached : null
+  } catch (_) {
+    return null
+  }
+}
 
-    if (isCacheValid) {
-      // Show cached data immediately, no loading state
-      albums.value = cached
-      refreshing.value = true // Background fetch indicator
-    } else {
-      // No valid cache - show loading
-      loading.value = true
-    }
+function writeCache(list) {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify(list))
+    localStorage.setItem(CACHE_TIME_KEY, String(Date.now()))
+  } catch (_) {
+    // Storage full or blocked: the page works without a cache.
+  }
+}
 
-    const res = await fetch('https://n8n.niprobin.com/webhook/liked-albums')
+async function loadAlbums() {
+  const cached = readCache()
+  if (cached) {
+    // Show cached data immediately, refresh in the background
+    albums.value = cached
+    refreshing.value = true
+  } else {
+    loading.value = true
+  }
+
+  try {
+    const res = await fetch(LIKED_ALBUMS_URL)
     const data = await res.json()
     const list = Array.isArray(data) ? data : data ? [data] : []
 
     albums.value = list
-
-    // Update cache if data changed
-    if (!cached || JSON.stringify(list) !== JSON.stringify(cached)) {
-      localStorage.setItem(CACHE_KEY, JSON.stringify(list))
-      localStorage.setItem(CACHE_TIME_KEY, String(Date.now()))
-    }
-
+    writeCache(list)
   } catch (err) {
     console.error('Error loading albums:', err)
     if (!albums.value.length) { // Only show error if no cached data
@@ -162,53 +164,37 @@ async function loadAlbums() {
 
 onMounted(loadAlbums)
 
-// Helper function for parsing month keys (shared by both computed properties)
-const parseMonthKey = (album) => {
-  const raw = album.liked_date
-  if (!raw) return { key: 'none', label: 'Sans date', ts: -Infinity }
-  const [day, month, year] = String(raw).split('-')
-  const monthIndex = Number(month) - 1
-  const dateObj = new Date(Number(year), monthIndex, 1)
-  if (Number.isNaN(dateObj.getTime())) return { key: 'none', label: 'Sans date', ts: -Infinity }
-  const label = dateObj.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })
+function likedTimestamp(album) {
+  return parseSheetDate(album.liked_date)?.getTime() ?? -Infinity
+}
+
+function monthGroup(album) {
+  const date = parseSheetDate(album.liked_date)
+  if (!date) return { key: 'none', label: 'Sans date', ts: -Infinity }
+  const monthStart = new Date(date.getFullYear(), date.getMonth(), 1)
   return {
-    key: `${year}-${String(monthIndex + 1).padStart(2, '0')}`,
-    label,
-    ts: dateObj.getTime()
+    key: `${date.getFullYear()}-${date.getMonth()}`,
+    label: monthStart.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' }),
+    ts: monthStart.getTime()
   }
 }
 
-// Helper function for parsing liked_date for sorting
-const parseLikedDate = (likedDate) => {
-  if (!likedDate) return { ts: -Infinity }
-  const [day, month, year] = String(likedDate).split('-')
-  const dateObj = new Date(Number(year), Number(month) - 1, Number(day))
-  return { ts: Number.isNaN(dateObj.getTime()) ? -Infinity : dateObj.getTime() }
-}
-
 const reviewedAlbums = computed(() => {
-  // has_review comes as string "TRUE" not boolean true
   return albums.value
-    .filter(album => album.has_review === "TRUE")
+    .filter(isReviewed)
     .sort((a, b) => {
       // Sort by rating desc, then by liked_date desc
       const ratingDiff = Number(b.rating || 0) - Number(a.rating || 0)
       if (ratingDiff !== 0) return ratingDiff
-
-      // Parse liked_date for secondary sort
-      const dateA = parseLikedDate(a.liked_date)
-      const dateB = parseLikedDate(b.liked_date)
-      return dateB.ts - dateA.ts
+      return likedTimestamp(b) - likedTimestamp(a)
     })
 })
 
 const groupedNonReviewedAlbums = computed(() => {
-  // Filter albums that don't have review (has_review is not "TRUE")
-  const nonReviewed = albums.value.filter(album => album.has_review !== "TRUE")
   const groups = new Map()
 
-  for (const album of nonReviewed) {
-    const { key, label, ts } = parseMonthKey(album)
+  for (const album of albums.value.filter((a) => !isReviewed(a))) {
+    const { key, label, ts } = monthGroup(album)
     if (!groups.has(key)) {
       groups.set(key, { label, ts, items: [] })
     }
@@ -229,44 +215,6 @@ watch(groupedNonReviewedAlbums, (newGroups) => {
     activeTab.value = 0
   }
 }, { immediate: true })
-
-function formatReleaseDate(value) {
-  if (!value) return 'Date inconnue'
-  const [day, month, year] = String(value).split('-')
-  const dateObj = new Date(Number(year), Number(month) - 1, Number(day))
-  if (Number.isNaN(dateObj.getTime())) return value
-  return dateObj.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
-}
-
-function getAlbumLink(album) {
-  if (!album) return ''
-
-  // Check for review first - internal route
-  if (album.has_review === "TRUE" && album.slug) {
-    return `/albums/${album.slug}`
-  }
-
-  // Existing external link logic
-  const discogs = (album.discogs_url || '').trim()
-  const spotify = (album.spotify_url || '').trim()
-  const hasCompleteDiscogs =
-    discogs && (discogs.includes('/release') || discogs.includes('/master'))
-  if (hasCompleteDiscogs) {
-    return discogs
-  }
-  if (discogs === 'https://www.discogs.com' && spotify) {
-    return spotify
-  }
-  if (!discogs && spotify) {
-    return spotify
-  }
-  return ''
-}
-
-function isInternalLink(album) {
-  if (!album) return false
-  return album.has_review === "TRUE" && album.slug
-}
 </script>
 
 <style scoped>
@@ -473,7 +421,7 @@ function isInternalLink(album) {
   animation: fadeIn 0.3s ease-in-out;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 720px) {
 
   .albums-sections, .albums-header {
     width:100%;

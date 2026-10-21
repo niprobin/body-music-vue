@@ -1,9 +1,10 @@
 // Proxies Icecast's status-json.xsl directly, bypassing AzuraCast's
 // nowplaying API entirely (see api/history.js for why that API is unreliable).
 
+import { fetchJson } from './_fetchJson.js'
+
 const ICECAST_STATUS_URL = 'https://azuracast.niprobin.com/listen/body_music_radio/status-json.xsl'
 const MOUNT_SUFFIX = 'public.mp3'
-const FETCH_TIMEOUT_MS = 5000
 
 // yp_currently_playing is "Artist - Title" combined; only used as a
 // fallback when Icecast hasn't split them into separate fields.
@@ -31,18 +32,7 @@ export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=10, stale-while-revalidate=30')
 
   try {
-    const controller = new AbortController()
-    const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS)
-    let data
-    try {
-      const response = await fetch(ICECAST_STATUS_URL, { signal: controller.signal })
-      if (!response.ok) {
-        throw new Error(`Upstream responded with ${response.status}`)
-      }
-      data = await response.json()
-    } finally {
-      clearTimeout(timeout)
-    }
+    const data = await fetchJson(ICECAST_STATUS_URL)
 
     // icestats.source is an object with one mount point, but becomes an
     // array as soon as a second mount (e.g. an AAC stream) is added.

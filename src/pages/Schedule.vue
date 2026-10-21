@@ -24,37 +24,24 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { parisNow, currentSlot } from '../lib/schedule.js'
 
 const schedule = ref({})
-const currentDay = ref('')
-const currentTime = ref(0)
+const now = ref(new Date())
 let intervalId
 
-function getCurrentDay() {
-  return new Date().toLocaleString('fr-FR', { weekday: 'long' })
-}
-
-function getCurrentTime() {
-  const now = new Date()
-  return now.getHours() * 60 + now.getMinutes()
-}
+const currentDay = computed(() => parisNow(now.value).day)
+const current = computed(() => currentSlot(schedule.value, now.value))
 
 function isCurrentShow(day, show) {
-  if (day !== currentDay.value) return false
-  const [startH, startM] = show.start.split(':').map(Number)
-  const [endH, endM] = show.end.split(':').map(Number)
-  const start = startH * 60 + startM
-  const end = endH * 60 + endM
-  return currentTime.value >= start && currentTime.value < end
+  return current.value?.day === day && current.value.show === show
 }
 
 async function loadSchedule() {
   try {
     const response = await fetch('/schedule.json')
     schedule.value = await response.json()
-    currentDay.value = getCurrentDay()
-    currentTime.value = getCurrentTime()
   } catch (e) {
     console.error('Error loading schedule:', e)
   }
@@ -63,8 +50,7 @@ async function loadSchedule() {
 onMounted(() => {
   loadSchedule()
   intervalId = setInterval(() => {
-    currentDay.value = getCurrentDay()
-    currentTime.value = getCurrentTime()
+    now.value = new Date()
   }, 60 * 1000)
 })
 
@@ -145,7 +131,7 @@ onUnmounted(() => {
   border-left: 3px solid #f3efe8;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 720px) {
 
   .schedule-page {
   max-width: 100%;

@@ -8,19 +8,14 @@
  */
 
 import { ref, onUnmounted } from 'vue'
+import { createPoller } from '../lib/poller.js'
 
 const POLLING_INTERVAL = 15000 // 15 seconds
-const FALLBACK_ART = '/browser_icon.png'
 
 // Shared state across all components
 const nowPlaying = ref(null)
 const isLoading = ref(false)
 const error = ref(null)
-
-// Polling management
-let intervalId = null
-let activeConsumers = 0
-let visibilityHandlerAttached = false
 
 // Fetch data from the proxy
 async function fetchNowPlaying() {
@@ -43,87 +38,36 @@ async function fetchNowPlaying() {
   }
 }
 
-function startInterval() {
-  if (!intervalId) {
-    fetchNowPlaying()
-    intervalId = setInterval(fetchNowPlaying, POLLING_INTERVAL)
-  }
-}
-
-function stopInterval() {
-  if (intervalId) {
-    clearInterval(intervalId)
-    intervalId = null
-  }
-}
-
-// Start polling if not already active
-function startPolling() {
-  activeConsumers++
-  startInterval()
-}
-
-// Stop polling if no more consumers
-function stopPolling() {
-  activeConsumers = Math.max(0, activeConsumers - 1)
-
-  if (activeConsumers === 0) {
-    stopInterval()
-  }
-}
+const poller = createPoller(fetchNowPlaying, POLLING_INTERVAL)
+let activeConsumers = 0
+let visibilityHandlerAttached = false
 
 // Pause polling while the tab is hidden, resume on return.
 function handleVisibilityChange() {
   if (document.hidden) {
-    stopInterval()
+    poller.stop()
   } else if (activeConsumers > 0) {
-    startInterval()
+    poller.start()
   }
 }
 
-// Helper getters
-function getTrackTitle() {
-  return nowPlaying.value?.title || null
-}
-
-function getTrackArtist() {
-  return nowPlaying.value?.artist || null
-}
-
-function getTrackArt() {
-  return FALLBACK_ART
-}
-
 export function useNowPlaying() {
-  // Auto-start polling when composable is used
-  startPolling()
+  activeConsumers++
+  poller.start()
 
   if (!visibilityHandlerAttached) {
     document.addEventListener('visibilitychange', handleVisibilityChange)
     visibilityHandlerAttached = true
   }
 
-  // Cleanup on component unmount
   onUnmounted(() => {
-    stopPolling()
+    activeConsumers = Math.max(0, activeConsumers - 1)
+    if (activeConsumers === 0) poller.stop()
   })
 
   return {
-    // Reactive state
-    nowPlaying: nowPlaying,
-    isLoading: isLoading,
-    error: error,
-
-    // Control functions
-    startPolling,
-    stopPolling,
-
-    // Helper getters
-    getTrackTitle,
-    getTrackArtist,
-    getTrackArt,
-
-    // Constants
-    FALLBACK_ART
+    nowPlaying,
+    isLoading,
+    error
   }
 }

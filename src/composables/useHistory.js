@@ -5,6 +5,7 @@
  */
 
 import { ref, onMounted, onUnmounted } from 'vue'
+import { createPoller } from '../lib/poller.js'
 
 const POLLING_INTERVAL = 15000 // 15 seconds
 
@@ -12,8 +13,6 @@ export function useHistory() {
   const tracks = ref([])
   const isLoading = ref(true)
   const hasLoadedOnce = ref(false)
-
-  let intervalId = null
 
   async function fetchHistory() {
     try {
@@ -33,35 +32,23 @@ export function useHistory() {
     }
   }
 
-  function startInterval() {
-    if (!intervalId) {
-      fetchHistory()
-      intervalId = setInterval(fetchHistory, POLLING_INTERVAL)
-    }
-  }
-
-  function stopInterval() {
-    if (intervalId) {
-      clearInterval(intervalId)
-      intervalId = null
-    }
-  }
+  const poller = createPoller(fetchHistory, POLLING_INTERVAL)
 
   function handleVisibilityChange() {
     if (document.hidden) {
-      stopInterval()
+      poller.stop()
     } else {
-      startInterval()
+      poller.start()
     }
   }
 
   onMounted(() => {
-    startInterval()
+    poller.start()
     document.addEventListener('visibilitychange', handleVisibilityChange)
   })
 
   onUnmounted(() => {
-    stopInterval()
+    poller.stop()
     document.removeEventListener('visibilitychange', handleVisibilityChange)
   })
 

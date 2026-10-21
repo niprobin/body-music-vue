@@ -9,7 +9,7 @@
       <header class="album-header">
         <div class="album-cover-section">
           <img
-            :src="album.cover_url || fallbackArt"
+            :src="album.cover_url || FALLBACK_COVER"
             :alt="album.release_name || 'Couverture album'"
             class="album-cover-large"
           />
@@ -18,17 +18,17 @@
           <h2>{{ album.release_name || 'Titre inconnu' }}</h2>
           <div class="album-details">
             <p>
-            Sortie le {{ formatReleaseDate(album.release_date) }}
+            Sortie le {{ formatSheetDate(album.release_date) }}
           </p>
           <p>—</p>
           <p v-if="album.liked_date">
-            Écouté le {{ formatLikedDate(album.liked_date) }}
+            Écouté le {{ formatSheetDate(album.liked_date) }}
           </p>
           </div>
           <div class="album-rating" v-if="album.rating"><StarRating :rating="album.rating" size="large" /></div>
           <div class="album-links">
-            <a v-if="getExternalLink(album)"
-               :href="getExternalLink(album)"
+            <a v-if="externalLink(album)"
+               :href="externalLink(album)"
                target="_blank"
                rel="noopener"
                class="external-link">
@@ -40,7 +40,13 @@
 
       <!-- Review Text -->
       <main class="review-main">
-        <div class="review-text" v-html="formattedReviewText"></div>
+        <div class="review-text">
+          <p v-for="(lines, idx) in reviewText" :key="idx">
+            <template v-for="(line, lineIdx) in lines" :key="lineIdx">
+              <br v-if="lineIdx > 0" />{{ line }}
+            </template>
+          </p>
+        </div>
       </main>
     </div>
   </section>
@@ -48,16 +54,22 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import StarRating from '../components/StarRating.vue'
+import {
+  LIKED_ALBUMS_URL,
+  FALLBACK_COVER,
+  isReviewed,
+  externalLink,
+  formatSheetDate,
+  reviewParagraphs
+} from '../lib/albums.js'
 
 const route = useRoute()
-const router = useRouter()
 
 const album = ref(null)
 const loading = ref(true)
 const error = ref('')
-const fallbackArt = 'https://music.niprobin.com/radio_cover.png'
 
 async function loadAlbum() {
   try {
@@ -68,12 +80,11 @@ async function loadAlbum() {
     }
 
     // Fetch all albums to find the one with matching slug
-    const res = await fetch('https://n8n.niprobin.com/webhook/liked-albums')
+    const res = await fetch(LIKED_ALBUMS_URL)
     const data = await res.json()
     const albums = Array.isArray(data) ? data : data ? [data] : []
 
-    // Find album by slug
-    const foundAlbum = albums.find(a => a.slug === slug && a.has_review)
+    const foundAlbum = albums.find(a => a.slug === slug && isReviewed(a))
 
     if (!foundAlbum) {
       error.value = 'Album non trouvé ou sans review'
@@ -91,59 +102,8 @@ async function loadAlbum() {
 
 onMounted(loadAlbum)
 
-// Format review text with basic HTML support
-const formattedReviewText = computed(() => {
-  if (!album.value?.text) return ''
-
-  // Convert newlines to paragraphs and preserve basic formatting
-  return album.value.text
-    .split('\n\n')
-    .map(paragraph => `<p>${paragraph.replace(/\n/g, '<br>')}</p>`)
-    .join('')
-})
-
-function formatReleaseDate(value) {
-  if (!value) return 'Date inconnue'
-  const [day, month, year] = String(value).split('-')
-  const dateObj = new Date(Number(year), Number(month) - 1, Number(day))
-  if (Number.isNaN(dateObj.getTime())) return value
-  return dateObj.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
-}
-
-function formatLikedDate(value) {
-  if (!value) return 'Date inconnue'
-  const [day, month, year] = String(value).split('-')
-  const dateObj = new Date(Number(year), Number(month) - 1, Number(day))
-  if (Number.isNaN(dateObj.getTime())) return value
-  return dateObj.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
-}
-
-function getExternalLink(album) {
-  if (!album) return ''
-  const discogs = (album.discogs_url || '').trim()
-  const spotify = (album.spotify_url || '').trim()
-  const hasCompleteDiscogs =
-    discogs && (discogs.includes('/release') || discogs.includes('/master'))
-  if (hasCompleteDiscogs) {
-    return discogs
-  }
-  if (discogs === 'https://www.discogs.com' && spotify) {
-    return spotify
-  }
-  if (!discogs && spotify) {
-    return spotify
-  }
-  return ''
-}
-
-function getExternalLinkText(album) {
-  const link = getExternalLink(album)
-  if (link.includes('discogs.com')) return 'Discogs'
-  if (link.includes('spotify.com')) return 'Spotify'
-  return 'Site externe'
-}
-
-// TODO: Add meta tags for SEO when SSG setup is complete
+// Rendered as text nodes, so markup in the sheet is shown literally.
+const reviewText = computed(() => reviewParagraphs(album.value?.text))
 </script>
 
 <style scoped>
@@ -291,7 +251,7 @@ function getExternalLinkText(album) {
   margin-bottom: 0;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 720px) {
 
   p {font-size:1.1rem;}
 
