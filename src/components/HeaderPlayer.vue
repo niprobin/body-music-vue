@@ -74,12 +74,11 @@ const displayTitle = computed(() => playerLabel({
 }))
 
 // Lock-screen / notification metadata, kept in sync with what's on air.
+// Metadata is kept while paused: clearing it, or unloading the audio, makes
+// the OS hand the next Play media key to another app.
 function updateMediaSession() {
-  if (!('mediaSession' in navigator)) return
-  if (!isPlaying.value) {
-    navigator.mediaSession.metadata = null
-    return
-  }
+  if (!('mediaSession' in navigator) || !howl) return
+  navigator.mediaSession.playbackState = isPlaying.value ? 'playing' : 'paused'
   const title = nowPlaying.value?.title
   const artist = nowPlaying.value?.artist
   navigator.mediaSession.metadata = new window.MediaMetadata({
@@ -98,8 +97,9 @@ function registerMediaSessionHandlers() {
     if (!isPlaying.value) startStream()
   })
   navigator.mediaSession.setActionHandler('pause', () => {
-    if (isPlaying.value) stopStream()
+    if (isPlaying.value) pauseStream()
   })
+  navigator.mediaSession.setActionHandler('stop', stopStream)
 }
 
 function initHowler() {
@@ -112,6 +112,9 @@ function initHowler() {
     onplay: () => {
       isPlaying.value = true
       isLoading.value = false
+    },
+    onpause: () => {
+      isPlaying.value = false
     },
     onend: () => {
       isPlaying.value = false
@@ -134,22 +137,36 @@ function unloadHowl() {
   }
 }
 
+// Always reconnects, so playback resumes what's live now rather than
+// audio buffered before a pause.
 function startStream() {
   unloadHowl()
   initHowler()
   howl.play()
 }
 
+// Keeps the paused audio element so the page stays the active media
+// session for the Play key.
+function pauseStream() {
+  if (howl) howl.pause()
+  isPlaying.value = false
+  isLoading.value = false
+}
+
 function stopStream() {
   unloadHowl()
   isPlaying.value = false
   isLoading.value = false
+  if ('mediaSession' in navigator) {
+    navigator.mediaSession.metadata = null
+    navigator.mediaSession.playbackState = 'none'
+  }
 }
 
 function togglePlay() {
   if (isLoading.value) return
   if (isPlaying.value) {
-    stopStream()
+    pauseStream()
   } else {
     startStream()
   }
