@@ -8,7 +8,7 @@ Body Music Radio is a lightweight Vue 3 + Vite web app for streaming our online 
 - Streaming audio player (Howler) in a sticky header, with Media Session integration (lock-screen controls and live track info)
 - "Now playing" in the player and the last 10 tracks on the history page
 - Weekly schedule loaded from `public/schedule.json`, with the current show highlighted (Paris time)
-- Featured album on the home page, and an albums page with reviews
+- Featured album on the home page, and an albums page grouped by month
 - PWA: installable, with proper icons and theme
 
 ## Tech Stack

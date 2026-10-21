@@ -19,7 +19,7 @@ Body Music Radio is a Vue 3 web application for streaming an online radio statio
 - **Track History**: last 10 tracks played
 - **Weekly Schedule**: from `public/schedule.json`, current show highlighted in Paris time
 - **Featured Album**: home page section from an n8n webhook
-- **Albums Collection**: liked albums and reviews from an n8n webhook backed by a Google Sheet
+- **Albums Collection**: liked albums grouped by month (sticky full-width month tabs), from an n8n webhook backed by a Google Sheet. Album reviews are paused until the backend handling is reworked.
 
 ## Tech Stack
 - **Vue 3** (`<script setup>`), **Vue Router 4**, **Vite**
@@ -33,7 +33,7 @@ Body Music Radio is a Vue 3 web application for streaming an online radio statio
 - **Now playing**: `/api/nowplaying`, a Vercel function proxying Icecast's `status-json.xsl`. AzuraCast's own nowplaying API is deliberately not used (Liquidsoap 2.4.5 replay_metadata bug freezes metadata).
 - **History**: `/api/history`, a Vercel function proxying an n8n webhook (env var `N8N_HISTORY_WEBHOOK_URL`)
 - **Featured album**: `https://n8n.niprobin.com/webhook/featured-album`
-- **Albums**: `https://n8n.niprobin.com/webhook/liked-albums` (all fields are strings: `has_review` is `"TRUE"`/`"FALSE"`, dates are `DD-MM-YYYY`)
+- **Albums**: `https://n8n.niprobin.com/webhook/liked-albums` (all fields are strings, dates are `DD-MM-YYYY`)
 - **Analytics**: page views POSTed to `https://n8n.niprobin.com/webhook/analytics`
 
 ## Project Structure
@@ -47,13 +47,13 @@ src/
 ├── main.js, App.vue
 ├── router/index.js
 ├── lib/                 # Pure logic, unit tested
-│   ├── albums.js        # Album rules: reviewed?, links, dates, review text
+│   ├── albums.js        # Album rules: external link, dates
 │   ├── schedule.js      # Current show in Paris time
 │   ├── playerLabel.js   # Header player text
 │   └── poller.js        # Interval polling helper
 ├── composables/         # useNowPlaying, useHistory, useAnalytics, useIcons
 ├── components/          # HeaderPlayer, MobileNavigation, SiteFooter, StarRating, LucideIcon
-└── pages/               # Home, Schedule, LastSongs, Albums, AlbumReview
+└── pages/               # Home, Schedule, LastSongs, Albums
 tests/                   # Vitest: lib modules + API handlers
 ```
 
@@ -231,3 +231,7 @@ The entries below are historical and describe the code as it was at the time.
 - Schedule computed in Paris time, `23:59` treated as midnight
 - Home hero renders immediately; Albums added to the mobile menu; analytics only drops same-path duplicates
 - Shared logic moved to `src/lib/`, Vitest added, Netlify config and unused deps/SSG leftovers removed, `vercel.json` added
+
+## Recent Changes (2026-10-21) - Album reviews removed from the frontend
+- Removed the "Nos coups de cœurs" section, the `/albums/:slug` review page and the review-only album rules: reviews are on hold until the backend handling is reworked (see `ALBUM_REVIEWS_IMPLEMENTATION_PLAN.md` and git history to restore)
+- Albums page shows every album grouped by liked month; the month tab bar is full width and sticks under the header player
