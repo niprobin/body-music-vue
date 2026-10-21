@@ -9,7 +9,9 @@ export const routes = [
   { path: '/', name: 'Home', component: Home },
   { path: '/schedule', name: 'Schedule', component: Schedule },
   { path: '/last-songs', name: 'LastSongs', component: LastSongs },
-  { path: '/albums', name: 'Albums', component: Albums }
+  { path: '/albums', name: 'Albums', component: Albums },
+  // Album review pages were removed; send old shared links to the list
+  { path: '/albums/:slug', redirect: '/albums' }
 ]
 
 const router = createRouter({
