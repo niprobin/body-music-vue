@@ -106,7 +106,9 @@ function initHowler() {
   isLoading.value = true
   isError.value = false
   howl = new Howl({
-    src: [streamUrl],
+    // Unique URL per play so the browser opens a new connection at the live
+    // point instead of reusing a buffered one.
+    src: [`${streamUrl}?t=${Date.now()}`],
     html5: true,
     format: ['mp3'],
     onplay: () => {
