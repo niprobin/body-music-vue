@@ -30,30 +30,9 @@
         <div v-if="refreshing" class="refresh-indicator">↻ Mise à jour…</div>
         <div class="albums-tab-content" v-if="albumsByMonth[activeTab]">
           <div class="albums-grid">
-            <article v-for="album in albumsByMonth[activeTab].items"
-                     :key="album.id"
-                     class="album-card">
-              <a v-if="externalLink(album)"
-                 :href="externalLink(album)"
-                 target="_blank"
-                 rel="noopener"
-                 class="album-cover-link">
-                <div class="album-cover-container">
-                  <img :src="album.cover_url || FALLBACK_COVER"
-                       :alt="album.release_name || 'Couverture album'"
-                       class="album-cover" />
-                </div>
-              </a>
-              <img v-else
-                   :src="album.cover_url || FALLBACK_COVER"
-                   :alt="album.release_name || 'Couverture album'"
-                   class="album-cover" />
-              <div class="album-meta">
-                <p class="album-name">{{ album.release_name || 'Titre inconnu' }}</p>
-                <p class="album-date">Sortie le {{ formatSheetDate(album.release_date) }}</p>
-                <StarRating v-if="album.rating" :rating="album.rating" size="medium" />
-              </div>
-            </article>
+            <AlbumCard v-for="album in albumsByMonth[activeTab].items"
+                       :key="album.deezer_id || album.release_name"
+                       :album="album" />
           </div>
         </div>
       </div>
@@ -63,48 +42,17 @@
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
-import StarRating from '../components/StarRating.vue'
-import {
-  LIKED_ALBUMS_URL,
-  FALLBACK_COVER,
-  externalLink,
-  parseSheetDate,
-  formatSheetDate
-} from '../lib/albums.js'
+import AlbumCard from '../components/AlbumCard.vue'
+import { parseSheetDate, readCachedAlbums, fetchLikedAlbums } from '../lib/albums.js'
 
 const albums = ref([])
 const loading = ref(false) // Start as false, set conditionally
 const refreshing = ref(false) // Track background refresh
 const activeTab = ref(0) // Default to first (most recent) month
 const error = ref('')
-const CACHE_KEY = 'albums_cache'
-const CACHE_TIME_KEY = 'albums_cache_time'
-const CACHE_TTL = 24 * 60 * 60 * 1000
-
-// Storage can be blocked (private mode) or hold corrupt JSON; either way
-// treat it as "no cache" so the network fetch still runs.
-function readCache() {
-  try {
-    const cached = JSON.parse(localStorage.getItem(CACHE_KEY))
-    const cachedTime = Number(localStorage.getItem(CACHE_TIME_KEY))
-    const isFresh = Array.isArray(cached) && Date.now() - cachedTime < CACHE_TTL
-    return isFresh ? cached : null
-  } catch (_) {
-    return null
-  }
-}
-
-function writeCache(list) {
-  try {
-    localStorage.setItem(CACHE_KEY, JSON.stringify(list))
-    localStorage.setItem(CACHE_TIME_KEY, String(Date.now()))
-  } catch (_) {
-    // Storage full or blocked: the page works without a cache.
-  }
-}
 
 async function loadAlbums() {
-  const cached = readCache()
+  const cached = readCachedAlbums()
   if (cached) {
     // Show cached data immediately, refresh in the background
     albums.value = cached
@@ -114,12 +62,7 @@ async function loadAlbums() {
   }
 
   try {
-    const res = await fetch(LIKED_ALBUMS_URL)
-    const data = await res.json()
-    const list = Array.isArray(data) ? data : data ? [data] : []
-
-    albums.value = list
-    writeCache(list)
+    albums.value = await fetchLikedAlbums()
   } catch (err) {
     console.error('Error loading albums:', err)
     if (!albums.value.length) { // Only show error if no cached data
@@ -210,63 +153,6 @@ watch(albumsByMonth, (newGroups) => {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.75rem;
 }
-
-.album-card {
-  border-radius: 0.75rem;
-  padding: 0.75rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  align-items: left;
-  position: relative;
-  
-}
-
-.album-cover-container {
-  position: relative;
-  width: 100%;
-}
-
-.album-cover {
-  width: 100%;
-  height: auto;
-  border-radius: 0.25rem;
-  object-fit: cover;
-  border:1px solid rgba(51, 51, 51, 0.5);
-  -webkit-box-shadow: 2px 4px 4px 0px rgba(0,0,0,0.25); 
-  box-shadow: 2px 4px 4px 0px rgba(0,0,0,0.25);
-}
-
-.album-cover-link {
-  display: block;
-  width: 100%;
-}
-
-
-.album-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  text-align: left;
-  width: 100%;
-  padding-left:4px;
-}
-
-.album-name {
-  margin: 0;
-  font-weight: 600;
-  font-size: 0.95rem;
-}
-
-.album-date {
-  margin: 0;
-  color: #94a3b8;
-  font-size: 0.8rem;
-}
-
-
-
-
 
 .albums-content {
   padding: 0 6rem;
