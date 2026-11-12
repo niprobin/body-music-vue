@@ -6,7 +6,8 @@
     @click="onClick"
   >
     <img
-      :src="album.cover_url || FALLBACK_COVER"
+      :src="coverUrl(album)"
+      @error="useFallbackCover"
       :alt="''"
       class="album-tile__cover"
       loading="lazy"
@@ -25,7 +26,7 @@
 <script setup>
 import { computed } from 'vue'
 import LucideIcon from './LucideIcon.vue'
-import { FALLBACK_COVER, externalLink, albumNames } from '../lib/albums.js'
+import { coverUrl, useFallbackCover, externalLink, albumNames } from '../lib/albums.js'
 
 const props = defineProps({
   album: { type: Object, required: true },

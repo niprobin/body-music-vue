@@ -15,7 +15,9 @@
         <template v-if="shown">
           <div class="album-sheet__head">
             <img
-              :src="shown.cover_url || FALLBACK_COVER"
+              :key="coverUrl(shown)"
+              :src="coverUrl(shown)"
+              @error="useFallbackCover"
               alt=""
               class="album-sheet__cover"
             />
@@ -53,7 +55,7 @@
 <script setup>
 import { ref, computed, watch, nextTick, onBeforeUnmount } from 'vue'
 import LucideIcon from './LucideIcon.vue'
-import { FALLBACK_COVER, externalLink, formatSheetDate, albumNames } from '../lib/albums.js'
+import { coverUrl, useFallbackCover, externalLink, formatSheetDate, albumNames } from '../lib/albums.js'
 
 const props = defineProps({
   // The album to show; null closes the sheet.

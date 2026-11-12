@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { externalLink, formatSheetDate, recentTopAlbums, albumNames, isCoupDeCoeur, groupByMonth } from '../src/lib/albums.js'
+import { externalLink, formatSheetDate, recentTopAlbums, albumNames, coverUrl, FALLBACK_COVER, isCoupDeCoeur, groupByMonth } from '../src/lib/albums.js'
 
 describe('externalLink', () => {
   it('prefers a Discogs release or master page', () => {
@@ -117,5 +117,14 @@ describe('albumNames', () => {
   it('treats missing and "null" cells as empty', () => {
     expect(albumNames({ artist_name: 'null', album_name: ' ' })).toEqual({ artist: '', title: '' })
     expect(albumNames(null)).toEqual({ artist: '', title: '' })
+  })
+})
+
+describe('coverUrl', () => {
+  it('returns the cover, or the placeholder when empty or "null"', () => {
+    expect(coverUrl({ cover_url: ' https://x/c.jpg ' })).toBe('https://x/c.jpg')
+    expect(coverUrl({ cover_url: 'null' })).toBe(FALLBACK_COVER)
+    expect(coverUrl({ cover_url: '' })).toBe(FALLBACK_COVER)
+    expect(coverUrl(null)).toBe(FALLBACK_COVER)
   })
 })

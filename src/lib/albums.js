@@ -6,7 +6,7 @@
  */
 
 export const LIKED_ALBUMS_URL = 'https://n8n.niprobin.com/webhook/liked-albums'
-export const FALLBACK_COVER = 'https://music.niprobin.com/radio_cover.png'
+export const FALLBACK_COVER = '/cover-placeholder.png'
 
 const DISCOGS_HOME = 'https://www.discogs.com'
 
@@ -55,6 +55,19 @@ export function albumNames(album) {
     artist: cleanUrl(album?.artist_name),
     title: cleanUrl(album?.album_name)
   }
+}
+
+// The album cover, or the placeholder when the cell is empty or "null".
+export function coverUrl(album) {
+  return cleanUrl(album?.cover_url) || FALLBACK_COVER
+}
+
+// <img @error>: swap a cover that fails to load for the placeholder, once.
+export function useFallbackCover(event) {
+  const img = event.target
+  if (img.dataset.fallback) return
+  img.dataset.fallback = '1'
+  img.src = FALLBACK_COVER
 }
 
 // Stable v-for key.
