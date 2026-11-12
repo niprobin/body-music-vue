@@ -33,7 +33,7 @@
         <label v-if="!isMobile && albumsByMonth.length > 1" class="albums-jump">
           <span>Aller à</span>
           <select v-model="jumpTo" @change="jumpToMonth">
-            <option value="" disabled>Choisir un mois</option>
+            <option value="" disabled>Mois…</option>
             <option v-for="group in albumsByMonth" :key="group.key" :value="group.key">
               {{ group.label }}
             </option>
