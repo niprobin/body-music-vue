@@ -49,7 +49,7 @@
           </h2>
           <AlbumTile
             v-for="album in group.items"
-            :key="album.deezer_id || album.release_name"
+            :key="albumKey(album)"
             :album="album"
             :mobile="isMobile"
             @open="openSheet(album, $event)"

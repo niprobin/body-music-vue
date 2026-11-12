@@ -32,7 +32,7 @@
         </template>
         <AlbumCard v-else
                    v-for="album in albums"
-                   :key="album.deezer_id || album.release_name"
+                   :key="albumKey(album)"
                    :album="album" />
       </div>
     </section>

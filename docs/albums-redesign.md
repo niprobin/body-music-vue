@@ -65,7 +65,7 @@ Hide a month divider when the filter leaves that month empty. Full width on mobi
 ## Data
 
 - Source unchanged: `fetchLikedAlbums()` / `readCachedAlbums()` in `src/lib/albums.js`. All fields are strings; dates are `DD-MM-YYYY`.
-- **Artist / album:** Supabase `albums` has `artist_name` and `album_name`. The front reads them via `albumNames(album)`; until the liked-albums webhook returns them it falls back to parsing `release_name` (`splitReleaseName`).
+- **Artist / album:** the webhook sends Supabase `artist_name` and `album_name`; the front reads them via `albumNames(album)`. `release_name` is gone.
 - Put grouping and filtering in `src/lib/albums.js` as pure functions with Vitest tests, like the existing helpers. For example:
   - `groupByMonth(list)` → `[{ key, label, items }]`, newest first (move the logic out of `Albums.vue`)
   - `isCoupDeCoeur(album)` → `Number(album.rating) >= 4`

@@ -6,15 +6,16 @@
        rel="noopener"
        class="album-cover-link">
       <img :src="album.cover_url || FALLBACK_COVER"
-           :alt="album.release_name || 'Couverture album'"
+           :alt="coverAlt"
            class="album-cover" />
     </a>
     <img v-else
          :src="album.cover_url || FALLBACK_COVER"
-         :alt="album.release_name || 'Couverture album'"
+         :alt="coverAlt"
          class="album-cover" />
     <div class="album-meta">
-      <p class="album-name">{{ album.release_name || 'Titre inconnu' }}</p>
+      <p class="album-name">{{ names.title || 'Titre inconnu' }}</p>
+      <p v-if="names.artist" class="album-artist">{{ names.artist }}</p>
       <p class="album-date">Sortie le {{ formatSheetDate(album.release_date) }}</p>
       <StarRating v-if="rating" :rating="rating" size="medium" />
     </div>
@@ -24,13 +25,16 @@
 <script setup>
 import { computed } from 'vue'
 import StarRating from './StarRating.vue'
-import { FALLBACK_COVER, externalLink, formatSheetDate } from '../lib/albums.js'
+import { FALLBACK_COVER, albumNames, externalLink, formatSheetDate } from '../lib/albums.js'
 
 const props = defineProps({
   album: { type: Object, required: true }
 })
 
 const link = computed(() => externalLink(props.album))
+const names = computed(() => albumNames(props.album))
+const coverAlt = computed(() =>
+  [names.value.title, names.value.artist].filter(Boolean).join(' — ') || 'Couverture album')
 // The sheet sends ratings as strings ("4").
 const rating = computed(() => Number(props.album.rating) || 0)
 </script>
@@ -75,6 +79,12 @@ const rating = computed(() => Number(props.album.rating) || 0)
   margin: 0;
   font-weight: 600;
   font-size: 0.95rem;
+}
+
+.album-artist {
+  margin: 0;
+  color: #cbd5e1;
+  font-size: 0.85rem;
 }
 
 .album-date {

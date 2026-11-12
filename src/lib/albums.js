@@ -48,31 +48,18 @@ export function formatSheetDate(value) {
   return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
-// Supabase `albums` has artist_name and album_name. Use them when the
-// webhook sends them; otherwise fall back to parsing release_name.
+// Album and artist names come from the Supabase `albums` columns.
+// Empty cells come through as the string "null".
 export function albumNames(album) {
-  const artist = cleanUrl(album?.artist_name)
-  const title = cleanUrl(album?.album_name)
-  if (artist || title) return { artist, title }
-  return splitReleaseName(album?.release_name)
+  return {
+    artist: cleanUrl(album?.artist_name),
+    title: cleanUrl(album?.album_name)
+  }
 }
 
-// Fallback for the legacy "Artist  - Title" release_name. Upstream mangles
-// hyphenated artists into "Joe Armon-Jones  - ones - Title" (a tail of the
-// artist name is repeated), so that tail is dropped.
-export function splitReleaseName(value) {
-  const name = String(value || '').trim()
-  if (!name || name === 'null') return { artist: '', title: '' }
-  const match = name.match(/^(.+?)\s+-\s+(.+)$/)
-  if (!match) return { artist: '', title: name }
-
-  const artist = match[1].trim()
-  let title = match[2].trim()
-  const echo = title.match(/^(\S+)\s+-\s+(.+)$/)
-  if (echo && artist.includes('-') && artist.toLowerCase().endsWith(echo[1].toLowerCase())) {
-    title = echo[2].trim()
-  }
-  return { artist, title }
+// Stable v-for key.
+export function albumKey(album) {
+  return album?.deezer_id || `${album?.artist_name}|${album?.album_name}`
 }
 
 // Rob's favourites: rated 4/5 or more.
@@ -122,8 +109,8 @@ export function recentTopAlbums(list, { count = 4, minRating = 4 } = {}) {
     .slice(0, count)
 }
 
-const CACHE_KEY = 'albums_cache'
-const CACHE_TIME_KEY = 'albums_cache_time'
+const CACHE_KEY = 'albums_cache_v2' // v2: artist_name + album_name
+const CACHE_TIME_KEY = 'albums_cache_v2_time'
 const CACHE_TTL = 24 * 60 * 60 * 1000
 
 // Storage can be blocked (private mode) or hold corrupt JSON; either way
