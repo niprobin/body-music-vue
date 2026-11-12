@@ -43,7 +43,7 @@
 import { ref, onMounted } from 'vue'
 import LucideIcon from '../components/LucideIcon.vue'
 import AlbumCard from '../components/AlbumCard.vue'
-import { readCachedAlbums, fetchLikedAlbums, recentTopAlbums } from '../lib/albums.js'
+import { albumKey, readCachedAlbums, fetchLikedAlbums, recentTopAlbums } from '../lib/albums.js'
 
 const ALBUM_COUNT = 4
 

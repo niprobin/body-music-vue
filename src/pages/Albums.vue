@@ -74,7 +74,7 @@ import AlbumTile from '../components/AlbumTile.vue'
 import LucideIcon from '../components/LucideIcon.vue'
 import AlbumSheet from '../components/AlbumSheet.vue'
 import { useIsMobile } from '../composables/useIsMobile.js'
-import { groupByMonth, isCoupDeCoeur, readCachedAlbums, fetchLikedAlbums } from '../lib/albums.js'
+import { albumKey, groupByMonth, isCoupDeCoeur, readCachedAlbums, fetchLikedAlbums } from '../lib/albums.js'
 
 const albums = ref([])
 const loading = ref(false) // Start as false, set conditionally
