@@ -30,6 +30,15 @@
             Coups de cœur
           </button>
         </div>
+        <label v-if="!isMobile && albumsByMonth.length > 1" class="albums-jump">
+          <span>Aller à</span>
+          <select v-model="jumpTo" @change="jumpToMonth">
+            <option value="" disabled>Choisir un mois</option>
+            <option v-for="group in albumsByMonth" :key="group.key" :value="group.key">
+              {{ group.label }}
+            </option>
+          </select>
+        </label>
       </div>
       <div v-if="refreshing" class="refresh-indicator">↻ Mise à jour…</div>
       <p v-if="!albumsByMonth.length" class="status-card">Aucun album pour l’instant.</p>
@@ -75,6 +84,16 @@ const isMobile = useIsMobile()
 const favouritesOnly = ref(false)
 const sheetAlbum = ref(null)
 const sheetReturn = ref(null)
+
+const jumpTo = ref('')
+
+// Divider scroll-margin keeps it clear of the sticky header player.
+function jumpToMonth() {
+  const target = document.getElementById(`mois-${jumpTo.value}`)
+  const smooth = !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  target?.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'start' })
+  jumpTo.value = ''
+}
 
 function openSheet(album, tile) {
   sheetReturn.value = tile
@@ -197,6 +216,36 @@ const albumsByMonth = computed(() => groupByMonth(visibleAlbums.value))
 .albums-filter__star {
   color: #facc15;
   fill: #facc15;
+}
+
+.albums-jump {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+.albums-jump select {
+  min-height: 40px;
+  padding: 0 2rem 0 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 999px;
+  background: transparent;
+  color: #f3efe8;
+  font: inherit;
+  text-transform: capitalize;
+  cursor: pointer;
+}
+
+.albums-jump select:focus-visible {
+  outline: 2px solid #f3efe8;
+  outline-offset: 2px;
+}
+
+.albums-jump option {
+  background: #152331;
+  color: #f3efe8;
 }
 
 .refresh-indicator {
