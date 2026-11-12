@@ -43,10 +43,19 @@
             :key="album.deezer_id || album.release_name"
             :album="album"
             :mobile="isMobile"
+            @open="openSheet(album, $event)"
           />
         </template>
       </div>
     </div>
+
+    <!-- Client-only: isMobile is false during the static build -->
+    <AlbumSheet
+      v-if="isMobile"
+      :album="sheetAlbum"
+      :return-focus="sheetReturn"
+      @close="sheetAlbum = null"
+    />
   </section>
 </template>
 
@@ -54,6 +63,7 @@
 import { ref, computed, onMounted } from 'vue'
 import AlbumTile from '../components/AlbumTile.vue'
 import LucideIcon from '../components/LucideIcon.vue'
+import AlbumSheet from '../components/AlbumSheet.vue'
 import { useIsMobile } from '../composables/useIsMobile.js'
 import { groupByMonth, isCoupDeCoeur, readCachedAlbums, fetchLikedAlbums } from '../lib/albums.js'
 
@@ -63,6 +73,13 @@ const refreshing = ref(false) // Track background refresh
 const error = ref('')
 const isMobile = useIsMobile()
 const favouritesOnly = ref(false)
+const sheetAlbum = ref(null)
+const sheetReturn = ref(null)
+
+function openSheet(album, tile) {
+  sheetReturn.value = tile
+  sheetAlbum.value = album
+}
 
 async function loadAlbums() {
   const cached = readCachedAlbums()
