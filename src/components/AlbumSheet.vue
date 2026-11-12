@@ -5,6 +5,8 @@
       <div
         ref="sheetEl"
         class="album-sheet"
+        :class="{ 'album-sheet--tinted': palette }"
+        :style="palette"
         role="dialog"
         aria-modal="true"
         :aria-labelledby="titleId"
@@ -56,6 +58,7 @@
 import { ref, computed, watch, nextTick, onBeforeUnmount } from 'vue'
 import LucideIcon from './LucideIcon.vue'
 import { coverUrl, useFallbackCover, externalLink, formatSheetDate, albumNames } from '../lib/albums.js'
+import { readCoverColor, sheetPalette } from '../lib/coverColor.js'
 
 const props = defineProps({
   // The album to show; null closes the sheet.
@@ -80,6 +83,17 @@ const linkLabel = computed(() => {
   if (link.value.includes('discogs.com')) return 'Voir sur Discogs'
   if (link.value.includes('deezer.com')) return 'Écouter sur Deezer'
   return 'Écouter sur Spotify'
+})
+
+// Background = the cover's dominant colour, text = black or white.
+// Until it's read (or if it can't be), the default dark theme shows.
+const palette = ref(null)
+
+watch(shown, async (album) => {
+  palette.value = null
+  if (!album) return
+  const color = await readCoverColor(coverUrl(album))
+  if (shown.value === album && color) palette.value = sheetPalette(color)
 })
 
 let saved = null
@@ -290,6 +304,55 @@ function onKeydown(event) {
   outline-offset: 2px;
 }
 
+/* Tinted with the cover colour: every colour follows --sheet-fg */
+.album-sheet {
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1), background-color 0.3s ease;
+}
+
+.album-sheet--tinted {
+  background: var(--sheet-bg);
+  color: var(--sheet-fg);
+  border-color: rgba(var(--sheet-fg-rgb), 0.2);
+}
+
+.album-sheet--tinted .album-sheet__handle {
+  background: rgba(var(--sheet-fg-rgb), 0.4);
+}
+
+.album-sheet--tinted .album-sheet__title {
+  color: var(--sheet-fg);
+}
+
+/* Full text colour: an alpha would drop mid-tone covers under 4.5:1 */
+.album-sheet--tinted .album-sheet__artist,
+.album-sheet--tinted .album-sheet__date {
+  color: var(--sheet-fg);
+}
+
+.album-sheet--tinted .album-sheet__rating {
+  color: var(--sheet-fg);
+}
+
+.album-sheet--tinted .album-sheet__star {
+  color: var(--sheet-star);
+  fill: var(--sheet-star);
+}
+
+.album-sheet--tinted .album-sheet__btn {
+  border-color: rgba(var(--sheet-fg-rgb), 0.45);
+  color: var(--sheet-fg);
+}
+
+.album-sheet--tinted .album-sheet__btn--primary {
+  border-color: var(--sheet-fg);
+  background: var(--sheet-fg);
+  color: var(--sheet-bg);
+}
+
+.album-sheet--tinted .album-sheet__btn:focus-visible {
+  outline-color: var(--sheet-fg);
+}
+
 /* Desktop: a drawer sliding in from the right */
 @media (min-width: 721px) {
   .album-sheet {
@@ -335,6 +398,7 @@ function onKeydown(event) {
 
 @media (prefers-reduced-motion: reduce) {
   .album-sheet,
+  .album-sheet--tinted,
   .album-sheet__backdrop {
     transition: none;
   }
