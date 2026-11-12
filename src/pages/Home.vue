@@ -24,31 +24,47 @@
       </div>
       <div class="recent-albums-grid" :aria-busy="loading">
         <template v-if="loading">
-          <div v-for="n in ALBUM_COUNT" :key="n" class="album-skeleton" aria-hidden="true">
-            <div class="skeleton-cover"></div>
-            <div class="skeleton-line"></div>
-            <div class="skeleton-line skeleton-line--short"></div>
-          </div>
+          <div v-for="n in ALBUM_COUNT" :key="n" class="skeleton-cover" aria-hidden="true"></div>
         </template>
-        <AlbumCard v-else
+        <AlbumTile v-else
                    v-for="album in albums"
                    :key="albumKey(album)"
-                   :album="album" />
+                   :album="album"
+                   :mobile="isMobile"
+                   @open="openSheet(album, $event)" />
       </div>
     </section>
+
+    <!-- Client-only: isMobile is false during the static build -->
+    <AlbumSheet
+      v-if="isMobile"
+      :album="sheetAlbum"
+      :return-focus="sheetReturn"
+      @close="sheetAlbum = null"
+    />
   </main>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 import LucideIcon from '../components/LucideIcon.vue'
-import AlbumCard from '../components/AlbumCard.vue'
+import AlbumTile from '../components/AlbumTile.vue'
+import AlbumSheet from '../components/AlbumSheet.vue'
+import { useIsMobile } from '../composables/useIsMobile.js'
 import { albumKey, readCachedAlbums, fetchLikedAlbums, recentTopAlbums } from '../lib/albums.js'
 
 const ALBUM_COUNT = 4
 
 const albums = ref([])
 const loading = ref(true)
+const isMobile = useIsMobile()
+const sheetAlbum = ref(null)
+const sheetReturn = ref(null)
+
+function openSheet(album, tile) {
+  sheetReturn.value = tile
+  sheetAlbum.value = album
+}
 
 function select(list) {
   return recentTopAlbums(list, { count: ALBUM_COUNT, minRating: 4 })
@@ -145,35 +161,15 @@ h2 {
 .recent-albums-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.75rem;
-}
-
-.album-skeleton {
-  padding: 0.75rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.skeleton-cover,
-.skeleton-line {
-  background: rgba(148, 163, 184, 0.15);
-  border-radius: 0.25rem;
-  animation: pulse 1.4s ease-in-out infinite;
+  gap: 8px;
 }
 
 .skeleton-cover {
   aspect-ratio: 1;
   width: 100%;
-}
-
-.skeleton-line {
-  height: 0.8rem;
-  width: 80%;
-}
-
-.skeleton-line--short {
-  width: 50%;
+  border-radius: 4px;
+  background: rgba(148, 163, 184, 0.15);
+  animation: pulse 1.4s ease-in-out infinite;
 }
 
 @keyframes pulse {
@@ -215,12 +211,7 @@ h2 {
 
   .recent-albums-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.25rem;
-  }
-
-  .recent-albums-grid :deep(.album-card),
-  .album-skeleton {
-    padding: 0.5rem;
+    gap: 6px;
   }
 }
 </style>

@@ -52,7 +52,7 @@ src/
 │   ├── playerLabel.js   # Header player text
 │   └── poller.js        # Interval polling helper
 ├── composables/         # useNowPlaying, useHistory, useAnalytics, useIcons
-├── components/          # HeaderPlayer, MobileNavigation, SiteFooter, StarRating, LucideIcon
+├── components/          # HeaderPlayer, MobileNavigation, SiteFooter, LucideIcon, AlbumTile, AlbumSheet
 └── pages/               # Home, Schedule, LastSongs, Albums
 tests/                   # Vitest: lib modules + API handlers
 ```

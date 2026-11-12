@@ -72,7 +72,7 @@ Hide a month divider when the filter leaves that month empty. Full width on mobi
 
 ## Important: don't break Home
 
-`AlbumCard.vue` is also used by `Home.vue` ("Nos albums du moment"). **Do not restyle `AlbumCard`.** Create a new `src/components/AlbumTile.vue` for the wall, and a separate `AlbumSheet.vue` for the mobile sheet.
+Update 2026-11-12: Home ("Nos albums du moment") now uses `AlbumTile` + `AlbumSheet` too; `AlbumCard` and `StarRating` were removed.
 
 ## Implementation order (one step = one commit, check in with Rob between steps)
 
