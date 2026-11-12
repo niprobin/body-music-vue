@@ -11,45 +11,36 @@
       <div class="status-card error">{{ error }}</div>
     </div>
 
-    <template v-else>
-      <!-- Month tabs: full width, sticky under the header player -->
-      <nav class="albums-tabs" aria-label="Mois">
-        <div class="albums-tabs-container">
-          <button
-            v-for="(group, index) in albumsByMonth"
-            :key="group.key"
-            :class="['albums-tab', { 'albums-tab--active': activeTab === index }]"
-            @click="activeTab = index"
-          >
-            {{ group.label }}
-          </button>
-        </div>
-      </nav>
-
-      <div class="albums-content">
-        <div v-if="refreshing" class="refresh-indicator">↻ Mise à jour…</div>
-        <div class="albums-tab-content" v-if="albumsByMonth[activeTab]">
-          <div class="albums-grid">
-            <AlbumCard v-for="album in albumsByMonth[activeTab].items"
-                       :key="album.deezer_id || album.release_name"
-                       :album="album" />
-          </div>
-        </div>
+    <div v-else class="albums-content">
+      <div v-if="refreshing" class="refresh-indicator">↻ Mise à jour…</div>
+      <div class="albums-wall">
+        <template v-for="group in albumsByMonth" :key="group.key">
+          <h2 :id="`mois-${group.key}`" class="albums-month">
+            <span class="albums-month__label">{{ group.label }}</span>
+          </h2>
+          <AlbumTile
+            v-for="album in group.items"
+            :key="album.deezer_id || album.release_name"
+            :album="album"
+            :mobile="isMobile"
+          />
+        </template>
       </div>
-    </template>
+    </div>
   </section>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
-import AlbumCard from '../components/AlbumCard.vue'
+import { ref, computed, onMounted } from 'vue'
+import AlbumTile from '../components/AlbumTile.vue'
+import { useIsMobile } from '../composables/useIsMobile.js'
 import { groupByMonth, readCachedAlbums, fetchLikedAlbums } from '../lib/albums.js'
 
 const albums = ref([])
 const loading = ref(false) // Start as false, set conditionally
 const refreshing = ref(false) // Track background refresh
-const activeTab = ref(0) // Default to first (most recent) month
 const error = ref('')
+const isMobile = useIsMobile()
 
 async function loadAlbums() {
   const cached = readCachedAlbums()
@@ -78,12 +69,6 @@ onMounted(loadAlbums)
 
 const albumsByMonth = computed(() => groupByMonth(albums.value))
 
-// Watch for changes in grouped albums to reset tab if needed
-watch(albumsByMonth, (newGroups) => {
-  if (newGroups.length > 0 && activeTab.value >= newGroups.length) {
-    activeTab.value = 0
-  }
-}, { immediate: true })
 </script>
 
 <style scoped>
@@ -120,85 +105,63 @@ watch(albumsByMonth, (newGroups) => {
 
 
 
-.albums-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.75rem;
-}
-
 .albums-content {
   padding: 0 6rem;
 }
 
-/* Month tabs: full width, sticky just below the header player (top 1vh + 18vh) */
-.albums-tabs {
-  position: sticky;
-  top: 19vh;
-  z-index: 500;
-  margin-bottom: 1.5rem;
-  background-color: rgba(21, 35, 49, 0.9);
-  backdrop-filter: blur(12px);
-  border-top: 1px solid rgba(148, 163, 184, 0.2);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+.refresh-indicator {
+  margin-bottom: 0.75rem;
+  color: #94a3b8;
+  font-size: 0.85rem;
 }
 
+.albums-wall {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+}
 
-.albums-tabs-container {
+/* Month divider: full-width row inside the grid */
+.albums-month {
+  grid-column: 1 / -1;
   display: flex;
-  gap: 0.5rem;
-  overflow-x: auto;
-  padding: 0.75rem 6rem;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.albums-tabs-container::-webkit-scrollbar {
-  display: none;
-}
-
-.albums-tab {
-  flex-shrink: 0;
-  padding: 0.75rem 1.25rem;
-  border: 1px solid rgba(70, 69, 69, 0.95);
-  color: #f3efe8;
-  background:transparent;
-  border-radius: 50px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 0.9rem;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.5rem 0 0.5rem;
+  font-family: 'Gochi Hand', 'Inter', sans-serif;
+  font-size: 26px;
   font-weight: 400;
-  white-space: nowrap;
+  text-transform: uppercase;
+  color: #f3efe8;
+  /* Land below the sticky header player when jumped to */
+  scroll-margin-top: calc(19vh + 1rem);
 }
 
-.albums-tab--active {
-  background: #f3efe8;
-  border-color: #f3efe8;
-  color: #111;
-  font-weight: 500;
+.albums-month:first-child {
+  margin-top: 0;
 }
 
-.albums-tab-content {
-  animation: fadeIn 0.3s ease-in-out;
+.albums-month::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(148, 163, 184, 0.25);
 }
 
 @media (max-width: 720px) {
-
   .albums-content, .albums-header {
-    width:100%;
-    padding:0rem 2rem;
+    width: 100%;
+    padding: 0 2rem;
   }
 
-  .albums-grid {
-    grid-template-columns: 1fr;
+  .albums-wall {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
   }
 
-  .albums-tabs-container {
-    gap: 0.375rem;
-    padding: 0.625rem 2rem;
-  }
-  .albums-tab {
-    padding: 0.625rem 1rem;
-    font-size: 0.85rem;
+  .albums-month {
+    font-size: 22px;
+    margin-top: 1.25rem;
   }
 }
 </style>
