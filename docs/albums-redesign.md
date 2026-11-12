@@ -65,7 +65,7 @@ Hide a month divider when the filter leaves that month empty. Full width on mobi
 ## Data
 
 - Source unchanged: `fetchLikedAlbums()` / `readCachedAlbums()` in `src/lib/albums.js`. All fields are strings; dates are `DD-MM-YYYY`.
-- **Artist (checked 2026-11-12):** the webhook has **no artist key** (keys: `deezer_id, release_name, release_date, cover_url, spotify_url, rating, liked_date, discogs_url, has_review`). The artist is inside `release_name` as `"Artist  - Title"`. Use `splitReleaseName(album.release_name)` → `{ artist, title }`; it also repairs the upstream mangling of hyphenated artists (`"Joe Armon-Jones  - ones - Title"`). Hide the artist line when `artist` is empty.
+- **Artist / album:** Supabase `albums` has `artist_name` and `album_name`. The front reads them via `albumNames(album)`; until the liked-albums webhook returns them it falls back to parsing `release_name` (`splitReleaseName`).
 - Put grouping and filtering in `src/lib/albums.js` as pure functions with Vitest tests, like the existing helpers. For example:
   - `groupByMonth(list)` → `[{ key, label, items }]`, newest first (move the logic out of `Albums.vue`)
   - `isCoupDeCoeur(album)` → `Number(album.rating) >= 4`

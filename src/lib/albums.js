@@ -48,9 +48,18 @@ export function formatSheetDate(value) {
   return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
-// The sheet has no artist column: release_name is "Artist  - Title".
-// Upstream mangles hyphenated artists into "Joe Armon-Jones  - ones - Title"
-// (a tail of the artist name is repeated), so that tail is dropped.
+// Supabase `albums` has artist_name and album_name. Use them when the
+// webhook sends them; otherwise fall back to parsing release_name.
+export function albumNames(album) {
+  const artist = cleanUrl(album?.artist_name)
+  const title = cleanUrl(album?.album_name)
+  if (artist || title) return { artist, title }
+  return splitReleaseName(album?.release_name)
+}
+
+// Fallback for the legacy "Artist  - Title" release_name. Upstream mangles
+// hyphenated artists into "Joe Armon-Jones  - ones - Title" (a tail of the
+// artist name is repeated), so that tail is dropped.
 export function splitReleaseName(value) {
   const name = String(value || '').trim()
   if (!name || name === 'null') return { artist: '', title: '' }

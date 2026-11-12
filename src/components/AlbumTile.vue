@@ -25,7 +25,7 @@
 <script setup>
 import { computed } from 'vue'
 import LucideIcon from './LucideIcon.vue'
-import { FALLBACK_COVER, externalLink, splitReleaseName } from '../lib/albums.js'
+import { FALLBACK_COVER, externalLink, albumNames } from '../lib/albums.js'
 
 const props = defineProps({
   album: { type: Object, required: true },
@@ -36,7 +36,7 @@ const props = defineProps({
 const emit = defineEmits(['open'])
 
 const link = computed(() => externalLink(props.album))
-const names = computed(() => splitReleaseName(props.album.release_name))
+const names = computed(() => albumNames(props.album))
 const rating = computed(() => Number(props.album.rating) || 0)
 
 const label = computed(() => {

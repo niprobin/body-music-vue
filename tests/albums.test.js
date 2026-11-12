@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { externalLink, formatSheetDate, recentTopAlbums, splitReleaseName, isCoupDeCoeur, groupByMonth } from '../src/lib/albums.js'
+import { externalLink, formatSheetDate, recentTopAlbums, splitReleaseName, albumNames, isCoupDeCoeur, groupByMonth } from '../src/lib/albums.js'
 
 describe('externalLink', () => {
   it('prefers a Discogs release or master page', () => {
@@ -132,5 +132,17 @@ describe('groupByMonth', () => {
 
   it('returns an empty array for bad input', () => {
     expect(groupByMonth(null)).toEqual([])
+  })
+})
+
+describe('albumNames', () => {
+  it('uses the Supabase artist_name and album_name when present', () => {
+    expect(albumNames({ artist_name: 'Joe Armon-Jones', album_name: 'Turn to Clear View', release_name: 'x  - y' }))
+      .toEqual({ artist: 'Joe Armon-Jones', title: 'Turn to Clear View' })
+  })
+
+  it('falls back to release_name when the fields are missing or "null"', () => {
+    expect(albumNames({ artist_name: 'null', album_name: 'null', release_name: 'Herbert  - Bodily Functions' }))
+      .toEqual({ artist: 'Herbert', title: 'Bodily Functions' })
   })
 })

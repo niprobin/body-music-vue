@@ -53,7 +53,7 @@
 <script setup>
 import { ref, computed, watch, nextTick, onBeforeUnmount } from 'vue'
 import LucideIcon from './LucideIcon.vue'
-import { FALLBACK_COVER, externalLink, formatSheetDate, splitReleaseName } from '../lib/albums.js'
+import { FALLBACK_COVER, externalLink, formatSheetDate, albumNames } from '../lib/albums.js'
 
 const props = defineProps({
   // The album to show; null closes the sheet.
@@ -71,7 +71,7 @@ const open = computed(() => !!props.album)
 
 // Keep the last album rendered while the sheet slides out.
 const shown = ref(null)
-const names = computed(() => splitReleaseName(shown.value?.release_name))
+const names = computed(() => albumNames(shown.value))
 const rating = computed(() => Number(shown.value?.rating) || 0)
 const link = computed(() => externalLink(shown.value))
 const linkLabel = computed(() => {

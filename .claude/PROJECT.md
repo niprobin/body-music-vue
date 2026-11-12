@@ -19,7 +19,7 @@ Body Music Radio is a Vue 3 web application for streaming an online radio statio
 - **Track History**: last 10 tracks played
 - **Weekly Schedule**: from `public/schedule.json`, current show highlighted in Paris time
 - **Featured Album**: home page section from an n8n webhook
-- **Albums Collection**: a cover wall of liked albums with month dividers (6 cols desktop, 2 mobile), a "Tous / Coups de cœur" (rating ≥ 4) filter, a desktop "Aller à" month jump, and a mobile bottom sheet (`AlbumSheet.vue`) on tap; data from an n8n webhook backed by a Google Sheet. The artist is parsed out of `release_name` (`splitReleaseName`). Album reviews are paused until the backend handling is reworked.
+- **Albums Collection**: a cover wall of liked albums with month dividers (6 cols desktop, 2 mobile), a "Tous / Coups de cœur" (rating ≥ 4) filter, a desktop "Aller à" month jump, and a mobile bottom sheet (`AlbumSheet.vue`) on tap; data from an n8n webhook backed by a Google Sheet. Names come from Supabase `artist_name` / `album_name` via `albumNames()` (fallback: parsing `release_name`). Album reviews are paused until the backend handling is reworked.
 
 ## Tech Stack
 - **Vue 3** (`<script setup>`), **Vue Router 4**, **Vite**
