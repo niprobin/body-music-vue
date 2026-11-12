@@ -219,12 +219,17 @@ function onKeydown(event) {
   align-items: flex-start;
 }
 
+/* Crisp offset shadow (no blur) in the text colour, so the cover
+   stands out from a background taken from the cover itself. */
 .album-sheet__cover {
+  --shadow-offset: 4px;
   flex: 0 0 96px;
   width: 96px;
   height: 96px;
   border-radius: 4px;
   object-fit: cover;
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--sheet-fg, #f3efe8);
+  transition: box-shadow 0.3s ease;
 }
 
 .album-sheet__info {
@@ -380,8 +385,10 @@ function onKeydown(event) {
   }
 
   .album-sheet__cover {
+    --shadow-offset: 6px;
     flex: none;
-    width: 100%;
+    /* cover + shadow line up with the buttons below */
+    width: calc(100% - var(--shadow-offset));
     height: auto;
     aspect-ratio: 1;
   }
@@ -398,6 +405,7 @@ function onKeydown(event) {
 @media (prefers-reduced-motion: reduce) {
   .album-sheet,
   .album-sheet--tinted,
+  .album-sheet__cover,
   .album-sheet__backdrop {
     transition: none;
   }
