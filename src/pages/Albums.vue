@@ -17,7 +17,7 @@
         <div class="albums-tabs-container">
           <button
             v-for="(group, index) in albumsByMonth"
-            :key="group.label"
+            :key="group.key"
             :class="['albums-tab', { 'albums-tab--active': activeTab === index }]"
             @click="activeTab = index"
           >
@@ -43,7 +43,7 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import AlbumCard from '../components/AlbumCard.vue'
-import { parseSheetDate, readCachedAlbums, fetchLikedAlbums } from '../lib/albums.js'
+import { groupByMonth, readCachedAlbums, fetchLikedAlbums } from '../lib/albums.js'
 
 const albums = ref([])
 const loading = ref(false) // Start as false, set conditionally
@@ -76,35 +76,7 @@ async function loadAlbums() {
 
 onMounted(loadAlbums)
 
-function monthGroup(album) {
-  const date = parseSheetDate(album.liked_date)
-  if (!date) return { key: 'none', label: 'Sans date', ts: -Infinity }
-  const monthStart = new Date(date.getFullYear(), date.getMonth(), 1)
-  return {
-    key: `${date.getFullYear()}-${date.getMonth()}`,
-    label: monthStart.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' }),
-    ts: monthStart.getTime()
-  }
-}
-
-const albumsByMonth = computed(() => {
-  const groups = new Map()
-
-  for (const album of albums.value) {
-    const { key, label, ts } = monthGroup(album)
-    if (!groups.has(key)) {
-      groups.set(key, { label, ts, items: [] })
-    }
-    groups.get(key).items.push(album)
-  }
-
-  return [...groups.values()]
-    .sort((a, b) => b.ts - a.ts)
-    .map(group => ({
-      label: group.label,
-      items: [...group.items].sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0))
-    }))
-})
+const albumsByMonth = computed(() => groupByMonth(albums.value))
 
 // Watch for changes in grouped albums to reset tab if needed
 watch(albumsByMonth, (newGroups) => {

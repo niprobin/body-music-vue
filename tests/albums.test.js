@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { externalLink, formatSheetDate, recentTopAlbums } from '../src/lib/albums.js'
+import { externalLink, formatSheetDate, recentTopAlbums, splitReleaseName, isCoupDeCoeur, groupByMonth } from '../src/lib/albums.js'
 
 describe('externalLink', () => {
   it('prefers a Discogs release or master page', () => {
@@ -69,5 +69,68 @@ describe('recentTopAlbums', () => {
   it('skips albums without a liked date and tolerates bad input', () => {
     expect(recentTopAlbums([album('x', '5', '', '01-01-2020')])).toEqual([])
     expect(recentTopAlbums(null)).toEqual([])
+  })
+})
+
+describe('splitReleaseName', () => {
+  it('splits "Artist  - Title" on the first separator', () => {
+    expect(splitReleaseName('Herbert  - Bodily Functions'))
+      .toEqual({ artist: 'Herbert', title: 'Bodily Functions' })
+    expect(splitReleaseName('Gitkin - Where the South Winds Wail'))
+      .toEqual({ artist: 'Gitkin', title: 'Where the South Winds Wail' })
+  })
+
+  it('keeps later dashes in the title', () => {
+    expect(splitReleaseName('Moodymann  - Live - Paris'))
+      .toEqual({ artist: 'Moodymann', title: 'Live - Paris' })
+  })
+
+  it('drops the artist tail that upstream repeats for hyphenated artists', () => {
+    expect(splitReleaseName('Joe Armon-Jones  - ones - All The Quiet (Part II)'))
+      .toEqual({ artist: 'Joe Armon-Jones', title: 'All The Quiet (Part II)' })
+    expect(splitReleaseName('Allah-Las  - as - Worship the Sun'))
+      .toEqual({ artist: 'Allah-Las', title: 'Worship the Sun' })
+  })
+
+  it('handles missing names and names without an artist', () => {
+    expect(splitReleaseName('null')).toEqual({ artist: '', title: '' })
+    expect(splitReleaseName(undefined)).toEqual({ artist: '', title: '' })
+    expect(splitReleaseName('Untitled')).toEqual({ artist: '', title: 'Untitled' })
+  })
+})
+
+describe('isCoupDeCoeur', () => {
+  it('is true for ratings of 4 and above', () => {
+    expect(isCoupDeCoeur({ rating: '4' })).toBe(true)
+    expect(isCoupDeCoeur({ rating: '5' })).toBe(true)
+    expect(isCoupDeCoeur({ rating: '3' })).toBe(false)
+    expect(isCoupDeCoeur({ rating: 'null' })).toBe(false)
+    expect(isCoupDeCoeur(null)).toBe(false)
+  })
+})
+
+describe('groupByMonth', () => {
+  const list = [
+    { release_name: 'a', liked_date: '03-10-2026', rating: '3' },
+    { release_name: 'b', liked_date: '28-11-2026', rating: '4' },
+    { release_name: 'c', liked_date: '15-10-2026', rating: '5' },
+    { release_name: 'd', liked_date: 'null', rating: '5' },
+    { release_name: 'e', liked_date: '01-11-2025', rating: '2' }
+  ]
+
+  it('groups by liked month, newest first, undated last', () => {
+    const groups = groupByMonth(list)
+    expect(groups.map(g => g.key)).toEqual(['2026-11', '2026-10', '2025-11', 'none'])
+    expect(groups[0].label).toBe('novembre 2026')
+    expect(groups[3].label).toBe('Sans date')
+  })
+
+  it('orders albums by rating inside a month', () => {
+    const october = groupByMonth(list).find(g => g.key === '2026-10')
+    expect(october.items.map(a => a.release_name)).toEqual(['c', 'a'])
+  })
+
+  it('returns an empty array for bad input', () => {
+    expect(groupByMonth(null)).toEqual([])
   })
 })
