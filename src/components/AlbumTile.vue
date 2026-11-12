@@ -1,9 +1,10 @@
 <template>
-  <component
-    :is="tag"
+  <button
+    type="button"
     class="album-tile"
-    v-bind="tagAttrs"
-    @click="onClick"
+    :aria-label="label"
+    aria-haspopup="dialog"
+    @click="emit('open', $event.currentTarget)"
   >
     <img
       :src="coverUrl(album)"
@@ -20,23 +21,21 @@
       <span class="album-tile__title">{{ names.title || 'Titre inconnu' }}</span>
       <span v-if="names.artist" class="album-tile__artist">{{ names.artist }}</span>
     </span>
-  </component>
+  </button>
 </template>
 
 <script setup>
 import { computed } from 'vue'
 import LucideIcon from './LucideIcon.vue'
-import { coverUrl, useFallbackCover, externalLink, albumNames } from '../lib/albums.js'
+import { coverUrl, useFallbackCover, albumNames } from '../lib/albums.js'
 
+// A click opens the album sheet (bottom sheet on mobile, right drawer on desktop).
 const props = defineProps({
-  album: { type: Object, required: true },
-  // On mobile a tap opens the bottom sheet instead of the external link.
-  mobile: { type: Boolean, default: false }
+  album: { type: Object, required: true }
 })
 
 const emit = defineEmits(['open'])
 
-const link = computed(() => externalLink(props.album))
 const names = computed(() => albumNames(props.album))
 const rating = computed(() => Number(props.album.rating) || 0)
 
@@ -44,23 +43,6 @@ const label = computed(() => {
   const { title, artist } = names.value
   return [title || 'Titre inconnu', artist].filter(Boolean).join(' — ')
 })
-
-// A link when there is somewhere to go, a button when the tap opens the
-// sheet, otherwise a focusable block so the overlay still shows on focus.
-const tag = computed(() => {
-  if (props.mobile) return 'button'
-  return link.value ? 'a' : 'div'
-})
-
-const tagAttrs = computed(() => {
-  if (tag.value === 'button') return { type: 'button', 'aria-label': label.value, 'aria-haspopup': 'dialog' }
-  if (tag.value === 'a') return { href: link.value, target: '_blank', rel: 'noopener', 'aria-label': label.value }
-  return { tabindex: 0, 'aria-label': label.value }
-})
-
-function onClick(event) {
-  if (props.mobile) emit('open', event.currentTarget)
-}
 </script>
 
 <style scoped>
@@ -79,10 +61,6 @@ function onClick(event) {
   text-decoration: none;
   font: inherit;
   cursor: pointer;
-}
-
-div.album-tile {
-  cursor: default;
 }
 
 .album-tile:focus-visible {

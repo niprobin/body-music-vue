@@ -30,14 +30,13 @@
                    v-for="album in albums"
                    :key="albumKey(album)"
                    :album="album"
-                   :mobile="isMobile"
                    @open="openSheet(album, $event)" />
       </div>
     </section>
 
-    <!-- Client-only: isMobile is false during the static build -->
+    <!-- Client-only: not rendered during the static build -->
     <AlbumSheet
-      v-if="isMobile"
+      v-if="mounted"
       :album="sheetAlbum"
       :return-focus="sheetReturn"
       @close="sheetAlbum = null"
@@ -50,14 +49,14 @@ import { ref, onMounted } from 'vue'
 import LucideIcon from '../components/LucideIcon.vue'
 import AlbumTile from '../components/AlbumTile.vue'
 import AlbumSheet from '../components/AlbumSheet.vue'
-import { useIsMobile } from '../composables/useIsMobile.js'
 import { albumKey, readCachedAlbums, fetchLikedAlbums, recentTopAlbums } from '../lib/albums.js'
 
 const ALBUM_COUNT = 4
 
 const albums = ref([])
 const loading = ref(true)
-const isMobile = useIsMobile()
+const mounted = ref(false)
+onMounted(() => { mounted.value = true })
 const sheetAlbum = ref(null)
 const sheetReturn = ref(null)
 

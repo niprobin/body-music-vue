@@ -90,3 +90,5 @@ Update 2026-11-12: Home ("Nos albums du moment") now uses `AlbumTile` + `AlbumSh
 - Text `#f3efe8`, muted `#94a3b8`, secondary `#cbd5e1`, star yellow `#facc15`
 - Fonts: Gochi Hand (titles, uppercase), Inter (body)
 - Icons: Lucide via `LucideIcon.vue`. `star` is already registered.
+
+Update 2026-11-12: on desktop a tile click also opens `AlbumSheet`, as a drawer sliding in from the right (400px); the external link is only in the sheet.

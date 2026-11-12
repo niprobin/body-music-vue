@@ -82,14 +82,21 @@ const linkLabel = computed(() => {
   return 'Écouter sur Spotify'
 })
 
-let savedOverflow = ''
+let saved = null
 
+// Hiding the scrollbar would shift the page sideways on desktop, so its
+// width is put back as padding while the sheet is open.
 function lockScroll(lock) {
+  const body = document.body
   if (lock) {
-    savedOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-  } else {
-    document.body.style.overflow = savedOverflow
+    saved = { overflow: body.style.overflow, paddingRight: body.style.paddingRight }
+    const scrollbar = window.innerWidth - document.documentElement.clientWidth
+    if (scrollbar > 0) body.style.paddingRight = `${scrollbar}px`
+    body.style.overflow = 'hidden'
+  } else if (saved) {
+    body.style.overflow = saved.overflow
+    body.style.paddingRight = saved.paddingRight
+    saved = null
   }
 }
 
@@ -281,6 +288,49 @@ function onKeydown(event) {
 .album-sheet__btn:focus-visible {
   outline: 2px solid #facc15;
   outline-offset: 2px;
+}
+
+/* Desktop: a drawer sliding in from the right */
+@media (min-width: 721px) {
+  .album-sheet {
+    top: 0;
+    left: auto;
+    width: min(400px, 100%);
+    max-height: none;
+    padding: 32px 28px;
+    border-top: 0;
+    border-left: 1px solid rgba(148, 163, 184, 0.25);
+    border-radius: 20px 0 0 20px;
+    transform: translateX(110%);
+  }
+
+  .is-open .album-sheet {
+    transform: translateX(0);
+  }
+
+  .album-sheet__handle {
+    display: none;
+  }
+
+  .album-sheet__head {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .album-sheet__cover {
+    flex: none;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+  }
+
+  .album-sheet__title {
+    font-size: 22px;
+  }
+
+  .album-sheet__artist {
+    font-size: 16px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

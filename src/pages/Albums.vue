@@ -51,16 +51,15 @@
             v-for="album in group.items"
             :key="albumKey(album)"
             :album="album"
-            :mobile="isMobile"
             @open="openSheet(album, $event)"
           />
         </template>
       </div>
     </div>
 
-    <!-- Client-only: isMobile is false during the static build -->
+    <!-- Client-only: not rendered during the static build -->
     <AlbumSheet
-      v-if="isMobile"
+      v-if="mounted"
       :album="sheetAlbum"
       :return-focus="sheetReturn"
       @close="sheetAlbum = null"
@@ -82,6 +81,8 @@ const refreshing = ref(false) // Track background refresh
 const error = ref('')
 const isMobile = useIsMobile()
 const favouritesOnly = ref(false)
+const mounted = ref(false)
+onMounted(() => { mounted.value = true })
 const sheetAlbum = ref(null)
 const sheetReturn = ref(null)
 
