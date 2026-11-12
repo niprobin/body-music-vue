@@ -191,7 +191,7 @@ function onKeydown(event) {
   padding: 12px 20px calc(32px + env(safe-area-inset-bottom));
   background: #1b2c3d;
   border-top: 1px solid rgba(148, 163, 184, 0.25);
-  border-radius: 20px 20px 0 0;
+  border-radius: 8px 8px 0 0; /* same as the sticky header player */
   color: #f3efe8;
   transform: translateY(110%);
   transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
@@ -363,7 +363,7 @@ function onKeydown(event) {
     padding: 32px 28px;
     border-top: 0;
     border-left: 1px solid rgba(148, 163, 184, 0.25);
-    border-radius: 20px 0 0 20px;
+    border-radius: 8px 0 0 8px;
     transform: translateX(110%);
   }
 

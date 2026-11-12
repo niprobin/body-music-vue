@@ -55,7 +55,7 @@ Hide a month divider when the filter leaves that month empty. Full width on mobi
 
 - Opens when a tile is tapped. It slides up from the bottom: `transform: translateY(110%)` → `translateY(0)`, `transition: transform .35s cubic-bezier(.32,.72,0,1)`.
 - Backdrop `rgba(0,0,0,.5)` fades in (opacity .3s). Tapping it closes the sheet.
-- Sheet: background `#1b2c3d`, `border-radius: 20px 20px 0 0`, top border `rgba(148,163,184,.25)`, grab handle (40×4px pill), padding `12px 20px 32px` + `env(safe-area-inset-bottom)`.
+- Sheet: background `#1b2c3d`, `border-radius: 8px 8px 0 0` (same as the header player; drawer: `8px 0 0 8px`), top border `rgba(148,163,184,.25)`, grab handle (40×4px pill), padding `12px 20px 32px` + `env(safe-area-inset-bottom)`.
 - Content: 96px cover · title (18px, 600) · artist (14px, `#cbd5e1`) · star + "N/5" (yellow) · "Sortie le {formatSheetDate(release_date)}" (12px, `#94a3b8`).
 - Actions: primary pill "Voir sur Discogs" or "Écouter sur Spotify", depending on which link `externalLink()` returns. Hide it if there is no link. Secondary pill "Fermer".
 - A11y: `role="dialog"`, `aria-modal="true"`, focus moves into the sheet, Escape closes, focus returns to the tile, body scroll locked while open.
