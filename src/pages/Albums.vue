@@ -12,7 +12,27 @@
     </div>
 
     <div v-else class="albums-content">
+      <div class="albums-toolbar">
+        <div class="albums-filter" role="group" aria-label="Filtrer par note">
+          <button
+            type="button"
+            class="albums-filter__btn"
+            :aria-pressed="!favouritesOnly"
+            @click="favouritesOnly = false"
+          >Tous</button>
+          <button
+            type="button"
+            class="albums-filter__btn"
+            :aria-pressed="favouritesOnly"
+            @click="favouritesOnly = true"
+          >
+            <LucideIcon icon="star" :size="14" class="albums-filter__star" />
+            Coups de cœur
+          </button>
+        </div>
+      </div>
       <div v-if="refreshing" class="refresh-indicator">↻ Mise à jour…</div>
+      <p v-if="!albumsByMonth.length" class="status-card">Aucun album pour l’instant.</p>
       <div class="albums-wall">
         <template v-for="group in albumsByMonth" :key="group.key">
           <h2 :id="`mois-${group.key}`" class="albums-month">
@@ -33,14 +53,16 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import AlbumTile from '../components/AlbumTile.vue'
+import LucideIcon from '../components/LucideIcon.vue'
 import { useIsMobile } from '../composables/useIsMobile.js'
-import { groupByMonth, readCachedAlbums, fetchLikedAlbums } from '../lib/albums.js'
+import { groupByMonth, isCoupDeCoeur, readCachedAlbums, fetchLikedAlbums } from '../lib/albums.js'
 
 const albums = ref([])
 const loading = ref(false) // Start as false, set conditionally
 const refreshing = ref(false) // Track background refresh
 const error = ref('')
 const isMobile = useIsMobile()
+const favouritesOnly = ref(false)
 
 async function loadAlbums() {
   const cached = readCachedAlbums()
@@ -67,7 +89,10 @@ async function loadAlbums() {
 
 onMounted(loadAlbums)
 
-const albumsByMonth = computed(() => groupByMonth(albums.value))
+// Months left empty by the filter disappear with it.
+const visibleAlbums = computed(() =>
+  favouritesOnly.value ? albums.value.filter(isCoupDeCoeur) : albums.value)
+const albumsByMonth = computed(() => groupByMonth(visibleAlbums.value))
 
 </script>
 
@@ -107,6 +132,54 @@ const albumsByMonth = computed(() => groupByMonth(albums.value))
 
 .albums-content {
   padding: 0 6rem;
+}
+
+.albums-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.albums-filter {
+  display: inline-flex;
+  padding: 3px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 999px;
+}
+
+.albums-filter__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 1.1rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #f3efe8;
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.albums-filter__btn[aria-pressed="true"] {
+  background: #f3efe8;
+  color: #111;
+  font-weight: 600;
+}
+
+.albums-filter__btn:focus-visible {
+  outline: 2px solid #f3efe8;
+  outline-offset: 2px;
+}
+
+.albums-filter__star {
+  color: #facc15;
+  fill: #facc15;
 }
 
 .refresh-indicator {
@@ -152,6 +225,15 @@ const albumsByMonth = computed(() => groupByMonth(albums.value))
   .albums-content, .albums-header {
     width: 100%;
     padding: 0 2rem;
+  }
+
+  .albums-filter {
+    display: flex;
+    width: 100%;
+  }
+
+  .albums-filter__btn {
+    flex: 1;
   }
 
   .albums-wall {
