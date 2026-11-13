@@ -20,13 +20,22 @@ const FETCH_TIMEOUT_MS = 15000
 const MAX_BYTES = 15 * 1024 * 1024
 const SIZE = 64
 
-export function isAllowedCoverUrl(value) {
+// The https URL to fetch for a cover, or null if it isn't one we allow.
+// http:// covers (Cloudinary URLs are stored that way) are upgraded.
+export function coverFetchUrl(value) {
   try {
     const url = new URL(value)
-    return url.protocol === 'https:' && ALLOWED_HOSTS.includes(url.hostname)
+    if (!['https:', 'http:'].includes(url.protocol)) return null
+    if (!ALLOWED_HOSTS.includes(url.hostname)) return null
+    url.protocol = 'https:'
+    return url.toString()
   } catch (_) {
-    return false
+    return null
   }
+}
+
+export function isAllowedCoverUrl(value) {
+  return coverFetchUrl(value) !== null
 }
 
 async function fetchImage(url) {
@@ -59,9 +68,9 @@ export default async function handler(req, res) {
     return res.status(405).json({ ok: false, error: 'Method not allowed' })
   }
 
-  const url = req.query?.url
-  if (!isAllowedCoverUrl(url)) {
-    return res.status(400).json({ ok: false, error: 'url must be an https cover from an allowed host' })
+  const url = coverFetchUrl(req.query?.url)
+  if (!url) {
+    return res.status(400).json({ ok: false, error: 'url must be a cover from an allowed host' })
   }
 
   try {

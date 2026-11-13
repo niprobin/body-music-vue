@@ -123,6 +123,7 @@ describe('albumNames', () => {
 describe('coverUrl', () => {
   it('returns the cover, or the placeholder when empty or "null"', () => {
     expect(coverUrl({ cover_url: ' https://x/c.jpg ' })).toBe('https://x/c.jpg')
+    expect(coverUrl({ cover_url: 'http://res.cloudinary.com/c.webp' })).toBe('https://res.cloudinary.com/c.webp')
     expect(coverUrl({ cover_url: 'null' })).toBe(FALLBACK_COVER)
     expect(coverUrl({ cover_url: '' })).toBe(FALLBACK_COVER)
     expect(coverUrl(null)).toBe(FALLBACK_COVER)

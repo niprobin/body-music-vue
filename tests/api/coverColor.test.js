@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import sharp from 'sharp'
-import handler, { isAllowedCoverUrl, coverColorFromBuffer } from '../../api/cover-color.js'
+import handler, { isAllowedCoverUrl, coverFetchUrl, coverColorFromBuffer } from '../../api/cover-color.js'
 import { fakeRes } from './fakeHttp.js'
 
 const COVER = 'https://cdn-images.dzcdn.net/images/cover/abc/1000x1000-000000-80-0-0.jpg'
@@ -30,11 +30,20 @@ describe('isAllowedCoverUrl', () => {
   it('accepts https covers from known hosts only', () => {
     expect(isAllowedCoverUrl(COVER)).toBe(true)
     expect(isAllowedCoverUrl('https://res.cloudinary.com/x/image/upload/a.webp')).toBe(true)
-    expect(isAllowedCoverUrl('http://cdn-images.dzcdn.net/a.jpg')).toBe(false)
+    expect(isAllowedCoverUrl('ftp://cdn-images.dzcdn.net/a.jpg')).toBe(false)
     expect(isAllowedCoverUrl('https://evil.example/a.jpg')).toBe(false)
     expect(isAllowedCoverUrl('https://cdn-images.dzcdn.net.evil.example/a.jpg')).toBe(false)
     expect(isAllowedCoverUrl('null')).toBe(false)
     expect(isAllowedCoverUrl(undefined)).toBe(false)
+  })
+})
+
+describe('coverFetchUrl', () => {
+  it('upgrades http covers to https', () => {
+    expect(coverFetchUrl('http://res.cloudinary.com/x/image/upload/a.webp'))
+      .toBe('https://res.cloudinary.com/x/image/upload/a.webp')
+    expect(coverFetchUrl(COVER)).toBe(COVER)
+    expect(coverFetchUrl('http://evil.example/a.jpg')).toBeNull()
   })
 })
 
@@ -53,6 +62,14 @@ describe('GET /api/cover-color', () => {
     expect(res.statusCode).toBe(200)
     expect(res.body).toEqual({ ok: true, hex: '#3c6ec8' })
     expect(res.headers['Cache-Control']).toContain('s-maxage')
+  })
+
+  it('fetches http covers over https', async () => {
+    const fetch = stubImage(await coverPng())
+    const res = fakeRes()
+    await handler({ method: 'GET', query: { url: 'http://res.cloudinary.com/x/image/upload/a.webp' } }, res)
+    expect(fetch).toHaveBeenCalledWith('https://res.cloudinary.com/x/image/upload/a.webp', expect.anything())
+    expect(res.body).toEqual({ ok: true, hex: '#3c6ec8' })
   })
 
   it('refuses other hosts without fetching', async () => {

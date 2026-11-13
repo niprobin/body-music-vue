@@ -58,8 +58,12 @@ export function albumNames(album) {
 }
 
 // The album cover, or the placeholder when the cell is empty or "null".
+// Covers are served over https so the https site never loads mixed
+// content (Cloudinary URLs come from the DB as http://).
 export function coverUrl(album) {
-  return cleanUrl(album?.cover_url) || FALLBACK_COVER
+  const url = cleanUrl(album?.cover_url)
+  if (!url) return FALLBACK_COVER
+  return url.replace(/^http:\/\//i, 'https://')
 }
 
 // <img @error>: swap a cover that fails to load for the placeholder, once.
