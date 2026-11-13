@@ -225,7 +225,11 @@ function onKeydown(event) {
   height: 96px;
   border-radius: 4px;
   object-fit: cover;
-  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+  /* Same two-layer shadow everywhere, in the text colour: black on
+     light covers, a light edge on dark ones (where black wouldn't show). */
+  box-shadow:
+    rgba(var(--sheet-fg-rgb, 0, 0, 0), 0.12) 0px 1px 3px,
+    rgba(var(--sheet-fg-rgb, 0, 0, 0), 0.24) 0px 1px 2px;
 }
 
 .album-sheet__info {
