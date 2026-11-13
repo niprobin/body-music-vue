@@ -5,7 +5,7 @@
       <div
         ref="sheetEl"
         class="album-sheet"
-        :class="{ 'album-sheet--tinted': palette }"
+        :class="{ 'album-sheet--tinted': palette, 'album-sheet--fade-tint': fadeTint }"
         :style="palette"
         role="dialog"
         aria-modal="true"
@@ -58,7 +58,7 @@
 import { ref, computed, watch, nextTick, onBeforeUnmount } from 'vue'
 import LucideIcon from './LucideIcon.vue'
 import { coverUrl, useFallbackCover, externalLink, formatSheetDate, albumNames } from '../lib/albums.js'
-import { readCoverColor, sheetPalette } from '../lib/coverColor.js'
+import { parseHex, readCoverColor, sheetPalette } from '../lib/coverColor.js'
 
 const props = defineProps({
   // The album to show; null closes the sheet.
@@ -86,14 +86,29 @@ const linkLabel = computed(() => {
 })
 
 // Background = the cover's dominant colour, text = black or white.
-// Until it's read (or if it can't be), the default dark theme shows.
+// Normally precomputed in Supabase (`cover_color`, filled by n8n through
+// /api/cover-color) so it's there instantly; for an album not processed
+// yet it's read from the cover in the browser, with the default dark
+// theme meanwhile (or if the cover can't be read).
 const palette = ref(null)
+// Fade the colour in only when it arrives late (browser fallback); a
+// stored colour is applied at once, with no transition.
+const fadeTint = ref(false)
 
 watch(shown, async (album) => {
   palette.value = null
+  fadeTint.value = false
   if (!album) return
+  const stored = parseHex(album.cover_color)
+  if (stored) {
+    palette.value = sheetPalette(stored)
+    return
+  }
   const color = await readCoverColor(coverUrl(album))
-  if (shown.value === album && color) palette.value = sheetPalette(color)
+  if (shown.value === album && color) {
+    fadeTint.value = true
+    palette.value = sheetPalette(color)
+  }
 })
 
 let saved = null
@@ -310,7 +325,7 @@ function onKeydown(event) {
 }
 
 /* Tinted with the cover colour: every colour follows --sheet-fg */
-.album-sheet {
+.album-sheet--fade-tint {
   transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1), background-color 0.3s ease;
 }
 
@@ -403,6 +418,7 @@ function onKeydown(event) {
 @media (prefers-reduced-motion: reduce) {
   .album-sheet,
   .album-sheet--tinted,
+  .album-sheet--fade-tint,
   .album-sheet__backdrop {
     transition: none;
   }

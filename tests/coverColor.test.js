@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { dominantColor, contrastRatio, textColorFor, sheetPalette } from '../src/lib/coverColor.js'
+import { dominantColor, contrastRatio, textColorFor, sheetPalette, toHex, parseHex } from '../src/lib/coverColor.js'
 
 // Builds RGBA data from [count, [r, g, b, a?]] runs.
 function pixels(...runs) {
@@ -61,5 +61,20 @@ describe('sheetPalette', () => {
 
   it('falls back to the text colour when yellow would not show', () => {
     expect(sheetPalette([240, 220, 120])['--sheet-star']).toBe('rgb(0, 0, 0)')
+  })
+})
+
+describe('hex', () => {
+  it('round-trips', () => {
+    expect(toHex([141, 176, 213])).toBe('#8db0d5')
+    expect(parseHex('#8DB0D5')).toEqual([141, 176, 213])
+    expect(parseHex('8db0d5')).toEqual([141, 176, 213])
+  })
+
+  it('rejects anything else', () => {
+    expect(parseHex('')).toBeNull()
+    expect(parseHex('null')).toBeNull()
+    expect(parseHex('#fff')).toBeNull()
+    expect(parseHex(undefined)).toBeNull()
   })
 })

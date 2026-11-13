@@ -111,3 +111,15 @@ export function readCoverColor(url) {
   cache.set(url, promise)
   return promise
 }
+
+export function toHex([r, g, b]) {
+  return '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('')
+}
+
+// "#8db0d5" (or "8db0d5") → [141, 176, 213]; null if it isn't a hex colour.
+export function parseHex(value) {
+  const match = /^#?([0-9a-f]{6})$/i.exec(String(value || '').trim())
+  if (!match) return null
+  const n = parseInt(match[1], 16)
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255]
+}
