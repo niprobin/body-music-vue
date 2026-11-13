@@ -4,11 +4,19 @@
       <h1>Les albums en rotation</h1>
       <p>On écoute un paquet de musique et parfois on tente de vous partager nos albums préférés !</p>
     </div>
-    <div v-if="loading" class="albums-content">
-      <div class="status-card">Chargement…</div>
+    <!-- Skeleton wall until n8n has answered (also what the static build shows) -->
+    <div v-if="loading" class="albums-content" aria-busy="true">
+      <p class="visually-hidden" role="status">Chargement des albums…</p>
+      <div class="albums-wall" aria-hidden="true">
+        <div class="albums-month albums-month--skeleton"><span class="skeleton-block skeleton-label" /></div>
+        <div v-for="n in SKELETON_TILES" :key="n" class="skeleton-block skeleton-tile" />
+      </div>
     </div>
     <div v-else-if="error && !albums.length" class="albums-content">
-      <div class="status-card error">{{ error }}</div>
+      <div class="status-card error" role="alert">
+        <p>{{ error }}</p>
+        <button type="button" class="retry-btn" @click="loadAlbums">Réessayer</button>
+      </div>
     </div>
 
     <div v-else class="albums-content">
@@ -76,7 +84,10 @@ import { useIsMobile } from '../composables/useIsMobile.js'
 import { albumKey, groupByMonth, isCoupDeCoeur, readCachedAlbums, fetchLikedAlbums } from '../lib/albums.js'
 
 const albums = ref([])
-const loading = ref(false) // Start as false, set conditionally
+// True from the first render so the static HTML shows the skeleton,
+// not an empty wall; switched off at once when a cache is available.
+const loading = ref(true)
+const SKELETON_TILES = 12
 const refreshing = ref(false) // Track background refresh
 const error = ref('')
 const isMobile = useIsMobile()
@@ -102,10 +113,12 @@ function openSheet(album, tile) {
 }
 
 async function loadAlbums() {
+  error.value = ''
   const cached = readCachedAlbums()
   if (cached) {
     // Show cached data immediately, refresh in the background
     albums.value = cached
+    loading.value = false
     refreshing.value = true
   } else {
     loading.value = true
@@ -116,7 +129,7 @@ async function loadAlbums() {
   } catch (err) {
     console.error('Error loading albums:', err)
     if (!albums.value.length) { // Only show error if no cached data
-      error.value = 'Impossible de charger les albums.'
+      error.value = 'Impossible de charger les albums pour le moment.'
     }
   } finally {
     loading.value = false
@@ -159,6 +172,67 @@ const albumsByMonth = computed(() => groupByMonth(visibleAlbums.value))
 .status-card.error {
   color: #fecaca;
   border-color: rgba(248, 113, 113, 0.5);
+}
+
+.status-card p {
+  margin: 0 0 0.75rem;
+}
+
+.retry-btn {
+  min-height: 40px;
+  padding: 0 1.25rem;
+  border: 1px solid #f3efe8;
+  border-radius: 999px;
+  background: #f3efe8;
+  color: #111;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.retry-btn:focus-visible {
+  outline: 2px solid #f3efe8;
+  outline-offset: 2px;
+}
+
+/* Loading skeleton */
+.skeleton-block {
+  background: rgba(148, 163, 184, 0.15);
+  border-radius: 4px;
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
+}
+
+.skeleton-tile {
+  aspect-ratio: 1;
+}
+
+.albums-month--skeleton::after {
+  opacity: 0.6;
+}
+
+.skeleton-label {
+  display: block;
+  width: 180px;
+  height: 22px;
+}
+
+@keyframes skeleton-pulse {
+  50% { opacity: 0.5; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-block {
+    animation: none;
+  }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 
 

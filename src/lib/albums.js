@@ -148,12 +148,25 @@ function writeCachedAlbums(list) {
   }
 }
 
-// Fetches the liked albums and refreshes the shared cache. Throws on failure.
-export async function fetchLikedAlbums() {
-  const res = await fetch(LIKED_ALBUMS_URL)
-  if (!res.ok) throw new Error(`liked-albums responded ${res.status}`)
-  const data = await res.json()
-  const list = Array.isArray(data) ? data : data ? [data] : []
-  writeCachedAlbums(list)
-  return list
+export const FETCH_TIMEOUT_MS = 15000
+
+// Fetches the liked albums and refreshes the shared cache. Throws on
+// failure, on a timeout, and on anything that isn't a list (an n8n error
+// object must never end up cached as an "album").
+export async function fetchLikedAlbums({ timeout = FETCH_TIMEOUT_MS } = {}) {
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), timeout)
+  try {
+    const res = await fetch(LIKED_ALBUMS_URL, { signal: controller.signal })
+    if (!res.ok) throw new Error(`liked-albums responded ${res.status}`)
+    const data = await res.json()
+    if (!Array.isArray(data)) throw new Error('liked-albums did not return a list')
+    writeCachedAlbums(data)
+    return data
+  } catch (err) {
+    if (err.name === 'AbortError') throw new Error(`liked-albums timed out after ${timeout} ms`)
+    throw err
+  } finally {
+    clearTimeout(timer)
+  }
 }
