@@ -10,7 +10,9 @@ Body Music Radio is a Vue 3 web application for streaming an online radio statio
 - Media Session API integration: lock-screen controls and track info, updated on every track change
 
 ### 📱 Mobile UI
-- Single breakpoint at 720px: the desktop header nav is replaced by a popup menu (Accueil, Prog, Historique, Albums)
+- Single breakpoint at 720px: the desktop header nav is replaced by a bottom tab bar (`MobileTabBar.vue`: Accueil, Prog, Historique, Albums), fixed at the bottom, 64px + `env(safe-area-inset-bottom)`, z-index 990 (under the header player 998 and the album sheet 1000). Spec: `docs/mobile-tab-bar.md`
+- `.app-shell` has a matching mobile `padding-bottom` so the bar never hides the footer; `index.html` sets `viewport-fit=cover` so the iOS safe-area inset works
+- Mobile header player is just the Play button (48px) + title (15px), full width
 - Smooth page transitions
 - Installable PWA
 
@@ -52,7 +54,7 @@ src/
 │   ├── playerLabel.js   # Header player text
 │   └── poller.js        # Interval polling helper
 ├── composables/         # useNowPlaying, useHistory, useAnalytics, useIcons
-├── components/          # HeaderPlayer, MobileNavigation, SiteFooter, LucideIcon, AlbumTile, AlbumSheet
+├── components/          # HeaderPlayer, MobileTabBar, SiteFooter, LucideIcon, AlbumTile, AlbumSheet
 └── pages/               # Home, Schedule, LastSongs, Albums
 tests/                   # Vitest: lib modules + API handlers
 ```
@@ -235,3 +237,8 @@ The entries below are historical and describe the code as it was at the time.
 ## Recent Changes (2026-10-21) - Album reviews removed from the frontend
 - Removed the "Nos coups de cœurs" section, the `/albums/:slug` review page and the review-only album rules: reviews are on hold until the backend handling is reworked (see `ALBUM_REVIEWS_IMPLEMENTATION_PLAN.md` and git history to restore)
 - Albums page shows every album grouped by liked month; the month tab bar is full width and sticks under the header player
+
+## Recent Changes (2026-11-16) - Mobile bottom tab bar
+- Replaced the "•••" popup menu (`MobileNavigation.vue`, deleted) with a persistent bottom tab bar (`MobileTabBar.vue`). The popup covered the player row and could not be dismissed without navigating
+- Bar is 64px total (1px border + 3px + 56px tab + 4px) rather than the spec's 6px padding, which made it 69px and covered the footer by 5px
+- `SiteFooter.vue` still repeats the 4 links: possible cleanup later
