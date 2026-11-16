@@ -23,7 +23,7 @@ A persistent tab bar fixed to the bottom of the screen on mobile, always showing
 
 - `position: fixed; left: 0; right: 0; bottom: 0; z-index: 990`. It sits below the header player (998) and the album sheet (1000).
 - Height: 64px + `env(safe-area-inset-bottom)`. Padding: `6px 8px calc(6px + env(safe-area-inset-bottom))`.
-- Background: `#0d141c` (opaque). Top border: `1px solid rgba(148,163,184,0.2)`.
+- Background: `#111` (opaque, the colour the old mobile menu already used, so no new token). Top border: `1px solid hsla(0,0%,100%,0.1)`, the same hairline as the header player.
 - 4 equal items (`flex: 1`), each a `router-link`, min height 56px, column layout, gap 4px:
   - **Icon "pill"**: 56×30px, `border-radius: 999px`, Lucide icon 22px. Icons stay as today: `house`, `calendar`, `music`, `disc`.
   - **Label**: 12px, line-height 1.
@@ -31,12 +31,14 @@ A persistent tab bar fixed to the bottom of the screen on mobile, always showing
 - States:
   - **Inactive**: color `#94a3b8`, weight 500, transparent pill.
   - **Active** (`router-link-active`; use exact matching for `/` so Accueil isn't always active): color `#f3efe8`, weight 600, pill background `rgba(243,239,232,0.16)`. Meaning is never carried by color alone: weight and pill change too.
-  - **Pressed**: overlay `rgba(255,255,255,0.06)` on the pill. **Keyboard focus**: visible 2px `#f3efe8` outline on the pill (offset 2px).
+  - **Pressed**: overlay `rgba(255,255,255,0.06)` on the pill (e.g. `box-shadow: inset 0 0 0 40px …`), no new palette colour. **Keyboard focus**: `:focus-visible` only, 2px `#f3efe8` outline on the pill (offset 2px); remove the link's own outline and the iOS tap highlight.
+  - **Motion**: pill background and label colour transition in 200ms, `cubic-bezier(0.22, 1, 0.36, 1)`. Nothing else moves. Respect `prefers-reduced-motion` (drop the transition).
 - A11y: `<nav aria-label="Navigation principale">`. `router-link` already sets `aria-current="page"` on exact-active links; make sure `/` behaves.
 - Hidden on desktop (`@media (min-width: 721px) { display: none }`).
 
 ### Header player (mobile)
 
+- Keep the header player's look as it is today (translucent `rgba(244,241,241,0.05)` + `backdrop-filter: blur(12px)`). Only its contents change.
 - Remove the "•••" button (`.mobile-more-btn`), `showMobileNav` and `toggleMobileNav`. The player row becomes: Play button + title, full width.
 - Mockup tweaks shown in V2, to apply while we're here:
   - Play button 48×48px (today ~42px, it's `5vh`)
@@ -62,4 +64,4 @@ A persistent tab bar fixed to the bottom of the screen on mobile, always showing
 
 ## Tokens
 
-Text `#f3efe8`, muted `#94a3b8`, bar surface `#0d141c`, border `rgba(148,163,184,0.2)`, font Inter, icons Lucide via `LucideIcon.vue`.
+Text `#f3efe8`, muted `#94a3b8` (7.6:1 on `#111`), bar surface `#111`, border `hsla(0,0%,100%,0.1)`, font Inter, icons Lucide via `LucideIcon.vue`.
