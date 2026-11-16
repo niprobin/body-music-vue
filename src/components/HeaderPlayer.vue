@@ -33,15 +33,7 @@
             <p class="player-title">{{ displayTitle }}</p>
           </div>
         </div>
-
-        <!-- Mobile More Button -->
-        <button class="mobile-more-btn" @click="toggleMobileNav" aria-label="Menu">
-          <LucideIcon icon="ellipsis" />
-        </button>
       </div>
-
-      <!-- Mobile Navigation Popup -->
-      <MobileNavigation v-if="showMobileNav" @close="showMobileNav = false" />
     </div>
   </div>
 </template>
@@ -51,7 +43,6 @@ import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { Howl } from 'howler'
 import { useNowPlaying } from '../composables/useNowPlaying.js'
 import { playerLabel, STATION_NAME } from '../lib/playerLabel.js'
-import MobileNavigation from './MobileNavigation.vue'
 import LucideIcon from './LucideIcon.vue'
 
 const streamUrl = 'https://azuracast.niprobin.com/listen/body_music_radio/public.mp3'
@@ -60,7 +51,6 @@ const STATION_ARTWORK = '/android-chrome-512x512.png'
 const isPlaying = ref(false)
 const isLoading = ref(false)
 const isError = ref(false)
-const showMobileNav = ref(false)
 let howl
 
 const { nowPlaying } = useNowPlaying()
@@ -172,10 +162,6 @@ function togglePlay() {
   } else {
     startStream()
   }
-}
-
-function toggleMobileNav() {
-  showMobileNav.value = !showMobileNav.value
 }
 
 onMounted(registerMediaSessionHandlers)
@@ -357,13 +343,15 @@ onUnmounted(unloadHowl)
   }
 
   .player-btn {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
     font-size: 1.1rem;
   }
 
   .player-meta {
     flex: 1;
     min-width: 0;
-    max-width: calc(100% - 112px);
     gap: 0.1rem;
     padding: 0.5rem 1rem;
     display: flex;
@@ -373,38 +361,12 @@ onUnmounted(unloadHowl)
   }
 
   .player-title {
-    font-size: 0.9rem;
+    font-size: 15px;
     margin: 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     font-weight: 600;
-  }
-
-  .mobile-more-btn {
-    width: 48px;
-    height: 6vh;
-    border: none;
-    background: transparent;
-    color: #f8fafc;
-    font-size: 1.2rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    transition: all 0.2s ease;
-  }
-
-  .mobile-more-btn:active {
-    transform: scale(0.95);
-  }
-}
-
-/* Hide mobile more button on desktop */
-@media (min-width: 721px) {
-  .mobile-more-btn {
-    display: none;
   }
 }
 </style>
