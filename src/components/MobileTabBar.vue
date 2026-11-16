@@ -35,9 +35,11 @@ const tabs = [
   bottom: 0;
   z-index: 990; /* under header player (998) and album sheet (1000) */
   display: flex;
-  min-height: calc(64px + env(safe-area-inset-bottom));
+  /* 64px total = 1px border + 3px + 56px tab + 4px. Must match the
+     .app-shell padding-bottom in App.vue. */
+  height: calc(64px + env(safe-area-inset-bottom));
   box-sizing: border-box;
-  padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
+  padding: 3px 8px calc(4px + env(safe-area-inset-bottom));
   background: #0d141c;
   border-top: 1px solid rgba(148, 163, 184, 0.2);
 }
