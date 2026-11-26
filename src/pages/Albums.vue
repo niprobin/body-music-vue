@@ -164,7 +164,7 @@ const albumsByMonth = computed(() => groupByMonth(visibleAlbums.value))
 .status-card {
   padding: 1rem;
   border-radius: 12px;
-  border: 1px solid rgba(148, 163, 184, 0.3);
+  border: 1px solid color-mix(in srgb, var(--muted) 30%, transparent);
   background: rgba(15, 23, 42, 0.7);
   text-align: center;
 }
@@ -181,23 +181,23 @@ const albumsByMonth = computed(() => groupByMonth(visibleAlbums.value))
 .retry-btn {
   min-height: 40px;
   padding: 0 1.25rem;
-  border: 1px solid #f3efe8;
+  border: 1px solid var(--text);
   border-radius: 999px;
-  background: #f3efe8;
-  color: #111;
+  background: var(--text);
+  color: var(--on-text);
   font: inherit;
   font-weight: 600;
   cursor: pointer;
 }
 
 .retry-btn:focus-visible {
-  outline: 2px solid #f3efe8;
+  outline: 2px solid var(--text);
   outline-offset: 2px;
 }
 
 /* Loading skeleton */
 .skeleton-block {
-  background: rgba(148, 163, 184, 0.15);
+  background: color-mix(in srgb, var(--muted) 15%, transparent);
   border-radius: 4px;
   animation: skeleton-pulse 1.4s ease-in-out infinite;
 }
@@ -256,7 +256,7 @@ const albumsByMonth = computed(() => groupByMonth(visibleAlbums.value))
 .albums-filter {
   display: inline-flex;
   padding: 3px;
-  border: 1px solid rgba(148, 163, 184, 0.25);
+  border: 1px solid color-mix(in srgb, var(--muted) 25%, transparent);
   border-radius: 999px;
 }
 
@@ -270,7 +270,7 @@ const albumsByMonth = computed(() => groupByMonth(visibleAlbums.value))
   border: 0;
   border-radius: 999px;
   background: transparent;
-  color: #f3efe8;
+  color: var(--text);
   font: inherit;
   font-size: 0.9rem;
   cursor: pointer;
@@ -278,54 +278,54 @@ const albumsByMonth = computed(() => groupByMonth(visibleAlbums.value))
 }
 
 .albums-filter__btn[aria-pressed="true"] {
-  background: #f3efe8;
-  color: #111;
+  background: var(--text);
+  color: var(--on-text);
   font-weight: 600;
 }
 
 .albums-filter__btn:focus-visible {
-  outline: 2px solid #f3efe8;
+  outline: 2px solid var(--text);
   outline-offset: 2px;
 }
 
 .albums-filter__star {
-  color: #facc15;
-  fill: #facc15;
+  color: var(--accent);
+  fill: var(--accent);
 }
 
 .albums-jump {
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  color: #94a3b8;
+  color: var(--muted);
   font-size: 0.9rem;
 }
 
 .albums-jump select {
   min-height: 40px;
   padding: 0 2rem 0 1rem;
-  border: 1px solid rgba(148, 163, 184, 0.25);
+  border: 1px solid color-mix(in srgb, var(--muted) 25%, transparent);
   border-radius: 999px;
   background: transparent;
-  color: #f3efe8;
+  color: var(--text);
   font: inherit;
   text-transform: capitalize;
   cursor: pointer;
 }
 
 .albums-jump select:focus-visible {
-  outline: 2px solid #f3efe8;
+  outline: 2px solid var(--text);
   outline-offset: 2px;
 }
 
 .albums-jump option {
-  background: #152331;
-  color: #f3efe8;
+  background: var(--bg);
+  color: var(--text);
 }
 
 .refresh-indicator {
   margin-bottom: 0.75rem;
-  color: #94a3b8;
+  color: var(--muted);
   font-size: 0.85rem;
 }
 
@@ -346,7 +346,7 @@ const albumsByMonth = computed(() => groupByMonth(visibleAlbums.value))
   font-size: 26px;
   font-weight: 400;
   text-transform: uppercase;
-  color: #f3efe8;
+  color: var(--text);
   /* Land below the sticky header player when jumped to */
   scroll-margin-top: calc(19vh + 1rem);
 }
@@ -359,7 +359,7 @@ const albumsByMonth = computed(() => groupByMonth(visibleAlbums.value))
   content: '';
   flex: 1;
   height: 1px;
-  background: rgba(148, 163, 184, 0.25);
+  background: color-mix(in srgb, var(--muted) 25%, transparent);
 }
 
 @media (max-width: 720px) {

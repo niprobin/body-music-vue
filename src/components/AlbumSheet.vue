@@ -204,10 +204,10 @@ function onKeydown(event) {
   max-height: 85vh;
   overflow-y: auto;
   padding: 12px 20px calc(32px + env(safe-area-inset-bottom));
-  background: #1b2c3d;
-  border-top: 1px solid rgba(148, 163, 184, 0.25);
+  background: var(--surface);
+  border-top: 1px solid color-mix(in srgb, var(--muted) 25%, transparent);
   border-radius: 0;
-  color: #f3efe8;
+  color: var(--text);
   transform: translateY(110%);
   transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
 }
@@ -225,7 +225,7 @@ function onKeydown(event) {
   height: 4px;
   margin: 0 auto 16px;
   border-radius: 999px;
-  background: rgba(148, 163, 184, 0.5);
+  background: color-mix(in srgb, var(--muted) 50%, transparent);
 }
 
 .album-sheet__head {
@@ -261,13 +261,13 @@ function onKeydown(event) {
   font-weight: 600;
   line-height: 1.25;
   text-transform: none;
-  color: #fff;
+  color: var(--text);
 }
 
 .album-sheet__artist {
   margin: 0;
   font-size: 14px;
-  color: #cbd5e1;
+  color: var(--text-soft);
 }
 
 .album-sheet__rating {
@@ -275,19 +275,19 @@ function onKeydown(event) {
   align-items: center;
   gap: 4px;
   margin: 2px 0 0;
-  color: #facc15;
+  color: var(--accent);
   font-size: 14px;
   font-weight: 600;
 }
 
 .album-sheet__star {
-  fill: #facc15;
+  fill: var(--accent);
 }
 
 .album-sheet__date {
   margin: 0;
   font-size: 12px;
-  color: #94a3b8;
+  color: var(--muted);
 }
 
 .album-sheet__actions {
@@ -302,10 +302,10 @@ function onKeydown(event) {
   align-items: center;
   justify-content: center;
   min-height: 48px;
-  border: 1px solid rgba(148, 163, 184, 0.35);
+  border: 1px solid color-mix(in srgb, var(--muted) 35%, transparent);
   border-radius: 999px;
   background: transparent;
-  color: #f3efe8;
+  color: var(--text);
   font: inherit;
   font-size: 15px;
   text-decoration: none;
@@ -313,14 +313,14 @@ function onKeydown(event) {
 }
 
 .album-sheet__btn--primary {
-  border-color: #f3efe8;
-  background: #f3efe8;
-  color: #111;
+  border-color: var(--text);
+  background: var(--text);
+  color: var(--on-text);
   font-weight: 600;
 }
 
 .album-sheet__btn:focus-visible {
-  outline: 2px solid #facc15;
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
@@ -382,7 +382,7 @@ function onKeydown(event) {
     max-height: none;
     padding: 32px 28px;
     border-top: 0;
-    border-left: 1px solid rgba(148, 163, 184, 0.25);
+    border-left: 1px solid color-mix(in srgb, var(--muted) 25%, transparent);
     transform: translateX(110%);
   }
 

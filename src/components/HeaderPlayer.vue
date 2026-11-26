@@ -190,9 +190,9 @@ onUnmounted(unloadHowl)
               0 3.5px 6px hsla(230, 13%, 9%, 0.09);
 
   /* Unified blur background */
-  background-color: rgba(244, 241, 241, 0.05);
+  background-color: color-mix(in srgb, var(--text) 05%, transparent);
   backdrop-filter: blur(12px);
-  /* border-bottom: 1px solid rgba(70, 69, 69, 0.95); */
+  /* border-bottom: 1px solid var(--line-strong); */
 }
 
 /* Header Section Styles (from Header.vue) */
@@ -231,7 +231,7 @@ onUnmounted(unloadHowl)
 }
 
 .header-nav a {
-  color: #f8fafc;
+  color: var(--text);
   text-decoration: none;
   font-weight: 500;
   position: relative;
@@ -240,8 +240,8 @@ onUnmounted(unloadHowl)
 }
 
 .header-nav a.router-link-active {
-  background-color: #f3efe8;
-  color: #111;
+  background-color: var(--text);
+  color: var(--on-text);
 }
 
 /* Player Section Styles (from RadioPlayer.vue) */
@@ -274,8 +274,8 @@ onUnmounted(unloadHowl)
 .player-btn {
   height: 5vh;
   aspect-ratio: 1 / 1;
-  background: #f3efe8;
-  color: #111;
+  background: var(--text);
+  color: var(--on-text);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -293,7 +293,7 @@ onUnmounted(unloadHowl)
 .icon-wrapper > svg {
   width: 14px;
   stroke: 1px;
-  fill: #111;
+  fill: var(--on-text);
 }
 
 .player-btn:disabled {
@@ -317,7 +317,7 @@ onUnmounted(unloadHowl)
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: #f8fafc;
+  color: var(--text);
 }
 
 /* Mobile Styles */

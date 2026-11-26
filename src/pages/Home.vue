@@ -102,7 +102,7 @@ onMounted(loadAlbums)
   justify-content: center;
   width:100%;
   padding:2rem 6rem;
-  /* border-bottom: 1px solid rgba(70, 69, 69, 0.95); */
+  /* border-bottom: 1px solid var(--line-strong); */
 }
 
 .hero-content {
@@ -141,9 +141,9 @@ h2 {
 
 .more-albums {
   background: transparent;
-  border: 1px solid #f3efe8;
+  border: 1px solid var(--text);
   border-radius: 4px;
-  color: #f3efe8;
+  color: var(--text);
   font-family: 'Inter', sans-serif;
   font-size: 14px;
   display: flex;
@@ -167,7 +167,7 @@ h2 {
   aspect-ratio: 1;
   width: 100%;
   border-radius: 4px;
-  background: rgba(148, 163, 184, 0.15);
+  background: color-mix(in srgb, var(--muted) 15%, transparent);
   animation: pulse 1.4s ease-in-out infinite;
 }
 

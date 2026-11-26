@@ -32,10 +32,10 @@
 
 <style scoped>
 .site-footer {
-  background: #0a0a0a;
-  color: #f8fafc;
+  background: var(--footer);
+  color: var(--text);
   padding: 2.5rem 1rem calc(180px + 1rem);
-  border-top:1px solid rgba(70, 69, 69, 0.95);
+  border-top:1px solid var(--line-strong);
 }
 
 .footer-content {
@@ -55,7 +55,7 @@
 }
 
 .site-plan a {
-  color: #e2e8f0;
+  color: var(--text-soft);
   text-decoration: none;
 }
 
@@ -69,7 +69,7 @@
 }
 
 .instagram-link {
-  color: #e2e8f0;
+  color: var(--text-soft);
   transition: color 0.2s ease;
   margin-bottom: 1rem;
 }

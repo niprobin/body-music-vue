@@ -67,7 +67,7 @@ function isPlaceholder(entry) {
 .history-list {
   display: flex;
   flex-direction: column;
-  border: 1px solid rgba(70, 69, 69, 0.95);
+  border: 1px solid var(--line-strong);
   border-radius: 16px;
   overflow: hidden;
 }
@@ -77,7 +77,7 @@ function isPlaceholder(entry) {
   grid-template-columns: 1fr;
   align-items: center;
   padding: 1rem 1.2rem;
-  border-bottom: 1px solid rgba(70, 69, 69, 0.95);
+  border-bottom: 1px solid var(--line-strong);
 }
 
 .history-item:last-child {
@@ -86,7 +86,7 @@ function isPlaceholder(entry) {
 
 .history-item--placeholder .history-title,
 .history-item--placeholder .history-artist {
-  color: rgba(243, 239, 232, 0.55);
+  color: color-mix(in srgb, var(--text) 55%, transparent);
   font-style: italic;
 }
 
@@ -111,24 +111,24 @@ function isPlaceholder(entry) {
 .history-title {
   margin: 0;
   font-weight: 600;
-  color: #f3efe8;
+  color: var(--text);
 }
 
 .history-artist {
   margin: 0;
-  color: #fff;
+  color: var(--text);
   font-size: 0.95rem;
 }
 
 .history-time {
   font-size: 0.85rem;
-  color: #f3efe8;
+  color: var(--text);
 }
 
 .history-empty {
   padding: 1.5rem 1.2rem;
   margin: 0;
-  color: rgba(243, 239, 232, 0.7);
+  color: color-mix(in srgb, var(--text) 70%, transparent);
   text-align: center;
 }
 
@@ -137,9 +137,9 @@ function isPlaceholder(entry) {
   border-radius: 4px;
   background: linear-gradient(
     90deg,
-    rgba(255, 255, 255, 0.06) 25%,
-    rgba(255, 255, 255, 0.12) 37%,
-    rgba(255, 255, 255, 0.06) 63%
+    color-mix(in srgb, var(--text) 06%, transparent) 25%,
+    color-mix(in srgb, var(--text) 12%, transparent) 37%,
+    color-mix(in srgb, var(--text) 06%, transparent) 63%
   );
   background-size: 400% 100%;
   animation: skeleton-shimmer 1.4s ease infinite;

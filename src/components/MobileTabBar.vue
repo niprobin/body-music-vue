@@ -40,8 +40,8 @@ const tabs = [
   height: calc(64px + env(safe-area-inset-bottom));
   box-sizing: border-box;
   padding: 3px 8px calc(4px + env(safe-area-inset-bottom));
-  background: #0d141c;
-  border-top: 1px solid rgba(148, 163, 184, 0.2);
+  background: var(--bar);
+  border-top: 1px solid color-mix(in srgb, var(--muted) 20%, transparent);
 }
 
 .tab {
@@ -53,7 +53,7 @@ const tabs = [
   align-items: center;
   justify-content: center;
   gap: 4px;
-  color: #94a3b8;
+  color: var(--muted);
   font-weight: 500;
   text-decoration: none;
   -webkit-tap-highlight-color: transparent;
@@ -76,20 +76,20 @@ const tabs = [
 }
 
 .tab.router-link-active {
-  color: #f3efe8;
+  color: var(--text);
   font-weight: 600;
 }
 
 .tab.router-link-active .tab-pill {
-  background: rgba(243, 239, 232, 0.16);
+  background: color-mix(in srgb, var(--text) 16%, transparent);
 }
 
 .tab:active .tab-pill {
-  box-shadow: inset 0 0 0 999px rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 0 0 999px color-mix(in srgb, var(--text) 06%, transparent);
 }
 
 .tab:focus-visible .tab-pill {
-  outline: 2px solid #f3efe8;
+  outline: 2px solid var(--text);
   outline-offset: 2px;
 }
 

@@ -82,7 +82,7 @@ onUnmounted(() => {
 }
 
 .schedule-day {
-  border:1px solid rgba(70, 69, 69, 0.95);
+  border:1px solid var(--line-strong);
   border-radius: 16px;
   overflow: hidden;
 }
@@ -92,16 +92,16 @@ onUnmounted(() => {
   align-items: center;
   justify-content: space-between;
   padding: 0rem 0.85rem;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+  border-bottom: 1px solid color-mix(in srgb, var(--muted) 20%, transparent);
 }
 
 .schedule-day__tag {
   font-size: 0.75rem;
   padding: 0.05rem 0.35rem;
   border-radius: 999px;
-  border: 1px solid #f3efe8;
-  background-color: #f3efe8;
-  color:#111;
+  border: 1px solid var(--text);
+  background-color: var(--text);
+  color:var(--on-text);
 }
 
 .schedule-day__body {
@@ -114,7 +114,7 @@ onUnmounted(() => {
   grid-template-columns: 140px 1fr;
   gap: 0.75rem;
   padding: 0.85rem 1rem;
-  border-bottom:1px solid rgba(70, 69, 69, 0.95);
+  border-bottom:1px solid var(--line-strong);
 }
 
 .schedule-item:last-child {
@@ -126,9 +126,9 @@ onUnmounted(() => {
 }
 
 .schedule-item--current {
-  background: #f3efe8;
-  color:#111;
-  border-left: 3px solid #f3efe8;
+  background: var(--text);
+  color:var(--on-text);
+  border-left: 3px solid var(--text);
 }
 
 @media (max-width: 720px) {

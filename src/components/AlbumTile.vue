@@ -64,7 +64,7 @@ const label = computed(() => {
 }
 
 .album-tile:focus-visible {
-  outline: 2px solid #f3efe8;
+  outline: 2px solid var(--text);
   outline-offset: 2px;
 }
 
